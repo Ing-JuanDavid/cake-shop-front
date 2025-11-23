@@ -1,0 +1,146 @@
+<h2 class="text-3xl text-center font-bold font-[Kaushan] mb-2">Registrate</h2>
+
+<form class="p-3 m-auto border border-zinc-300 rounded-lg" (ngSubmit)="onSubmit()">
+  <div class="mb-3">
+    <label>Email:</label>
+    <input
+      class="
+        block w-full
+        border
+      border-zinc-400
+        px-1
+        py-0.5
+        rounded-md
+      focus:outline-yellow-900
+      text-zinc-600
+      placeholder:text-zinc-500"
+      type="email"
+      name="email"
+      placeholder="alguien@gmail.com"
+      [(ngModel)]="email"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label>Password:</label>
+    <input
+      class="
+        block w-full border
+      border-zinc-400
+        px-1
+      focus:outline-yellow-900
+        py-0.5 rounded-md
+      text-zinc-600
+      placeholder:text-zinc-500"
+      type="password"
+      name="password"
+      [(ngModel)]="password"
+      placeholder="********"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label>Nombre:</label>
+    <input
+      class="
+        block w-full border
+      border-zinc-400
+        px-1
+      focus:outline-yellow-900
+        py-0.5 rounded-md
+      text-zinc-600
+      placeholder:text-zinc-500"
+      type="text"
+      name="name"
+      placeholder="full name"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label>Fecha de nacimiento:</label>
+    <input
+      class="
+        block w-full border
+      border-zinc-400
+        px-1
+      focus:outline-yellow-900
+        py-0.5 rounded-md
+      text-zinc-600
+      placeholder:text-zinc-500"
+      type="date"
+      name="birthdate"
+
+    />
+  </div>
+
+  <div class="mb-3">
+    <label>NIP:</label>
+    <input
+      class="
+        block w-full border
+      border-zinc-400
+        px-1
+      focus:outline-yellow-900
+        py-0.5 rounded-md
+      text-zinc-600
+      placeholder:text-zinc-500"
+      type="number"
+      name="nip"
+      placeholder="1234567890"
+    />
+  </div>
+
+
+  <div class="mb-3">
+    <label>Direccion:</label>
+    <input
+      class="
+        block w-full border
+      border-zinc-400
+        px-1
+      focus:outline-yellow-900
+        py-0.5 rounded-md
+      text-zinc-600
+      placeholder:text-zinc-500"
+      type="text"
+      name="address"
+      placeholder="CR 10A # 20-30"
+    />
+  </div>
+
+  <div class="mb-3">
+    <label>Telefono:</label>
+    <input
+      class="
+        block w-full border
+      border-zinc-400
+        px-1
+      focus:outline-yellow-900
+        py-0.5 rounded-md
+      text-zinc-600
+      placeholder:text-zinc-500"
+      type="text"
+      name="telf"
+      placeholder="(+57)"
+    />
+  </div>
+
+  <div class="w-full mb-3">
+    <button
+      type="submit"
+      class="
+        w-full
+      bg-yellow-900
+      text-white
+        font-semibold
+        py-1 px-2
+        rounded-md
+        mt-2
+      hover:bg-yellow-700
+        cursor-pointer"
+    >
+      Crear cuenta
+    </button>
+  </div>
+
+</form>

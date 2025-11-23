@@ -1,3 +1,31 @@
 import { Routes } from '@angular/router';
+import { MainLayout } from './layouts/main-layout/main-layout.component';
 
-export const routes: Routes = [];
+export const routes: Routes = [
+  {
+    path: '',
+    component: MainLayout,
+    children: [
+        {
+          path: '',
+          loadComponent: ()=> import('./layouts/main-layout/home/home.component').then(m => m.HomeComponent)
+        },
+    ]
+  },
+  {
+    path: 'admin',
+    loadComponent: () => import('./layouts/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
+    children: [
+      {
+        path: 'productos',
+        loadComponent: () => import('./layouts/admin-layout/products/product.component').then(m => m.ProductComponent)
+      }
+    ]
+  },
+  {
+    path: 'auth',
+    loadChildren: () =>
+      import('./layouts/auth-layout/auth.routes').then(m => m.AUTH_ROUTES)
+  },
+  {path: '**', redirectTo: '', pathMatch: 'full'},
+];
