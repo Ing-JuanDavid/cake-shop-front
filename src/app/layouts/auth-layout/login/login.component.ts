@@ -152,14 +152,6 @@ export class LoginComponent {
     private userService: UserService,
     private router : Router) {}
 
-  private aplyBackendErrors(errors: any, form : FormGroup) {
-    Object.keys(errors).forEach(key => {
-      const control = form.get(key);
-      if(control) {
-        control.setErrors({ backend: errors[key] });
-      }
-    });
-  }
 
   onSubmit() {
     if(! this.loginForm.valid) return;
@@ -169,7 +161,7 @@ export class LoginComponent {
     this.authService.login(email!, password!).subscribe(res => {
 
     if (res.fieldErrors) {
-      this.aplyBackendErrors(res.fieldErrors, this.loginForm);
+      this.authService.aplyBackendErrors(res.fieldErrors, this.loginForm);
     }
 
     if(res.error) {
@@ -177,18 +169,7 @@ export class LoginComponent {
     }
 
      if(res.ok && res.data?.token) {
-      localStorage.setItem('token', res.data.token);
-
-      const payload = this.tokenService.decodeToken(res.data.token);
-
-      if(!payload) {
-        this.userService.setCurrentUser(null);
-        return;
-      }
-
-      this.userService.setCurrentUser({email: payload.sub, roles: payload.roles})
-      this.router.navigate(['/']);
-      return;
+      this.authService.loadUserByToken(res.data.token);
     }
 
     });
