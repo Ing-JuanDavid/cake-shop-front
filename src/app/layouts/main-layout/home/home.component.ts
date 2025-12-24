@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { User, UserService } from '../../../core/user/user.service';
 import { Router } from '@angular/router';
-import { ProductResponse, ProductService } from './services/product.service';
+import { ProductResponse, ProductService } from '../shared/services/product.service';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
-import { ProductComponent } from "./product/product.component";
+import { ProductCardComponent } from "../home/product-card/product-card.component";
 
 @Component({
-  selector: 'app-home.component',
-  imports: [AsyncPipe, ProductComponent],
+  selector: 'home-view',
+  imports: [AsyncPipe, ProductCardComponent],
   template: `
 
   <div class="pt-5 px-20">
@@ -17,7 +17,7 @@ import { ProductComponent } from "./product/product.component";
      @if(products.ok) {
       <div class="flex flex-wrap gap-10 justify-center">
          @for(product of products.data; track product.productId) {
-          <home-product [product]="product"></home-product>
+          <home-product-card [product]="product" (click)="goToProduct(product.productId)"></home-product-card>
         }@empty {
           <p>Aun no hay nada que mostrar</p>
         }
@@ -58,6 +58,10 @@ export class HomeComponent {
     this.userService.setCurrentUser(null);
     localStorage.removeItem('token');
     this.router.navigate(['/auth']);
+  }
+
+  goToProduct(id:any){
+    this.router.navigate([`/product/${id}`]);
   }
 
   ngOnInit() {

@@ -56,4 +56,10 @@ export class ProductService {
     );
   }
 
+  public getProductById(id:string): Observable<ProductResponse>
+  {
+    const url = `${this.baseUrl}/${id}`
+    return this.http.get<ProductResponse>(url);
+  }
+
 }

@@ -4,13 +4,8 @@ import { MainLayout } from './layouts/main-layout/main-layout.component';
 export const routes: Routes = [
   {
     path: '',
-    component: MainLayout,
-    children: [
-        {
-          path: '',
-          loadComponent: ()=> import('./layouts/main-layout/home/home.component').then(m => m.HomeComponent)
-        },
-    ]
+    loadChildren: ()=>
+      import('./layouts/main-layout/main.routes').then(m => m.MAIN_ROUTES)
   },
   {
     path: 'admin',

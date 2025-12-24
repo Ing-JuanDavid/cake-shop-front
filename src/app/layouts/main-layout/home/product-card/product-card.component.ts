@@ -1,9 +1,9 @@
 import { Component, Input } from '@angular/core';
-import { Product } from '../services/product.service';
+import { Product } from '../../shared/services/product.service';
 import { CommonModule } from '@angular/common';
 
 @Component({
-  selector: 'home-product',
+  selector: 'home-product-card',
   imports: [CommonModule],
   template: `
     <div
@@ -26,6 +26,6 @@ import { CommonModule } from '@angular/common';
   `,
   styles: ``,
 })
-export class ProductComponent {
+export class ProductCardComponent {
   @Input() product: Product | null = null;
 }
