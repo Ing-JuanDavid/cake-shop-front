@@ -2,10 +2,11 @@ import { Component, Input } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
 import { ProductService } from '../../shared/services/product.service';
+import { StarsComponent } from "../stars/stars.component";
 
 @Component({
   selector: 'product-details',
-  imports: [AsyncPipe, CommonModule],
+  imports: [AsyncPipe, CommonModule, StarsComponent],
   template: `
      @if(product$ | async; as product) {
 
@@ -42,18 +43,25 @@ import { ProductService } from '../../shared/services/product.service';
 
 
             <button
-              class="mt-4 w-100 bg-yellow-900 text-white px-6 py-2 rounded-md hover:cursor-pointer
+              class="mt-4 md:w-100 bg-yellow-900 text-white px-6 py-2 rounded-md hover:cursor-pointer
                      hover:bg-yellow-800 transition">
               Agregar al carrito
             </button>
+
+            <h2 class="text-2xl font-semibold tracking-wide">
+              DESCRIPCION
+            </h2>
 
              <p class="leading-relaxe">
               {{ product.description || 'Este producto es tan bueno que se describe solo 😌' }}
             </p>
 
-            <p class="text-sm leading-relaxed">
-              {{ product.score || '0' }}
-            </p>
+            <div class="flex items-center gap-1">
+              <span class="text-2xl font-semibold leading-relaxed">
+                {{ (product.score ?? 0) | number:'1.1-1' }}
+              </span>
+              <product-details-stars [score]="product.score"></product-details-stars>
+            </div>
 
           </div>
 

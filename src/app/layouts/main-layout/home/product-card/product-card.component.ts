@@ -7,10 +7,10 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div
-      class="w-48 overflow-hidden hover:shadow-lg transition-shadow hover:cursor-pointer"
+      class="w-48 hover:shadow-lg transition-shadow hover:cursor-pointer"
     >
       <!-- Imagen -->
-      <div class="w-full h-32 overflow-hidden">
+      <div class="w-full h-32">
         <img [src]="product?.imgUrl" alt="{{ product?.name }}" class="w-full h-full object-cover" />
       </div>
 

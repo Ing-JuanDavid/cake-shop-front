@@ -10,7 +10,7 @@ import { ProductDetails } from "./product-details/product-details.component";
   imports: [CommonModule, RateListComponent, ProductDetails],
   template: `
 
-   <div class="pt-10 px-20 min-h-screen bg-white">
+   <div class="pt-10 px-10 md:px-20 min-h-screen bg-white">
 
 
       <product-details [id]="id"></product-details>
