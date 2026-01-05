@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Product } from '../../shared/services/product.service';
+import { Product } from '../../../../core/services/product.service';
 import { CommonModule } from '@angular/common';
 
 @Component({

@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { User, UserService } from '../../../core/user/user.service';
 import { Router } from '@angular/router';
-import { ProductResponse, ProductService } from '../shared/services/product.service';
+import { ProductResponse, ProductService } from '../../../core/services/product.service';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from "../home/product-card/product-card.component";

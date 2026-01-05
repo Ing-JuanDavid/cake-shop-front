@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AsyncPipe, CommonModule } from '@angular/common';
-import { ProductService } from '../../shared/services/product.service';
+import { ProductService } from '../../../../core/services/product.service';
 import { StarsComponent } from "../stars/stars.component";
 
 @Component({
@@ -31,7 +31,15 @@ import { StarsComponent } from "../stars/stars.component";
               {{ product.name | uppercase }}
             </h1>
 
-            <p class="text-2xl font-bold">
+            <div>
+              <div class="text-xl font-semibold leading-relaxed flex items-center gap-1">
+                <p>{{ (product.score ?? 0) | number:'1.1-1' }}</p>
+                <product-details-stars [score]="product.score"></product-details-stars>
+              </div>
+              <p class="text-sm leading-relaxed">{{product.rateNumber}} calificaciones</p>
+            </div>
+
+            <p class="text-3xl font-semibold">
               {{ product.price | currency:'':'symbol':'1.0-0' }}
             </p>
 
@@ -53,15 +61,10 @@ import { StarsComponent } from "../stars/stars.component";
             </h2>
 
              <p class="leading-relaxe">
-              {{ product.description || 'Este producto es tan bueno que se describe solo 😌' }}
+              {{ product.description || 'Este producto es tan bueno que se describe solo' }}
             </p>
 
-            <div class="flex items-center gap-1">
-              <span class="text-2xl font-semibold leading-relaxed">
-                {{ (product.score ?? 0) | number:'1.1-1' }}
-              </span>
-              <product-details-stars [score]="product.score"></product-details-stars>
-            </div>
+
 
           </div>
 

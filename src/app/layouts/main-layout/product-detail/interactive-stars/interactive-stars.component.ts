@@ -1,19 +1,20 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { NgClass } from '@angular/common';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 
 @Component({
-  selector: 'product-details-stars',
+  selector: 'product-details-interactive-stars',
   standalone: true,
   imports: [NgClass],
   template: `
-    <div class="flex items-center gap-1">
+     <div class="flex items-center gap-1">
             @for (star of [1,2,3,4,5]; track star) {
             <svg
-              class="w-4 h-4"
-              [ngClass]="star <= score ? 'text-yellow-500' : 'text-gray-300'"
+              class="w-8 h-8 hover:cursor-pointer"
+              [ngClass]="star <= score ? 'text-yellow-500' : 'text-gray-300 hover:text-yellow-400'"
               fill="currentColor"
               viewBox="0 0 20 20"
+              (click)="selectStar(star)"
             >
               <path
                 d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.286 3.967a1
@@ -32,7 +33,13 @@ import { NgClass } from '@angular/common';
   `,
   styles: ``,
 })
-export class StarsComponent {
-  @Input() score: number = 0;
+export class InteractiveStars {
+  score: number = 0;
+  @Output() scoreChange = new EventEmitter<number>();
 
+  selectStar(star : number) {
+    this.score = star;
+    this.scoreChange.emit(star);
+
+  }
 }
