@@ -1,14 +1,15 @@
 import { Component, Input } from '@angular/core';
-import { map, Observable } from 'rxjs';
-import { AsyncPipe, CommonModule } from '@angular/common';
-import { ProductService } from '../../../../core/services/product.service';
+import { CommonModule } from '@angular/common';
 import { StarsComponent } from "../stars/stars.component";
+import { Product } from '../../../../core/services/product.service';
 
 @Component({
   selector: 'product-details',
-  imports: [AsyncPipe, CommonModule, StarsComponent],
+  imports:[StarsComponent, CommonModule],
   template: `
-     @if(product$ | async; as product) {
+     @if(product) {
+
+<!-- Product info component -->
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
 
@@ -48,8 +49,7 @@ import { StarsComponent } from "../stars/stars.component";
               min="1"
               >
             </label>
-
-
+            <p class="text-sm leading-relaxed">stock disponible: {{product.quant}}</p>
             <button
               class="mt-4 md:w-100 bg-yellow-900 text-white px-6 py-2 rounded-md hover:cursor-pointer
                      hover:bg-yellow-800 transition">
@@ -72,25 +72,13 @@ import { StarsComponent } from "../stars/stars.component";
 
       }
       @else {
+        <!-- Not found component -->
         <p>Producto no encontrado!</p>
       }
   `,
   styles: ``,
 })
 export class ProductDetails {
-  @Input() id!:string;
-  product$!: Observable<any>;
+  @Input() product: Product  | null = null;
   quant : number = 1;
-
-  constructor(
-    private productService: ProductService
-  ) {}
-
-  ngOnInit()
-  {
-    this.product$ = this.productService.getProductById(this.id).pipe(
-      map(product=>product.data)
-    );
-  }
-
 }

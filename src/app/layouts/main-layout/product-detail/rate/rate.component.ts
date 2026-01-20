@@ -1,55 +1,61 @@
-import { Component, Input } from '@angular/core';
-import { RateService } from '../../../../core/services/rate.service';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { map, Observable } from 'rxjs';
-import { AsyncPipe, NgClass } from '@angular/common';
+import { AsyncPipe,  } from '@angular/common';
 import { OrderService } from '../../../../core/services/order.service';
 import { UserService } from '../../../../core/user/user.service';
-import { SendRate } from "../send-rate/send-rate.component";
 import { RateList } from "../rate-list/rate-list.component";
+import { SendRate } from "../send-rate/send-rate.component";
+import { Rate, RateService } from '../../../../core/services/rate.service';
 
 @Component({
   selector: 'product-details-rate',
-  imports: [AsyncPipe, SendRate, RateList],
+  standalone: true,
+  imports: [AsyncPipe, RateList, SendRate],
   template: `
 
-  <div class="space-y-4 mt-10">
-    @if(orderList$ |async; as orderList) { @if(orderList.length>0) {
+  <div class="flex flex-col gap-10">
+
+  @if(orderList$ |async; as orderList) { @if(orderList.length>0) {
 
       <!-- Make rate component -->
-      <rate-send-rate></rate-send-rate>
+      <rate-send-rate [productId]="productId" (updatedData)="updatedData.emit()"></rate-send-rate>
 
     } }
 
     <!-- Rate list component -->
-
-    @if (rateList$ | async; as rateList) {
-      <rate-rate-list [rateList]="rateList"></rate-rate-list>
-    }
+    <rate-rate-list [rateList]="rateList"></rate-rate-list>
 
   </div>
 
+
+
   `,
-  styles: ``,
+  styles: `
+    :host {
+      display: block;
+    }
+  `,
 })
 export class RateComponent {
-  @Input() id: string | null = null;
-  rateList$!: Observable<any>;
+  @Input() productId: string = '';
+  @Input() rateList: Rate[] | null= null;
+  @Output() updatedData = new EventEmitter();
   orderList$!: Observable<any>;
 
 
 
   constructor(
-    private rateService: RateService,
     private orderService: OrderService,
-    private userService: UserService
+    private userService: UserService,
   ) {}
 
   ngOnInit() {
-    this.rateList$ = this.rateService.getRatesByProduct(this.id!).pipe(map((rate) => rate.data));
     if (this.userService.currentUser()) {
       this.orderList$ = this.orderService
-        .getOrdersByProductId(this.id!)
+        .getOrdersByProductId(this.productId!)
         .pipe(map((res) => res.data));
     }
   }
+
+
 }

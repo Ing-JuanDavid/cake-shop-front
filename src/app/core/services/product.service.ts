@@ -8,13 +8,15 @@ export interface Product {
   price: number;
   quant: number;
   categoryName: string;
+  description: string;
   score: number;
+  rateNumber: number;
   imgUrl: string;
 }
 
 export interface ProductResponse {
   ok: boolean;
-  data: Product[] | null;
+  data: Product | null;
   error: string | null;
 }
 

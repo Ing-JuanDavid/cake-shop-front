@@ -3,6 +3,8 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RateComponent } from "./rate/rate.component";
 import { ProductDetails } from "./product-details/product-details.component";
+import { Rate, RateService } from '../../../core/services/rate.service';
+import { Product, ProductService } from '../../../core/services/product.service';
 
 @Component({
   selector: 'product-detail-view',
@@ -10,12 +12,9 @@ import { ProductDetails } from "./product-details/product-details.component";
   imports: [CommonModule, RateComponent, ProductDetails],
   template: `
 
-   <div class="pt-10 px-10 md:px-20 min-h-screen bg-white">
-
-
-      <product-details [id]="id"></product-details>
-      <product-details-rate [id]="id"></product-details-rate>
-
+   <div class="pt-5 px-10 md:px-20 min-h-screen">
+      <product-details [product]="product"></product-details>
+      <product-details-rate [productId]="productId" [rateList]="rateList" (updatedData)="loadData()" class="mt-10"></product-details-rate>
     </div>
   `,
   styles: `
@@ -23,14 +22,35 @@ import { ProductDetails } from "./product-details/product-details.component";
 })
 export class ProductDetailComponent {
 
-  id!: string;
+  productId!: string;
+  product: Product | null = null;
+  rateList: Rate[] | null = null;
+
 
   constructor(
     private route : ActivatedRoute,
+    private productService: ProductService,
+    private rateService: RateService
   ){}
 
   ngOnInit() {
-    this.id = this.route.snapshot.paramMap.get('id')!;
+    this.productId = this.route.snapshot.paramMap.get('id')!;
+    this.loadData();
   }
 
+
+
+  loadData() {
+    this.productService.getProductById(this.productId).subscribe(
+      {next: res => {
+        this.product = res.data
+        this.rateService.getRatesByProduct(this.productId).subscribe(
+          {next: res=> {this.rateList = res.data
+            console.log('product:', this.product);
+            console.log('rates: ', this.rateList);
+          }}
+        )
+      }}
+    )
+  }
 }

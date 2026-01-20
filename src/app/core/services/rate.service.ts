@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { inject, Inject, Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 export interface Rate {
@@ -10,11 +10,20 @@ export interface Rate {
   creationDate: Date;
   productId: number;
   productName:string;
-
 }
 
+export interface RateModel {
+  score: number;
+  comment: string;
+}
 
-export interface rateResponse {
+export interface SingleRate {
+   ok: boolean;
+  data : Rate | null;
+  error: string | null;
+}
+
+export interface RateResponse {
   ok: boolean;
   data : Rate[] | null;
   error: string | null;
@@ -24,12 +33,28 @@ export interface rateResponse {
   providedIn: 'root',
 })
 export class RateService {
-  private baseUrl = 'http://localhost:8080/products/';
+  private baseUrl = 'http://localhost:8080/products';
 
   http = inject(HttpClient);
 
-  public getRatesByProduct(productId: string) : Observable<rateResponse>{
-    const url = `${this.baseUrl}${productId}/rates`
-    return this.http.get<rateResponse>(url);
+  public getRatesByProduct(productId: string) : Observable<RateResponse>{
+    const url = `${this.baseUrl}/${productId}/rates`
+    return this.http.get<RateResponse>(url);
+  }
+
+  public sendRate(productId:string, rate:RateModel) : Observable<SingleRate>{
+    const url = `${this.baseUrl}/${productId}/rates`;
+    return this.http.post<SingleRate>(url, rate)
+  }
+
+
+  public updateRate(productId:string, rateId:string, rate:RateModel) : Observable<RateResponse>{
+    const url = `${this.baseUrl}/${productId}/rates/${rateId}`;
+    return this.http.put<RateResponse>(url, rate)
+  }
+
+  public getRates(productId : string) : Observable<SingleRate> {
+    const url = `${this.baseUrl}/${productId}/rate`;
+    return this.http.get<SingleRate>(url);
   }
 }

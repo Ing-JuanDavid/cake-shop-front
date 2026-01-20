@@ -1,5 +1,7 @@
 import { NgClass } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output, SimpleChanges } from '@angular/core';
+import { UserService } from '../../../../core/user/user.service';
+import { Rate, RateService } from '../../../../core/services/rate.service';
 
 
 @Component({
@@ -36,6 +38,15 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 export class InteractiveStars {
   score: number = 0;
   @Output() scoreChange = new EventEmitter<number>();
+  @Input() foundRate: Rate | null = null;
+
+  constructor(private userService: UserService, private rateService:RateService){}
+
+  ngOnChanges(changes: SimpleChanges) {
+    if(changes["foundRate"] && this.foundRate) {
+      this.score = this.foundRate.score;
+    }
+  }
 
   selectStar(star : number) {
     this.score = star;
