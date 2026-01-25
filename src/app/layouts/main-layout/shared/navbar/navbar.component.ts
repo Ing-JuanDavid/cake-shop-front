@@ -21,12 +21,17 @@ import { User, UserService } from '../../../../core/user/user.service';
           <li class="hover:text-yellow-600"><a routerLink="admin/productos">admin</a></li>
         }
 
-        @if(userService.currentUser()) {
-          <li class="hover:text-yellow-600"><a routerLink="user/profile">perfil</a></li>
+        @if(userService.currentUser(); as user) {
+
+          @if(user.roles.includes('ROLE_USER')) {
+            <li class="hover:text-yellow-600"><a routerLink="user/cart"><i class="fa-solid fa-cart-shopping fa-lg"></i></a></li>
+          }
+
+          <li class="hover:text-yellow-600"><a routerLink="user/profile"><i class="fa-solid fa-circle-user fa-2xl"></i></a></li>
         }
 
         @if(! userService.currentUser()) {
-          <li class="hover:text-yellow-600"><a routerLink="auth">iniciar sesion</a></li>
+          <li class="hover:text-yellow-600"><a routerLink="auth"><i class="fa-solid fa-right-to-bracket fa-lg"></i></a></li>
         }
 
 

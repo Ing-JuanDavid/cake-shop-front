@@ -3,7 +3,7 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 import { RouterOutlet } from '@angular/router';
 import { UserService } from '../../core/user/user.service';
 import { Alert } from "./shared/alert/alert.component";
-import { AlertService } from '../../core/services/alert.service';
+import { AlertService } from './services/alert.service';
 
 
 @Component({

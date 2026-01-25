@@ -13,6 +13,10 @@ export const MAIN_ROUTES: Routes = [
       {
         path: 'product/:id',
         loadComponent: ()=> import('./product-detail/product-detail.component').then(m=>m.ProductDetailComponent)
+      },
+      {
+        path: 'user/cart',
+        loadComponent: ()=>import('./cart/cart.component').then(m=>m.Cart)
       }
     ]
 

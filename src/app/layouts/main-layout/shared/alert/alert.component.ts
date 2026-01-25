@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlertService } from '../../../../core/services/alert.service';
+import { AlertService } from '../../services/alert.service';
 import { Observable } from 'rxjs';
 import { AsyncPipe, NgClass } from '@angular/common';
 

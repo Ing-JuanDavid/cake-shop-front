@@ -143,9 +143,15 @@
     <button
     [disabled]="!registerForm.valid"
       type="submit"
-      class="w-full bg-yellow-900 text-white font-semibold py-1 px-2 rounded-md mt-2 hover:bg-yellow-700 cursor-pointer"
+      class="w-full bg-yellow-900 text-white font-semibold py-1 px-2 rounded-md mt-2 hover:bg-yellow-700 cursor-pointer flex justify-center items-center"
     >
-      Crear cuenta
+      @if(!loading) {
+        Crear cuenta
+      }@else {
+        <app-spinner [size]="'sm'"></app-spinner>
+      }
+
+
     </button>
   </div>
 

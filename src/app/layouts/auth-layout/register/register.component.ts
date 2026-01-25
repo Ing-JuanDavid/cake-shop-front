@@ -3,11 +3,12 @@ import { FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { RegisterModel } from '../models/register.model';
 import { AuthService } from '../../../core/auth/auth.service';
 import { AlertComponent } from "../shared/alert/alert.component";
+import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, AlertComponent],
+  imports: [FormsModule, ReactiveFormsModule, AlertComponent, SpinnerComponent],
   templateUrl: './register.html',
   styles: ``,
 })
@@ -41,12 +42,14 @@ export class RegisterComponent {
     }
   );
 
+  loading = false;
+
 
   constructor(private authService: AuthService){}
 
   onSubmit() {
 
-    // Create validation for form
+    this.loading= true;
 
     this.authService.register(this.registerForm.value as RegisterModel).subscribe(
       res => {
@@ -62,6 +65,8 @@ export class RegisterComponent {
         if(res.ok && (res.data.token)) {
           this.authService.loadUserByToken(res.data.token);
         }
+
+        this.loading = false;
       }
     );
   }

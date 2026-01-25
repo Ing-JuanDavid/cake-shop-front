@@ -1,11 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AsyncPipe,  } from '@angular/common';
-import { OrderService } from '../../../../core/services/order.service';
+import { OrderService } from '../../services/order.service';
 import { UserService } from '../../../../core/user/user.service';
 import { RateList } from "../rate-list/rate-list.component";
 import { SendRate } from "../send-rate/send-rate.component";
-import { Rate, RateService } from '../../../../core/services/rate.service';
+import { Response } from '../../../../core/responses/genericResponse.response';
+import { Order } from '../../../../core/models/order.model';
+import { Rate } from '../../../../core/models/rate.model';
 
 @Component({
   selector: 'product-details-rate',
@@ -15,7 +17,7 @@ import { Rate, RateService } from '../../../../core/services/rate.service';
 
   <div class="flex flex-col gap-10">
 
-  @if(orderList$ |async; as orderList) { @if(orderList.length>0) {
+  @if(orderList$ |async; as orderList) { @if(orderList.data?.length ?? 0 >0) {
 
       <!-- Make rate component -->
       <rate-send-rate [productId]="productId" (updatedData)="updatedData.emit()"></rate-send-rate>
@@ -40,7 +42,7 @@ export class RateComponent {
   @Input() productId: string = '';
   @Input() rateList: Rate[] | null= null;
   @Output() updatedData = new EventEmitter();
-  orderList$!: Observable<any>;
+  orderList$!: Observable<Response<Order[] | null>>;
 
 
 
@@ -52,8 +54,7 @@ export class RateComponent {
   ngOnInit() {
     if (this.userService.currentUser()) {
       this.orderList$ = this.orderService
-        .getOrdersByProductId(this.productId!)
-        .pipe(map((res) => res.data));
+        .getOrdersByProductId(this.productId!);
     }
   }
 

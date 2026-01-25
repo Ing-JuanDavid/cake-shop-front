@@ -3,8 +3,10 @@ import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RateComponent } from "./rate/rate.component";
 import { ProductDetails } from "./product-details/product-details.component";
-import { Rate, RateService } from '../../../core/services/rate.service';
-import { Product, ProductService } from '../../../core/services/product.service';
+import { RateService } from '../services/rate.service';
+import { ProductService } from '../services/product.service';
+import { Product } from '../../../core/models/product.model';
+import { Rate } from '../../../core/models/rate.model';
 
 @Component({
   selector: 'product-detail-view',

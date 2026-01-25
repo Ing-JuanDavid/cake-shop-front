@@ -1,11 +1,15 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { StarsComponent } from "../stars/stars.component";
-import { Product } from '../../../../core/services/product.service';
+import { Product } from '../../../../core/models/product.model';
+import { CartService } from '../../services/cart.service';
+import { AlertService } from '../../services/alert.service';
+import { UserService } from '../../../../core/user/user.service';
+import { FormsModule } from "@angular/forms";
 
 @Component({
   selector: 'product-details',
-  imports:[StarsComponent, CommonModule],
+  imports: [StarsComponent, CommonModule, FormsModule],
   template: `
      @if(product) {
 
@@ -45,12 +49,15 @@ import { Product } from '../../../../core/services/product.service';
             </p>
 
             <label>Cantidad
-              <input class="block w-20 px-1 py-2 border border-yellow-900/80 rounded-lg focus:outline-none" type="number" name="quant" [value]="quant"
+              <input class="block w-20 px-1 py-2 border border-yellow-900/80 rounded-lg focus:outline-none" type="number" [(ngModel)]="quant"
+
               min="1"
               >
             </label>
+
             <p class="text-sm leading-relaxed">stock disponible: {{product.quant}}</p>
             <button
+            (click)="addToCart()"
               class="mt-4 md:w-100 bg-yellow-900 text-white px-6 py-2 rounded-md hover:cursor-pointer
                      hover:bg-yellow-800 transition">
               Agregar al carrito
@@ -81,4 +88,32 @@ import { Product } from '../../../../core/services/product.service';
 export class ProductDetails {
   @Input() product: Product  | null = null;
   quant : number = 1;
+
+  constructor(private cartService: CartService, private alertService: AlertService, private userService: UserService) {}
+
+  addToCart() {
+    if(!this.product) return;
+
+    if(!this.userService.currentUser()) {
+      this.alertService.error('Debe iniciar sesion primero');
+      setTimeout(()=>{this.alertService.clear()}, 3000);
+      return;
+    }
+
+    this.cartService.addCart({productId: this.product.productId, quant: this.quant}).subscribe(
+      {next: res=>{
+        this.alertService.success(`${this.product?.name} agregado al carrito`);
+        console.log(res);
+      },
+      error: err=>{
+        this.alertService.error(err.error.error);
+      }
+    }
+    );
+
+
+    setTimeout(()=>this.alertService.clear(), 3000);
+
+
+  }
 }

@@ -6,11 +6,13 @@ import { Router, RouterLink } from "@angular/router";
 import { AlertComponent } from "../shared/alert/alert.component";
 import { UserService } from '../../../core/user/user.service';
 import { TokenService } from '../../../core/token/token.service';
+import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
+
 
 @Component({
   selector: 'auth-login',
   standalone: true,
-  imports: [CommonModule, RouterLink, ReactiveFormsModule, AlertComponent],
+  imports: [CommonModule, RouterLink, ReactiveFormsModule, AlertComponent, SpinnerComponent],
   template: `
 
     <h2 class="text-3xl text-center font-bold font-[Kaushan] mb-2">Bienvenido</h2>
@@ -98,9 +100,14 @@ import { TokenService } from '../../../core/token/token.service';
             rounded-md
             mt-2
           hover:bg-yellow-700
-            cursor-pointer"
+            cursor-pointer
+            flex items-center justify-center"
         >
+        @if(!loading){
           Ingresar
+        } @else {
+          <app-spinner [size]="'sm'"></app-spinner>
+        }
         </button>
       </div>
 
@@ -146,6 +153,8 @@ export class LoginComponent {
     ]),
   });
 
+  loading = false;
+
   constructor(
     private authService: AuthService,
     private tokenService: TokenService,
@@ -155,6 +164,8 @@ export class LoginComponent {
 
   onSubmit() {
     if(! this.loginForm.valid) return;
+
+    this.loading = true;
 
     const { email, password } = this.loginForm.value;
 
@@ -171,6 +182,8 @@ export class LoginComponent {
      if(res.ok && res.data?.token) {
       this.authService.loadUserByToken(res.data.token);
     }
+
+    this.loading = false;
 
     });
   }

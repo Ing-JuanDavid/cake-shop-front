@@ -1,25 +1,8 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
-
-export interface Product {
-  productId: number;
-  name: string;
-  price: number;
-  quant: number;
-  categoryName: string;
-  description: string;
-  score: number;
-  rateNumber: number;
-  imgUrl: string;
-}
-
-export interface ProductResponse {
-  ok: boolean;
-  data: Product | null;
-  error: string | null;
-}
-
+import { Product } from '../../../core/models/product.model';
+import { Response } from '../../../core/responses/genericResponse.response';
 
 @Injectable({
   providedIn: 'root',
@@ -36,7 +19,6 @@ export class ProductService {
       return of({
         ok: false,
         error: error.error.error ?? 'error desconocido',
-        fieldErrors: error.error.fieldErrors ?? null,
         data : null
       });
     }
@@ -44,24 +26,23 @@ export class ProductService {
     return of({
       ok: false,
       error: 'No se pudo conectar con el servidor',
-      fieldErrors: null,
       data: null
     });
 
   }
 
-  public getProducts() : Observable<ProductResponse>
+  public getProducts() : Observable<Response<Product[] | null>>
   {
-    return this.http.get<ProductResponse>(this.baseUrl)
+    return this.http.get<Response<Product[] | null>>(this.baseUrl)
     .pipe(
       catchError(err => this.handlerError(err)),
     );
   }
 
-  public getProductById(id:string): Observable<ProductResponse>
+  public getProductById(id:string): Observable<Response<Product | null>>
   {
     const url = `${this.baseUrl}/${id}`
-    return this.http.get<ProductResponse>(url);
+    return this.http.get<Response<Product>>(url);
   }
 
 }

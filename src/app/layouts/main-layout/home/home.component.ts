@@ -1,10 +1,14 @@
-import { Component, inject } from '@angular/core';
-import { User, UserService } from '../../../core/user/user.service';
+import { Component } from '@angular/core';
+import { UserService } from '../../../core/user/user.service';
 import { Router } from '@angular/router';
-import { ProductResponse, ProductService } from '../../../core/services/product.service';
+import { ProductService } from '../services/product.service';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from "../home/product-card/product-card.component";
+import { Product } from '../../../core/models/product.model';
+
+import { Response } from '../../../core/responses/genericResponse.response';
+
 
 @Component({
   selector: 'home-view',
@@ -46,7 +50,7 @@ import { ProductCardComponent } from "../home/product-card/product-card.componen
 })
 export class HomeComponent {
 
-  public products$!: Observable<ProductResponse>;
+  public products$!: Observable<Response<Product[] | null>>;
 
   public constructor(
     public userService: UserService,
