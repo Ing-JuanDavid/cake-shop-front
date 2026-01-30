@@ -6,6 +6,8 @@ import { CartService } from '../../services/cart.service';
 import { AlertService } from '../../services/alert.service';
 import { UserService } from '../../../../core/user/user.service';
 import { FormsModule } from "@angular/forms";
+import { CartProduct, CartProducts } from '../../../../core/models/cart.model';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'product-details',
@@ -45,7 +47,7 @@ import { FormsModule } from "@angular/forms";
             </div>
 
             <p class="text-3xl font-semibold">
-              {{ product.price | currency:'':'symbol':'1.0-0' }}
+              {{ '$' + (product.price | number:'1.0-0') }}
             </p>
 
             <label>Cantidad
@@ -57,10 +59,10 @@ import { FormsModule } from "@angular/forms";
 
             <p class="text-sm leading-relaxed">stock disponible: {{product.quant}}</p>
             <button
-            (click)="addToCart()"
+            (click)="handleCartAction()"
               class="mt-4 md:w-100 bg-yellow-900 text-white px-6 py-2 rounded-md hover:cursor-pointer
                      hover:bg-yellow-800 transition">
-              Agregar al carrito
+              {{inCart ? 'Ir al carrito' : 'Agregar al carrito'}}
             </button>
 
             <h2 class="text-2xl font-semibold tracking-wide">
@@ -88,8 +90,45 @@ import { FormsModule } from "@angular/forms";
 export class ProductDetails {
   @Input() product: Product  | null = null;
   quant : number = 1;
+  lastCart : CartProducts | null = null;
+  inCart: CartProduct | null = null;
+  counter = 0;
 
-  constructor(private cartService: CartService, private alertService: AlertService, private userService: UserService) {}
+  constructor(
+    public cartService: CartService,
+    private alertService: AlertService,
+    private userService: UserService,
+    public router: Router) {}
+
+    ngOnChanges(){
+      if(this.lastCart) this.syncCart(this.lastCart);
+    }
+
+
+    ngOnInit() {
+      if(!this.userService.currentUser()) return;
+      this.cartService.cart$.subscribe(
+        cart => {
+          this.lastCart = cart;
+          this.syncCart(cart)
+        }
+      )
+
+      this.loadCart();
+    }
+
+    loadCart() {
+    this.cartService.get().subscribe({next: res=>{
+      this.cartService.setCart(res.data);
+    }});
+  }
+
+  syncCart(cart: CartProducts) {
+    if(!this.product) return;
+    this.inCart = this.cartService.findProduct(this.product.productId, cart.products);
+    this.quant = this.inCart?.quant ?? 1;
+  }
+
 
   addToCart() {
     if(!this.product) return;
@@ -100,10 +139,10 @@ export class ProductDetails {
       return;
     }
 
-    this.cartService.addCart({productId: this.product.productId, quant: this.quant}).subscribe(
+    this.cartService.add({productId: this.product.productId, quant: this.quant}).subscribe(
       {next: res=>{
         this.alertService.success(`${this.product?.name} agregado al carrito`);
-        console.log(res);
+        this.inCart = res.data;
       },
       error: err=>{
         this.alertService.error(err.error.error);
@@ -114,6 +153,15 @@ export class ProductDetails {
 
     setTimeout(()=>this.alertService.clear(), 3000);
 
+  }
 
+    handleCartAction() {
+    if (this.inCart) {
+      // si ya está en el carrito, navegar
+      this.router.navigate(['user/cart']);
+    } else {
+      // si no está, agregar
+      this.addToCart();
+    }
   }
 }

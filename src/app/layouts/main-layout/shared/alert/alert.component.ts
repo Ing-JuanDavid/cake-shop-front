@@ -9,7 +9,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
   imports: [AsyncPipe, NgClass],
   template: `
   @if(alert$ | async; as alert) {
-    <div class="fixed top-5 right-5 px-4 py-3 rounded shadow-lg text-white border-l-4"
+    <div class="fixed top-20 right-5 px-4 py-3 rounded shadow-lg text-white border-l-4"
            [ngClass]="{
              'bg-green-600 border-green-800': alert.type === 'success',
              'bg-red-600 border-red-900': alert.type === 'error',

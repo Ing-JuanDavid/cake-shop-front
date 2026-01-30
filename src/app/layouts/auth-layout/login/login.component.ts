@@ -93,7 +93,7 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
           type="submit"
           class="
             w-full
-          bg-yellow-900
+          bg-yellow-800
           text-white
             font-semibold
             py-1 px-2
@@ -120,7 +120,7 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
         class="
           block
           w-full
-        bg-yellow-900
+        bg-yellow-800
         text-white
           font-semibold
           py-1 px-2
