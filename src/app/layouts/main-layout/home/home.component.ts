@@ -1,13 +1,12 @@
 import { Component } from '@angular/core';
-import { UserService } from '../../../core/user/user.service';
 import { Router } from '@angular/router';
 import { ProductService } from '../services/product.service';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from "../home/product-card/product-card.component";
 import { Product } from '../../../core/models/product.model';
-
 import { Response } from '../../../core/responses/genericResponse.response';
+import { SessionService } from '../../../core/session/session.service';
 
 
 @Component({
@@ -29,19 +28,6 @@ import { Response } from '../../../core/responses/genericResponse.response';
 
      }
     }
-
-    @if(userService.currentUser()) {
-      <button
-    class="
-      bg-red-500
-      text-white f
-        ont-bold px-1
-        py-1.5 rounded-sm
-      hover:bg-red-800
-        hover:cursor-pointer"
-      (click)="logout()">Logout</button>
-    }
-
     </div>
 
 
@@ -53,16 +39,12 @@ export class HomeComponent {
   public products$!: Observable<Response<Product[] | null>>;
 
   public constructor(
-    public userService: UserService,
+    public sessionService: SessionService,
     private router:Router,
     private productService: ProductService
   ) {}
 
-  logout() {
-    this.userService.setCurrentUser(null);
-    localStorage.removeItem('token');
-    this.router.navigate(['/auth']);
-  }
+
 
   goToProduct(id:any){
     this.router.navigate([`/product/${id}`]);
@@ -70,6 +52,6 @@ export class HomeComponent {
 
   ngOnInit() {
     this.products$ = this.productService.getProducts();
-    console.log('Current user:', this.userService.currentUser());
+    console.log('Current user:', this.sessionService.currentUser());
   }
 }

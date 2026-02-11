@@ -4,10 +4,10 @@ import { StarsComponent } from "../stars/stars.component";
 import { Product } from '../../../../core/models/product.model';
 import { CartService } from '../../services/cart.service';
 import { AlertService } from '../../services/alert.service';
-import { UserService } from '../../../../core/user/user.service';
 import { FormsModule } from "@angular/forms";
 import { CartProduct, CartProducts } from '../../../../core/models/cart.model';
 import { Router } from '@angular/router';
+import { SessionService } from '../../../../core/session/session.service';
 
 @Component({
   selector: 'product-details',
@@ -97,7 +97,7 @@ export class ProductDetails {
   constructor(
     public cartService: CartService,
     private alertService: AlertService,
-    private userService: UserService,
+    private sessionService: SessionService,
     public router: Router) {}
 
     ngOnChanges(){
@@ -106,9 +106,12 @@ export class ProductDetails {
 
 
     ngOnInit() {
-      if(!this.userService.currentUser()) return;
+      if(!this.sessionService.currentUser()) return;
       this.cartService.cart$.subscribe(
         cart => {
+
+          if(cart == null) return;
+
           this.lastCart = cart;
           this.syncCart(cart)
         }
@@ -133,7 +136,7 @@ export class ProductDetails {
   addToCart() {
     if(!this.product) return;
 
-    if(!this.userService.currentUser()) {
+    if(!this.sessionService.currentUser()) {
       this.alertService.error('Debe iniciar sesion primero');
       setTimeout(()=>{this.alertService.clear()}, 3000);
       return;

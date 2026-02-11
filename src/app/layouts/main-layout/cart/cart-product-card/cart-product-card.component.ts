@@ -17,7 +17,7 @@ import { CartService } from '../../services/cart.service';
 
           <!-- Info producto -->
           <div class="flex flex-col flex-1 text-yellow-900/80">
-            <h3 class="text-xl font-semibold">{{ cartProduct.productName }}</h3>
+            <h3 class="text-xl font-semibold">{{ cartProduct.name }}</h3>
             <p class="text-sm">Stock: {{ cartProduct.stock }}</p>
             <p class="text-lg font-semibold">
               {{ '$' + (cartProduct.price | number:'1.0-0') }}

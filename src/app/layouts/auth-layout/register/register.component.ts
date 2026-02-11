@@ -62,8 +62,8 @@ export class RegisterComponent {
           this.registerForm.setErrors({ backend: res.error })
         }
 
-        if(res.ok && (res.data.token)) {
-          this.authService.loadUserByToken(res.data.token);
+        if(res.ok && (res.data.user && res.data.token)) {
+          this.authService.loadUser(res.data.token, res.data.user);
         }
 
         this.loading = false;

@@ -2,12 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { map, Observable } from 'rxjs';
 import { AsyncPipe,  } from '@angular/common';
 import { OrderService } from '../../services/order.service';
-import { UserService } from '../../../../core/user/user.service';
 import { RateList } from "../rate-list/rate-list.component";
 import { SendRate } from "../send-rate/send-rate.component";
 import { Response } from '../../../../core/responses/genericResponse.response';
 import { Order } from '../../../../core/models/order.model';
 import { Rate } from '../../../../core/models/rate.model';
+import { SessionService } from '../../../../core/session/session.service';
 
 @Component({
   selector: 'product-details-rate',
@@ -48,11 +48,11 @@ export class RateComponent {
 
   constructor(
     private orderService: OrderService,
-    private userService: UserService,
+    private sessionService: SessionService,
   ) {}
 
   ngOnInit() {
-    if (this.userService.currentUser()) {
+    if (this.sessionService.currentUser()) {
       this.orderList$ = this.orderService
         .getOrdersByProductId(this.productId!);
     }

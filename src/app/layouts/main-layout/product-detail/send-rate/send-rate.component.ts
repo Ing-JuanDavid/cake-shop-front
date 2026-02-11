@@ -6,7 +6,7 @@ import { Rate } from '../../../../core/models/rate.model';
 import { AlertService } from '../../services/alert.service';
 import { SpinnerComponent } from "../../../../shared/spinner/spinner.component";
 import { finalize } from 'rxjs';
-import { UserService } from '../../../../core/user/user.service';
+import { SessionService } from '../../../../core/session/session.service';
 
 @Component({
   selector: 'rate-send-rate',
@@ -51,8 +51,8 @@ import { UserService } from '../../../../core/user/user.service';
         <button
           [disabled]="loading"
           (click)="!foundRate ? sendRate() : updateRate()"
-          class="px-4 py-2 bg-yellow-600 text-white text-sm font-medium
-                rounded-md hover:bg-yellow-700 transition hover:cursor-pointer"
+          class="px-4 py-2 bg-yellow-900 text-white text-sm font-medium
+                rounded-md hover:bg-yellow-800 transition hover:cursor-pointer"
         >
           @if (!loading && !foundRate) {
             Enviar calificación
@@ -78,11 +78,11 @@ export class SendRate {
   constructor(
     private rateService: RateService,
     private alertService: AlertService,
-    private userService: UserService,
+    private sessionService: SessionService,
   ) {}
 
   ngOnInit() {
-    if (this.userService.currentUser()) {
+    if (this.sessionService.currentUser()) {
       this.rateService.getRates(this.productId).subscribe({
         next: (res) => {
           this.setRate(res.data);

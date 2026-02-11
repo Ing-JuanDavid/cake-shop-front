@@ -18,4 +18,18 @@ export class OrderService {
     return this.http.get<Response<Order[] | null>>(url);
   }
 
+  public makeOrder(): Observable<Response<Order>>
+  {
+    return this.http.post<Response<Order>>(this.baseUrl,{});
+  }
+
+  public getAllOrders(): Observable<Response<Order[]>> {
+    return this.http.get<Response<Order[]>>(this.baseUrl);
+  }
+
+  public getOrderById(orderId: string): Observable<Response<Order>>
+  {
+    return this.http.get<Response<Order>>(this.baseUrl+`/${orderId}`);
+  }
+
 }

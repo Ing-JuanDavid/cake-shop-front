@@ -1,10 +1,13 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { User, UserService } from '../../../../core/user/user.service';
+
+import { UserMenu } from "./user-menu/userMenu.component";
+import { UserLinks } from "./user-links/user-links.component";
+import { SessionService } from '../../../../core/session/session.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [RouterLink],
+  imports: [RouterLink, UserMenu, UserLinks],
   standalone: true,
   template: `
     <nav class="flex justify-between px-3 py-4">
@@ -17,32 +20,64 @@ import { User, UserService } from '../../../../core/user/user.service';
         <li class="hover:text-yellow-600"><a routerLink="products">products</a></li>
         <li class="hover:text-yellow-600"><a routerLink="contact">contact</a></li>
 
-        @if(userService.currentUser()?.roles?.includes('ROLE_ADMIN')) {
-          <li class="hover:text-yellow-600"><a routerLink="admin/productos">admin</a></li>
+
+        @if (user(); as u) {
+
+          <navbar-user-links [user]="u" [links]="this.links"></navbar-user-links>
+
+          <li
+            class="hover:text-yellow-600 relative"
+            (mouseenter)="toogleMenu()"
+            (mouseleave)="toogleMenu()"
+          >
+            <a routerLink="user/profile">
+              <i class="fa-solid fa-circle-user fa-2xl"></i>
+            </a>
+
+            @if (isMenuOpen()) {
+              <!-- UserMenuComponent -->
+              <div class="absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg borde">
+                <navbar-user-menu [user]="u"></navbar-user-menu>
+              </div>
+            }
+          </li>
         }
 
-        @if(userService.currentUser(); as user) {
-
-          @if(user.roles.includes('ROLE_USER')) {
-            <li class="hover:text-yellow-600"><a routerLink="user/cart"><i class="fa-solid fa-cart-shopping fa-lg"></i></a></li>
-          }
-
-          <li class="hover:text-yellow-600"><a routerLink="user/profile"><i class="fa-solid fa-circle-user fa-2xl"></i></a></li>
+        @if (!sessionService.currentUser()) {
+          <li class="hover:text-yellow-600">
+            <a routerLink="auth"><i class="fa-solid fa-right-to-bracket fa-lg"></i></a>
+          </li>
         }
-
-        @if(! userService.currentUser()) {
-          <li class="hover:text-yellow-600"><a routerLink="auth"><i class="fa-solid fa-right-to-bracket fa-lg"></i></a></li>
-        }
-
-
       </ul>
     </nav>
   `,
-  styles: `
-  `,
+  styles: ``,
 })
 export class NavbarComponent {
 
-  constructor(public userService: UserService) {}
+  links = [
+    {
+      rol: 'ROLE_ADMIN',
+      value: 'admin',
+      icon: null,
+      class: null,
+      path: 'admin/productos'
+    },
+    {
+      rol: 'ROLE_USER',
+      value: null,
+      icon: 'fa-solid fa-cart-shopping fa-lg',
+      class: null,
+      path: 'user/cart'
+    }
+  ]
 
+  isMenuOpen = signal(false);
+
+  sessionService = inject(SessionService);
+  user = this.sessionService.currentUser;
+
+  toogleMenu() {
+    this.isMenuOpen.set(!this.isMenuOpen());
+  }
 }

@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 
 interface JwtPayload {
   sub: string;
+  name: string;
   roles: string[];
   exp: number;
 }
@@ -19,6 +20,7 @@ export class TokenService {
       return null;
     }
   }
+
   public validateToken(token: string): JwtPayload | null {
     const payload = this.decodeToken(token);
 

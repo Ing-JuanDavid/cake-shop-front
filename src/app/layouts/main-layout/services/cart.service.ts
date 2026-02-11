@@ -16,9 +16,8 @@ export class CartService {
 
 
   private cartSubject = new BehaviorSubject<CartProducts | null>(null);
-  cart$ = this.cartSubject.asObservable().pipe(
-    filter((cart): cart is CartProducts => cart !== null)
-  );
+  cart$ = this.cartSubject.asObservable();
+  //.pipe(filter((cart): cart is CartProducts => cart !== null));
 
 
   public getCart() {

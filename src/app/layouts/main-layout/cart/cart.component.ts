@@ -4,6 +4,7 @@ import { CartProduct, CartProducts } from '../../../core/models/cart.model';
 import { CommonModule } from '@angular/common';
 import { ProductCart } from './cart-product-card/cart-product-card.component';
 import { AlertService } from '../services/alert.service';
+import { OrderService } from '../services/order.service';
 
 @Component({
   selector: 'app-cart',
@@ -44,6 +45,7 @@ import { AlertService } from '../services/alert.service';
             </div>
 
             <button
+            (click)="makeOrder()"
               class="px-4 py-3 bg-yellow-800 text-white text-sm font-medium
                     rounded-md hover:bg-yellow-700 transition hover:cursor-pointer w-2/4 self-end md:w-full"
             >
@@ -63,7 +65,10 @@ import { AlertService } from '../services/alert.service';
 })
 export class Cart {
 
-  constructor(private cartService: CartService, private alertService: AlertService) {}
+  constructor(
+    private cartService: CartService,
+    private alertService: AlertService,
+    private orderService: OrderService) {}
 
    cart: CartProducts | null = null;
     totalItems: number = 0;
@@ -72,6 +77,7 @@ export class Cart {
     // Suscribirse al estado compartido del servicio
     this.cartService.cart$.subscribe(cart => {
       this.cart = cart;
+      console.log('hello: ',cart);
       this.totalItems = cart?.products
         .map(p => p.quant)
         .reduce((acc, val) => acc + val, 0) ?? 0;
@@ -111,7 +117,7 @@ export class Cart {
   deleteItem(product: CartProduct) {
     this.cartService.delete(product.productId).subscribe({
       next: res => {
-        this.alertService.success(`${product.productName} eliminado`);
+        this.alertService.success(`${product.name} eliminado`);
         this.cart!.products = this.cart!.products.filter(p => p.productId != product.productId);
         this.updateCart();
       },
@@ -123,5 +129,16 @@ export class Cart {
     setTimeout(() => this.alertService.clear(), 3000);
   }
 
-
+  makeOrder() {
+    this.orderService.makeOrder().subscribe(
+      {
+        next: res=>{
+          this.alertService.success('Compra realizada');
+          this.cartService.setCart(null);
+        },
+        error: err=>this.alertService.error(err.error.error)
+      }
+    )
+    setTimeout(()=>this.alertService.clear(), 3000);
+  }
 }

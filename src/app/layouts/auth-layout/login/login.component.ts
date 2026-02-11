@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '../../../core/auth/auth.service';
 import { Router, RouterLink } from "@angular/router";
 import { AlertComponent } from "../shared/alert/alert.component";
-import { UserService } from '../../../core/user/user.service';
 import { TokenService } from '../../../core/token/token.service';
 import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 
@@ -158,7 +157,6 @@ export class LoginComponent {
   constructor(
     private authService: AuthService,
     private tokenService: TokenService,
-    private userService: UserService,
     private router : Router) {}
 
 
@@ -179,8 +177,8 @@ export class LoginComponent {
       this.loginForm.setErrors({ backend: res.error });
     }
 
-     if(res.ok && res.data?.token) {
-      this.authService.loadUserByToken(res.data.token);
+     if(res.ok && res.data?.user) {
+      this.authService.loadUser(res.data.token, res.data.user);
     }
 
     this.loading = false;

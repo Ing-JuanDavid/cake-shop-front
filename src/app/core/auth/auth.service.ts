@@ -2,10 +2,11 @@ import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { catchError, of, tap } from 'rxjs';
-import { User, UserService } from '../user/user.service';
 import { TokenService } from '../token/token.service';
 import { RegisterModel } from '../../layouts/auth-layout/models/register.model';
 import { FormGroup } from '@angular/forms';
+import { SessionService } from '../session/session.service';
+import { User } from '../models/user.model';
 
 @Injectable({
   providedIn: 'root',
@@ -14,7 +15,7 @@ export class AuthService {
   baseUrl = 'http://localhost:8080/auth';
 
   http = inject(HttpClient);
-  userService = inject(UserService);
+  sessionService = inject(SessionService);
   tokenService = inject(TokenService);
   router = inject(Router);
 
@@ -50,42 +51,69 @@ export class AuthService {
       .pipe(catchError((error) => this.handlerError(error)));
   }
 
-  public loadUserByToken(token: string) {
-    const payload = this.tokenService.validateToken(token);
+  // public loadUserByToken(token: string) {
+  //   const payload = this.tokenService.validateToken(token);
 
-    if (!payload) {
-      this.userService.setCurrentUser(null);
+  //   if (!payload) {
+  //     this.sessionService.setCurrentUser(null);
+  //     return;
+  //   }
+
+  //   localStorage.setItem('token', token);
+
+  //   this.sessionService.setCurrentUser({
+  //     email: payload.sub,
+  //     roles: payload.roles,
+  //   });
+
+  //   this.router.navigate(['/']);
+  //   return;
+  // }
+
+  loadUser(token: string,  user: User)
+  {
+
+
+    if(! user || ! this.tokenService.validateToken(token)) {
+      this.sessionService.currentUser.set(null);
       return;
     }
 
     localStorage.setItem('token', token);
-
-    this.userService.setCurrentUser({
-      email: payload.sub,
-      roles: payload.roles,
-    });
+    this.sessionService.currentUser.set(user);
 
     this.router.navigate(['/']);
-    return;
   }
 
   public keepSession() {
     const token = localStorage.getItem('token');
 
     if (!token) {
-      this.userService.setCurrentUser(null);
+      this.sessionService.currentUser.set(null);
       return;
     }
 
     const payload = this.tokenService.validateToken(token);
 
     if (!payload) {
-      this.userService.setCurrentUser(null);
+      this.sessionService.currentUser.set(null);
       localStorage.removeItem('token');
       return;
     }
 
-    this.userService.setCurrentUser({ email: payload.sub, roles: payload.roles });
+
+    const user : User = {
+      nip: 0,
+      email: payload.sub,
+      name: payload.name,
+      birth: null,
+      roles: payload.roles,
+      sex: '',
+      address: '',
+      telf: ''
+    };
+
+    this.sessionService.currentUser.set(user);
   }
 
   public aplyBackendErrors(errors: any, form: FormGroup) {
