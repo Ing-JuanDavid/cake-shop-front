@@ -5,10 +5,11 @@ import { CommonModule } from '@angular/common';
 import { ProductCart } from './cart-product-card/cart-product-card.component';
 import { AlertService } from '../services/alert.service';
 import { OrderService } from '../services/order.service';
+import { NotFoundView } from '../info-views/not-found/not-found.component';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, ProductCart],
+  imports: [CommonModule, ProductCart, NotFoundView],
   template: `
     @if (cart && cart.products.length>0) {
       <div class="min-h-screen m-auto px-4 sm:px-6 md:px-10 lg:px-20 max-w-7xl mx-auto">
@@ -46,7 +47,7 @@ import { OrderService } from '../services/order.service';
 
             <button
             (click)="makeOrder()"
-              class="px-4 py-3 bg-yellow-800 text-white text-sm font-medium
+              class="px-4 py-3 bg-yellow-600 text-white text-sm font-medium
                     rounded-md hover:bg-yellow-700 transition hover:cursor-pointer w-2/4 self-end md:w-full"
             >
               Continuar compra
@@ -56,9 +57,7 @@ import { OrderService } from '../services/order.service';
         </div>
       </div>
     } @else {
-      <div class="px-10 md:px-20 min-h-screen flex items-center justify-center">
-        <p class="text-yellow-900/70 text-lg">Tu carrito está vacío</p>
-      </div>
+      <info-view-not-found [msj]="'Tú carrito está vacío'"></info-view-not-found>
     }
   `,
   styles: ``,
@@ -77,7 +76,6 @@ export class Cart {
     // Suscribirse al estado compartido del servicio
     this.cartService.cart$.subscribe(cart => {
       this.cart = cart;
-      console.log('hello: ',cart);
       this.totalItems = cart?.products
         .map(p => p.quant)
         .reduce((acc, val) => acc + val, 0) ?? 0;
@@ -126,7 +124,7 @@ export class Cart {
       }
     });
 
-    setTimeout(() => this.alertService.clear(), 3000);
+    this.alertService.clear(3000);
   }
 
   makeOrder() {
@@ -139,6 +137,6 @@ export class Cart {
         error: err=>this.alertService.error(err.error.error)
       }
     )
-    setTimeout(()=>this.alertService.clear(), 3000);
+    this.alertService.clear(3000);
   }
 }

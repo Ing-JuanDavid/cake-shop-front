@@ -59,7 +59,7 @@ export class ProductCart {
   increment(){
     if(this.cartProduct.quant >= this.cartProduct.stock) {
       this.alertService.error('Cantidad fuera de stock');
-      setTimeout(()=>this.alertService.clear(),  3000);
+      this.alertService.clear(3000);
       return;
     }
     this.cartProduct.quant++;

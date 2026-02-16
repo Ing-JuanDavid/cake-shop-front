@@ -17,7 +17,7 @@ import { Router } from '@angular/router';
       </div>
 
       <!-- Order Info -->
-      <div class="flex flex-col gap-1 text-left w-full text-yellow-900">
+      <div class="flex flex-col gap-1 text-left w-full text-yellow-900/80">
         <p class="font-medium">Estado: <span class="font-bold">{{ order?.status }}</span></p>
         <p class="text-sm">Productos: <span class="text-zinc-700">{{ order?.products?.length }}</span></p>
         <p class="font-semibold">Total: {{ '$' + (order?.total | number: '1.0-0') }}</p>
@@ -27,7 +27,7 @@ import { Router } from '@angular/router';
       <div class="flex justify-end w-full">
         <button
         (click)="goToOrden(order?.orderId)"
-        class="bg-yellow-900 text-white px-3 py-1.5 rounded-sm text-sm hover:bg-yellow-700 hover:cursor-pointer transition">
+        class="bg-yellow-600 text-white px-3 py-1.5 rounded-sm text-sm hover:bg-yellow-700 hover:cursor-pointer transition">
           Ver orden
         </button>
       </div>

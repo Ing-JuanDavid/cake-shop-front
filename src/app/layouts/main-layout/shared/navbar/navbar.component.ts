@@ -61,7 +61,7 @@ export class NavbarComponent {
       value: 'admin',
       icon: null,
       class: null,
-      path: 'admin/productos'
+      path: 'admin/products'
     },
     {
       rol: 'ROLE_USER',

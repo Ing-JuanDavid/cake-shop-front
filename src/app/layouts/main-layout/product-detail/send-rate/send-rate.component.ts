@@ -119,11 +119,11 @@ export class SendRate {
           this.alertService.success('Calificación realizada exitosamente');
           this.foundRate = res.data;
           this.updatedData.emit();
-          setTimeout(() => this.alertService.clear(), 3000);
+          this.alertService.clear(3000);
         },
         error: (err) => {
           this.alertService.error('Error al enviar calificación');
-          setTimeout(() => this.alertService.clear(), 3000);
+          this.alertService.clear(3000);
         },
       });
   }
@@ -148,11 +148,11 @@ export class SendRate {
         next: (res) => {
           this.alertService.success('Calificación actualizada exitosamente');
           this.updatedData.emit();
-          setTimeout(() => this.alertService.clear(), 3000);
+          this.alertService.clear(3000);
         },
         error: (err) => {
           this.alertService.error('Error al actualizar calificación');
-          setTimeout(() => this.alertService.clear(), 3000);
+          this.alertService.clear(3000);
         },
       });
   }
@@ -175,14 +175,12 @@ export class SendRate {
             this.score = 0;
             this.comment = '';
             this.updatedData.emit();
-            setTimeout(() => this.alertService.clear(), 3000);
+            this.alertService.clear(3000);
           },
 
           error: (err) => {
             this.alertService.error('Error al eliminar calificación');
-            setTimeout(() => {
-              (this.alertService.clear(), 3000);
-            });
+            this.alertService.clear(3000);
           },
         },
       );

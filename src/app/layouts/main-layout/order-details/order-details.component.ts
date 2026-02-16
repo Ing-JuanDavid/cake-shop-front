@@ -46,8 +46,8 @@ import { OrderProductList } from './order-product-list/order-product-list.compon
         <div class="flex justify-end">
           <button
             (click)="goToOrders()"
-            class="mt-4 bg-yellow-900 text-white px-6 py-2 rounded-md hover:cursor-pointer
-                     hover:bg-yellow-800 transition"
+            class="mt-4 bg-yellow-600 text-white px-6 py-2 rounded-md hover:cursor-pointer
+                     hover:bg-yellow-700 transition"
           >
             Volver
           </button>

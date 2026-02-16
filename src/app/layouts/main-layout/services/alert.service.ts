@@ -23,7 +23,14 @@ export class AlertService {
     this.alertSubject.next({type:'error', message: message})
   }
 
-  clear() {
-    this.alertSubject.next(null);
+   clearWithOutDelay() {
+    this.alertSubject.next(null)
   }
+
+  clear(clearTime: number) {
+    setTimeout(()=>{this.alertSubject.next(null);}, clearTime)
+
+  }
+
+
 }

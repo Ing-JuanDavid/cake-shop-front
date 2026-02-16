@@ -8,3 +8,11 @@ export interface User {
   address: string;
   telf: string;
 }
+
+export interface UpdatedUser {
+  name: string;
+  birth: Date;
+  sex: string;
+  address: string;
+  telf: string;
+}

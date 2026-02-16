@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
-import { Product } from '../../../core/models/product.model';
+import { Product, ProductDto } from '../../../core/models/product.model';
 import { Response } from '../../../core/responses/genericResponse.response';
 
 @Injectable({
@@ -43,6 +43,16 @@ export class ProductService {
   {
     const url = `${this.baseUrl}/${id}`
     return this.http.get<Response<Product>>(url);
+  }
+
+  public postProduct(body: FormData): Observable<Response<Product>>
+  {
+    return this.http.post<Response<Product>>(this.baseUrl, body);
+  }
+
+  public deleteProduct(productId: number): Observable<Response<Product>>
+  {
+    return this.http.delete<Response<Product>>(`${this.baseUrl}/${productId}`);
   }
 
 }

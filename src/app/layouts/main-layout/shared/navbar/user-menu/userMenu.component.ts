@@ -11,7 +11,7 @@ import { User } from '../../../../../core/models/user.model';
     <ul class="flex flex-col text-yellow-900 font-semibold px-1">
       <li class="px-4 py-2 transition border-b border-zinc-400">
         <p>{{ user.name }}</p>
-        <a [routerLink]="profileRoute" class="text-sm font-thin hover:text-yellow-600">Mi perfil</a>
+        <a [routerLink]="'user/profile'" class="text-sm font-thin hover:text-yellow-600">Mi perfil</a>
       </li>
 
       <navbar-user-links [user]="user" [links]="links"></navbar-user-links>
@@ -43,7 +43,5 @@ export class UserMenu {
 
   constructor(protected sessionService: SessionService) {}
 
-  get profileRoute() {
-    return this.user.roles.includes('ROLE_USER') ? 'user/profile' : 'admin/profile';
-  }
+
 }

@@ -9,13 +9,7 @@ export const routes: Routes = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./layouts/admin-layout/admin-layout.component').then(m => m.AdminLayoutComponent),
-    children: [
-      {
-        path: 'productos',
-        loadComponent: () => import('./layouts/admin-layout/products/product.component').then(m => m.ProductComponent)
-      }
-    ]
+    loadChildren: () => import('./layouts/admin-layout/admin.routes').then(m => m.ADMIN_ROUTES),
   },
   {
     path: 'auth',

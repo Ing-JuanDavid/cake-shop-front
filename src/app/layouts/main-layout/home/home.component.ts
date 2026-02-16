@@ -7,11 +7,12 @@ import { ProductCardComponent } from "../home/product-card/product-card.componen
 import { Product } from '../../../core/models/product.model';
 import { Response } from '../../../core/responses/genericResponse.response';
 import { SessionService } from '../../../core/session/session.service';
+import { NotFoundView } from '../info-views/not-found/not-found.component';
 
 
 @Component({
   selector: 'home-view',
-  imports: [AsyncPipe, ProductCardComponent],
+  imports: [AsyncPipe, ProductCardComponent, NotFoundView],
   template: `
 
   <div class="pt-5 px-20">
@@ -22,7 +23,7 @@ import { SessionService } from '../../../core/session/session.service';
          @for(product of products.data; track product.productId) {
           <home-product-card [product]="product" (click)="goToProduct(product.productId)"></home-product-card>
         }@empty {
-          <p>Aun no hay nada que mostrar</p>
+          <info-view-not-found [msj]="'Aún no hay nada que mostrar'"></info-view-not-found>
         }
       </div>
 

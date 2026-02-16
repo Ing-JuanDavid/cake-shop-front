@@ -3,6 +3,7 @@ import { SessionService } from '../../../core/session/session.service';
 import { UserService } from '../services/user.service';
 import { User } from '../../../core/models/user.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { AlertService } from '../services/alert.service';
 
 @Component({
   selector: 'user-profile-view',
@@ -78,13 +79,15 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
         }
       </div>
 
-      <button
+      <div class="flex justify-end">
+        <button
         type="submit"
         [disabled]="form.invalid"
-        class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700"
+        class="bg-yellow-600 text-white px-4 py-2 rounded hover:bg-yellow-700 hover:cursor-pointer"
       >
         Actualizar
       </button>
+      </div>
 
     </form>
   }
@@ -98,10 +101,11 @@ export class UserProfile {
 
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
+  private alertService = inject(AlertService);
 
   loading = true;
 
-  form = this.fb.group({
+  form = this.fb.nonNullable.group({
     nip: [{ value: 0, disabled: true }],
     email: [{ value: '', disabled: true }],
 
@@ -111,9 +115,9 @@ export class UserProfile {
       Validators.maxLength(50)
     ]],
 
-    birth: [null as Date | null, Validators.required],
+    birth: [new Date(), Validators.required],
 
-    sex: ['', Validators.required],
+    sex: [''],
 
     address: ['', [
       Validators.required,
@@ -132,12 +136,14 @@ export class UserProfile {
       next: (res) => {
         const user = res.data;
 
+        console.log(user);
+
         this.form.patchValue({
           nip: user.nip,
           email: user.email,
           name: user.name,
-          birth: user.birth,
-          sex: user.sex,
+          birth: user.birth?? new Date(),
+          sex: user.sex ?? '',
           address: user.address,
           telf: user.telf
         });
@@ -154,10 +160,19 @@ export class UserProfile {
       return;
     }
 
-    const updatedUser = this.form.getRawValue();
+    const {nip, email, ...updatedUser} = this.form.getRawValue();
 
     console.log(updatedUser);
-    // aquí iría el update al backend
+    this.userService.updateUserInfo(updatedUser).subscribe(
+      {next: res=>{{
+        this.alertService.success('Usuario actualizado');
+        setTimeout(()=>{
+          this.alertService.clearWithOutDelay();
+          this.alertService.success('Inicie sesion nuevamente para ver los cambios');
+          this.alertService.clear(3000);
+        }, 1000)
+      }}}
+    )
   }
 
   get f() {

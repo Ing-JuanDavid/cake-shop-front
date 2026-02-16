@@ -8,10 +8,11 @@ import { FormsModule } from "@angular/forms";
 import { CartProduct, CartProducts } from '../../../../core/models/cart.model';
 import { Router } from '@angular/router';
 import { SessionService } from '../../../../core/session/session.service';
+import { NotFoundView } from "../../info-views/not-found/not-found.component";
 
 @Component({
   selector: 'product-details',
-  imports: [StarsComponent, CommonModule, FormsModule],
+  imports: [StarsComponent, CommonModule, FormsModule, NotFoundView],
   template: `
      @if(product) {
 
@@ -60,8 +61,8 @@ import { SessionService } from '../../../../core/session/session.service';
             <p class="text-sm leading-relaxed">stock disponible: {{product.quant}}</p>
             <button
             (click)="handleCartAction()"
-              class="mt-4 md:w-100 bg-yellow-900 text-white px-6 py-2 rounded-md hover:cursor-pointer
-                     hover:bg-yellow-800 transition">
+              class="mt-4 md:w-100 bg-yellow-600 text-white px-6 py-2 rounded-md hover:cursor-pointer
+                     hover:bg-yellow-700 transition">
               {{inCart ? 'Ir al carrito' : 'Agregar al carrito'}}
             </button>
 
@@ -82,7 +83,7 @@ import { SessionService } from '../../../../core/session/session.service';
       }
       @else {
         <!-- Not found component -->
-        <p>Producto no encontrado!</p>
+        <info-view-not-found [msj]="'Producto no encontrado'"></info-view-not-found>
       }
   `,
   styles: ``,
@@ -138,7 +139,7 @@ export class ProductDetails {
 
     if(!this.sessionService.currentUser()) {
       this.alertService.error('Debe iniciar sesion primero');
-      setTimeout(()=>{this.alertService.clear()}, 3000);
+      this.alertService.clear(3000);
       return;
     }
 
@@ -154,7 +155,7 @@ export class ProductDetails {
     );
 
 
-    setTimeout(()=>this.alertService.clear(), 3000);
+    this.alertService.clear(3000);
 
   }
 

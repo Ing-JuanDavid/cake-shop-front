@@ -9,7 +9,7 @@ import { AsyncPipe, NgClass } from '@angular/common';
   imports: [AsyncPipe, NgClass],
   template: `
   @if(alert$ | async; as alert) {
-    <div class="fixed top-20 right-5 px-4 py-3 rounded shadow-lg text-white border-l-4"
+    <div class="fixed top-20 right-5 px-4 py-3 rounded shadow-lg text-white border-l-4 alert-slide"
            [ngClass]="{
              'bg-green-600 border-green-800': alert.type === 'success',
              'bg-red-600 border-red-900': alert.type === 'error',
@@ -19,7 +19,23 @@ import { AsyncPipe, NgClass } from '@angular/common';
       </div>
   }
   `,
-  styles: ``,
+  styles: `
+    .alert-slide {
+    animation: slideIn 0.3s ease-out;
+  }
+
+  @keyframes slideIn {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  `,
 })
 export class Alert {
   alert$! : Observable<any>;
