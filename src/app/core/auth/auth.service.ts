@@ -110,7 +110,8 @@ export class AuthService {
       roles: payload.roles,
       sex: '',
       address: '',
-      telf: ''
+      telf: '',
+      accountNonLocked: true
     };
 
     this.sessionService.currentUser.set(user);

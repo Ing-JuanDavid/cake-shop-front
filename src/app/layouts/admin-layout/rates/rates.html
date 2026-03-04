@@ -1,0 +1,125 @@
+<div class="p-6 space-y-8">
+
+  <!-- Título -->
+      <div>
+        <h1 class="text-3xl font-bold">Gestión de calificaciones</h1>
+        <p class="text-gray-500 text-sm">
+          Ver y eliminar calificaciones
+        </p>
+      </div>
+
+      <!-- ===================== -->
+      <!-- FORMULARIO -->
+      <!-- ===================== -->
+      <section class="bg-white shadow-xl rounded-2xl p-6 space-y-4" id="form-section">
+
+        <h2 class="text-xl font-semibold">
+          Buscar calificaciones
+        </h2>
+
+        <form [formGroup]="rateForm" class="grid md:grid-cols-2 gap-4">
+
+          <!-- Nombre -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-1">Id de producto</label>
+            <input type="number" formControlName="productId"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none">
+              @if(f.productId.touched && f.productId.invalid) {
+                <p class="text-sm text-red-500">Id invalido</p>
+              }
+          </div>
+
+          <div class="flex gap-x-2">
+            <select name="" id="" class=" border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none" formControlName="categoryId">
+                <option [value]="0">Categoria</option>
+                @for(category of categories; track category.categoryId) {
+                <option [value]="category.categoryId">{{category.name}}</option>
+              }
+            </select>
+
+            @if(products) {
+              <select name="" id="" class=" border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none" formControlName="productId">
+                <option [value]="0">Producto</option>
+                @for(product of products; track product.productId) {
+                <option [value]="product.productId">{{product.name}}</option>
+              }
+            </select>
+            }
+
+          </div>
+
+
+           <!-- Botones -->
+
+          <div class="md:col-span-2 flex gap-3 pt-2">
+            <button type="submit"
+            (click)="loadRates()"
+              class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2 rounded-lg transition hover:cursor-pointer">
+              Buscar
+            </button>
+
+            <button type="button"
+              class="bg-gray-300 hover:bg-gray-400 px-5 py-2 rounded-lg transition hover:cursor-pointer">
+              Limpiar
+            </button>
+          </div>
+
+        </form>
+
+        </section>
+
+        <section class="bg-white shadow-xl rounded-2xl p-6">
+
+        <h2 class="text-xl font-semibold mb-4">Lista de categorias</h2>
+
+        <div class="overflow-x-auto">
+
+          <table class="w-full text-sm">
+
+            <thead class="bg-yellow-600 text-white">
+              <tr>
+                <th class="p-3 text-left">Id calificacion</th>
+                <th class="p-3 text-left">Usuario</th>
+                <th class="p-3 text-left">Mensaje</th>
+                <th class="p-3 text-left">Puntuacion</th>
+                <th class="p-3 text-left">Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody class="">
+              @for(rate of rates; track rate.rateId) {
+                <tr class="border-b hover:bg-yellow-50 transition">
+                  <td class="p-3">{{rate.rateId}}</td>
+                  <td class="p-3 font-medium">{{rate.userName}}</td>
+                  <td class="p-3">{{rate.comment}}</td>
+                  <td class="p-3">{{rate.score}}</td>
+                   <!-- Acciones -->
+                  <td class="p-3 space-x-2">
+                    <button
+                      class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
+                      Editar
+                    </button>
+
+
+
+                    <button
+                    (click)="deleteRate(rate.rateId)"
+                      class="bg-red-500 hover:bg-red-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
+                      Eliminar
+                    </button>
+
+                  </td>
+                </tr>
+
+
+              }
+            </tbody>
+
+          </table>
+
+          </div>
+
+        </section>
+
+</div>
+

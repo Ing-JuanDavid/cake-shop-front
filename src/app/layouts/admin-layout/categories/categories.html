@@ -1,0 +1,104 @@
+<div class="p-6 space-y-8">
+
+  <!-- Título -->
+      <div>
+        <h1 class="text-3xl font-bold">Gestión de categorias</h1>
+        <p class="text-gray-500 text-sm">
+          Crear, actualizar y eliminar categorias
+        </p>
+      </div>
+
+      <!-- ===================== -->
+      <!-- FORMULARIO -->
+      <!-- ===================== -->
+      <section class="bg-white shadow-xl rounded-2xl p-6 space-y-4" id="form-section">
+
+        <h2 class="text-xl font-semibold">
+          {{ editing ? 'Actualizar categoria' : 'Crear categoria' }}
+        </h2>
+
+        <form [formGroup]="categoryForm" class="grid md:grid-cols-2 gap-4">
+
+          <!-- Nombre -->
+          <div class="md:col-span-2">
+            <label class="block text-sm font-medium mb-1">Nombre Categoria</label>
+            <input type="text" formControlName="name"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none">
+              @if(f.name.touched && f.name.invalid) {
+                <p class="text-sm text-red-500">Nombre invalido</p>
+              }
+          </div>
+
+
+           <!-- Botones -->
+
+          <div class="md:col-span-2 flex gap-3 pt-2">
+            <button type="submit"
+            (click)="editing ? edit() : create()"
+              class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2 rounded-lg transition hover:cursor-pointer">
+              {{ editing ? 'Actualizar' : 'Crear' }}
+            </button>
+
+            <button type="button"
+              class="bg-gray-300 hover:bg-gray-400 px-5 py-2 rounded-lg transition hover:cursor-pointer" (click)="clearForm()">
+              Cancelar
+            </button>
+          </div>
+
+        </form>
+
+        </section>
+
+        <section class="bg-white shadow-xl rounded-2xl p-6">
+
+        <h2 class="text-xl font-semibold mb-4">Lista de categorias</h2>
+
+        <div class="overflow-x-auto">
+
+          <table class="w-full text-sm">
+
+            <thead class="bg-yellow-600 text-white">
+              <tr>
+                <th class="p-3 text-left">#</th>
+                <th class="p-3 text-left">Nombre categoria</th>
+                <th class="p-3 text-left"># productos por categoria</th>
+                <th class="p-3 text-left">Acciones</th>
+              </tr>
+            </thead>
+
+            <tbody class="">
+              @for(category of categories; track category.categoryId) {
+                <tr class="border-b hover:bg-yellow-50 transition">
+                  <td class="p-3">{{category.categoryId}}</td>
+                  <td class="p-3 font-medium">{{category.name}}</td>
+                  <td class="p-3">{{category.productsNumber}}</td>
+                   <!-- Acciones -->
+                  <td class="p-3 space-x-2">
+                    <button
+                     (click)="fillFormToEdit(category)"
+                      class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
+                      Editar
+                    </button>
+
+
+
+                    <button
+                      (click)="delete(category.categoryId)"
+                      class="bg-red-500 hover:bg-red-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
+                      Eliminar
+                    </button>
+
+                  </td>
+                </tr>
+
+
+              }
+            </tbody>
+
+          </table>
+
+          </div>
+
+        </section>
+
+</div>

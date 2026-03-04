@@ -50,6 +50,11 @@ export class ProductService {
     return this.http.post<Response<Product>>(this.baseUrl, body);
   }
 
+  public putProduct(body: FormData, productId: string): Observable<Response<Product>>
+  {
+    return this.http.put<Response<Product>>(`${this.baseUrl}/${productId}`, body);
+  }
+
   public deleteProduct(productId: number): Observable<Response<Product>>
   {
     return this.http.delete<Response<Product>>(`${this.baseUrl}/${productId}`);

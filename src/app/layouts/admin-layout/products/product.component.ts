@@ -5,9 +5,10 @@ import { Category } from '../../../core/models/category.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ProductService } from '../../main-layout/services/product.service';
 import { AlertService } from '../../main-layout/services/alert.service';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-product.component',
+  selector: 'admin-product-view',
   standalone: true,
   imports: [ReactiveFormsModule],
   templateUrl: 'product.html',
@@ -22,6 +23,7 @@ export class ProductComponent {
   categoryService = inject(CategoryService);
   productService = inject(ProductService);
   alertService = inject(AlertService);
+  router = inject(Router);
 
 
   productForm = this.fb.nonNullable.group({
@@ -104,12 +106,19 @@ export class ProductComponent {
 
  onFileChange(event: Event) {
   const input = event.target as HTMLInputElement;
-  if (!input.files?.length) return;
+  const imgControl = this.productForm.get('img');
+
+  imgControl?.markAsTouched();
+
+  if (!input.files?.length) {
+    imgControl?.setErrors({ required: true });
+    return;
+  }
 
   const file = input.files[0];
   const maxSize = 2 * 1024 * 1024;
 
-  const imgControl = this.productForm.get('img');
+
 
   if (!file.type.startsWith('image/')) {
     imgControl?.setErrors({ invalidType: true });
@@ -123,7 +132,7 @@ export class ProductComponent {
 
   imgControl?.setErrors(null);
   imgControl?.setValue(file);
-  imgControl?.markAsTouched();
+
 }
 
 
@@ -131,38 +140,60 @@ get f() {
   return this.productForm.controls;
 }
 
-submit() {
+create()
+{
 
-  const { productId, ...product } = this.productForm.getRawValue();
+  if (this.productForm.invalid) {
+    this.productForm.markAllAsTouched();
+    return;
+  }
 
-  const formData = new FormData();
+  const formData = this.getFormData();
 
-  formData.append('name', product.name);
-  formData.append('description', product.description);
-  formData.append('price', product.price.toString());
-  formData.append('quant', product.quant.toString());
-  formData.append('categoryId', product.categoryId.toString());
-
-  if (!product.img) {
-  this.alertService.error('Debe seleccionar una imagen');
-  return;
-}
-
-formData.append('img', product.img);
+  if(!formData) {
+    this.alertService.error('Ocurrio un error');
+    return;
+  };
 
   this.productService.postProduct(formData).subscribe({
     next: () => {
       this.alertService.success('Producto creado');
+      this.loadProducts();
        this.alertService.clear(2000);
-       this.loadProducts();
     },
     error: err => {
       this.alertService.error(err.error.error);
       this.alertService.clear(2000);
     }
   });
+}
 
+edit()
+{
 
+  const formData = this.getFormData();
+
+  if(this.productForm.invalid) {
+    this.productForm.markAllAsTouched();
+    return;
+  };
+
+  if(!formData) {
+    this.alertService.error('Ocurrio un error');
+    return;
+  };
+
+  this.productService.putProduct(formData, formData.get('productId') as string).subscribe({
+    next: () => {
+      this.alertService.success('Producto actualizado');
+      this.loadProducts();
+       this.alertService.clear(2000);
+    },
+    error: err => {
+      this.alertService.error(err.error.error);
+      this.alertService.clear(2000);
+    }
+  });
 }
 
 delete(productId: number)
@@ -170,8 +201,8 @@ delete(productId: number)
   this.productService.deleteProduct(productId).subscribe(
     {next: ()=> {
       this.alertService.success('Producto eliminado');
-      this.alertService.clear(2000);
       this.loadProducts();
+      this.alertService.clear(2000);
     },
     error: err => {
       this.alertService.error(err.error.error);
@@ -180,6 +211,57 @@ delete(productId: number)
   }
   );
 
+}
+
+clearForm()
+{
+  this.productForm.reset();
+  this.editing = false;
+
+}
+
+fillFormToEdit(product: Product)
+{
+  this.editing = true;
+  this.productForm.patchValue({...product, categoryId: this.getCategory(product.categoryName)?.categoryId});
+
+  const element = document.getElementById('form-section');
+  element?.scrollIntoView({behavior: 'smooth'})
+
+}
+
+getCategory(categoryName: string)
+{
+  return this.categories.find(c=>c.name === categoryName);
+}
+
+getFormData(): FormData | null
+{
+
+  const {productId, ...product} = this.productForm.getRawValue();
+
+  const formData = new FormData();
+
+  if(this.editing) formData.append('productId', productId.toString());
+
+  formData.append('name', product.name);
+  formData.append('description', product.description);
+  formData.append('price', product.price.toString());
+  formData.append('quant', product.quant.toString());
+  formData.append('categoryId', product.categoryId.toString());
+
+
+  if (!product.img) {
+    return null;
+  }
+
+  formData.append('img', product.img);
+
+  return formData;
+}
+
+goToProduct(productId:number){
+  this.router.navigate([`product/${productId}`]);
 }
 
 
