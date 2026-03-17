@@ -1,5 +1,7 @@
 import { Routes } from "@angular/router";
 import { MainLayout } from "./main-layout.component";
+import { userGuard } from "../../core/guards/user.guard";
+
 
 export const MAIN_ROUTES: Routes = [
   {
@@ -16,15 +18,18 @@ export const MAIN_ROUTES: Routes = [
       },
       {
         path: 'user/cart',
-        loadComponent: ()=>import('./cart/cart.component').then(m=>m.Cart)
+        loadComponent: ()=>import('./cart/cart.component').then(m=>m.Cart),
+        canActivate: [userGuard]
       },
       {
         path: 'user/orders',
-        loadComponent: ()=>import('./orders/orders.component').then(m=> m.Orders)
+        loadComponent: ()=>import('./orders/orders.component').then(m=> m.Orders),
+        canActivate: [userGuard]
       },
       {
         path: 'user/orders/:id',
-        loadComponent: ()=>import('./order-details/order-details.component').then(m=>m.OrderDetails)
+        loadComponent: ()=>import('./order-details/order-details.component').then(m=>m.OrderDetails),
+        canActivate: [userGuard]
       },
       {
         path: 'user/profile',

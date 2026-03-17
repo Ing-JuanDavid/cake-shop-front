@@ -5,7 +5,7 @@ import { CommonModule } from '@angular/common';
 import { ProductCart } from './cart-product-card/cart-product-card.component';
 import { AlertService } from '../services/alert.service';
 import { OrderService } from '../services/order.service';
-import { NotFoundView } from '../info-views/not-found/not-found.component';
+import { NotFoundView } from '../../../shared/info-views/not-found/not-found.component';
 
 @Component({
   selector: 'app-cart',

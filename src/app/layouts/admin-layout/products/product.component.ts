@@ -6,18 +6,33 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ProductService } from '../../main-layout/services/product.service';
 import { AlertService } from '../../main-layout/services/alert.service';
 import { Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
+('../../../core/dtos/responses/paginatedProduct.response');
+import { ProductFilters } from '../../../core/dtos/requests/productFilters.request';
+import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
 
 @Component({
   selector: 'admin-product-view',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: 'product.html',
   styles: ``,
 })
 export class ProductComponent {
   editing = false;
   categories: Category[] | [] = [];
-  products: Product[] | null = null;
+  currentPage = 1;
+  sizePage = 5;
+  filters: ProductFilters = {};
+
+  page: PaginatedResponse<Product> = {
+    currentPage: 1,
+    pageLength: 0,
+    nextPage: 1,
+    data: [],
+    totalPages: 1,
+    totalElements: 0,
+  };
 
   fb = inject(FormBuilder);
   categoryService = inject(CategoryService);
@@ -25,244 +40,217 @@ export class ProductComponent {
   alertService = inject(AlertService);
   router = inject(Router);
 
+  // Drawner
+  drawerOpen = false;
+  drawerAnimated = false; // ← nuevo flag
 
   productForm = this.fb.nonNullable.group({
+    productId: [0],
 
-        productId: [0],
+    name: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100)]],
 
-        name: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(3),
-            Validators.maxLength(100)
-          ]
-        ],
+    price: [0.01, [Validators.required, Validators.min(0.01)]],
 
-        price: [
-          0.01,
-          [
-            Validators.required,
-            Validators.min(0.01)
-          ]
-        ],
+    quant: [1, [Validators.required, Validators.min(0)]],
 
-        quant: [
-          1,
-          [
-            Validators.required,
-            Validators.min(0)
-          ]
-        ],
+    categoryId: [0, [Validators.min(1), Validators.required]],
 
-        categoryId: [
-          0,
-          [
-            Validators.min(1),
-            Validators.required
-          ]
-        ],
+    description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
 
-        description: [
-          '',
-          [
-            Validators.required,
-            Validators.minLength(10),
-            Validators.maxLength(500)
-          ]
-        ],
-
-        img: this.fb.control<null|File>(null,
-          [
-            Validators.required
-          ]
-        )
-
+    img: this.fb.control<null | File>(null),
   });
 
-
-  ngOnInit()
-  {
+  ngOnInit() {
     this.loadData();
   }
 
-  loadData()
-  {
-
-    this.categoryService.getCategories().subscribe(
-      {next: res=>this.categories=res.data}
-    )
+  loadData() {
+    this.categoryService.getAllCategories().subscribe({ next: (res) => (this.categories = res.data) });
 
     this.loadProducts();
-
   }
 
-  loadProducts()
-  {
-    this.productService.getProducts().subscribe(
-      {next: res=>this.products = res.data}
-    )
+  loadProducts() {
+    this.productService.getProducts(this.currentPage, this.sizePage, this.filters).subscribe({
+      next: (res) => {
+        this.page = res.data;
+      },
+    });
   }
 
- onFileChange(event: Event) {
-  const input = event.target as HTMLInputElement;
-  const imgControl = this.productForm.get('img');
+  onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const imgControl = this.productForm.get('img');
 
-  imgControl?.markAsTouched();
-
-  if (!input.files?.length) {
-    imgControl?.setErrors({ required: true });
-    return;
-  }
-
-  const file = input.files[0];
-  const maxSize = 2 * 1024 * 1024;
-
-
-
-  if (!file.type.startsWith('image/')) {
-    imgControl?.setErrors({ invalidType: true });
-    return;
-  }
-
-  if (file.size > maxSize) {
-    imgControl?.setErrors({ maxSize: true });
-    return;
-  }
-
-  imgControl?.setErrors(null);
-  imgControl?.setValue(file);
-
-}
-
-
-get f() {
-  return this.productForm.controls;
-}
-
-create()
-{
-
-  if (this.productForm.invalid) {
-    this.productForm.markAllAsTouched();
-    return;
-  }
-
-  const formData = this.getFormData();
-
-  if(!formData) {
-    this.alertService.error('Ocurrio un error');
-    return;
-  };
-
-  this.productService.postProduct(formData).subscribe({
-    next: () => {
-      this.alertService.success('Producto creado');
-      this.loadProducts();
-       this.alertService.clear(2000);
-    },
-    error: err => {
-      this.alertService.error(err.error.error);
-      this.alertService.clear(2000);
+    if (this.editing && !input.files?.length) {
+      imgControl?.setErrors(null);
+      return;
     }
-  });
-}
 
-edit()
-{
+    imgControl?.addValidators(Validators.required);
+    imgControl?.markAsTouched();
 
-  const formData = this.getFormData();
-
-  if(this.productForm.invalid) {
-    this.productForm.markAllAsTouched();
-    return;
-  };
-
-  if(!formData) {
-    this.alertService.error('Ocurrio un error');
-    return;
-  };
-
-  this.productService.putProduct(formData, formData.get('productId') as string).subscribe({
-    next: () => {
-      this.alertService.success('Producto actualizado');
-      this.loadProducts();
-       this.alertService.clear(2000);
-    },
-    error: err => {
-      this.alertService.error(err.error.error);
-      this.alertService.clear(2000);
+    if (!input.files?.length) {
+      imgControl?.setErrors({ required: true });
+      return;
     }
-  });
-}
 
-delete(productId: number)
-{
-  this.productService.deleteProduct(productId).subscribe(
-    {next: ()=> {
-      this.alertService.success('Producto eliminado');
-      this.loadProducts();
-      this.alertService.clear(2000);
-    },
-    error: err => {
-      this.alertService.error(err.error.error);
-      this.alertService.clear(2000);
+    const file = input.files[0];
+    const maxSize = 2 * 1024 * 1024;
+
+    if (!file.type.startsWith('image/')) {
+      imgControl?.setErrors({ invalidType: true });
+      return;
     }
-  }
-  );
 
-}
+    if (file.size > maxSize) {
+      imgControl?.setErrors({ maxSize: true });
+      return;
+    }
 
-clearForm()
-{
-  this.productForm.reset();
-  this.editing = false;
-
-}
-
-fillFormToEdit(product: Product)
-{
-  this.editing = true;
-  this.productForm.patchValue({...product, categoryId: this.getCategory(product.categoryName)?.categoryId});
-
-  const element = document.getElementById('form-section');
-  element?.scrollIntoView({behavior: 'smooth'})
-
-}
-
-getCategory(categoryName: string)
-{
-  return this.categories.find(c=>c.name === categoryName);
-}
-
-getFormData(): FormData | null
-{
-
-  const {productId, ...product} = this.productForm.getRawValue();
-
-  const formData = new FormData();
-
-  if(this.editing) formData.append('productId', productId.toString());
-
-  formData.append('name', product.name);
-  formData.append('description', product.description);
-  formData.append('price', product.price.toString());
-  formData.append('quant', product.quant.toString());
-  formData.append('categoryId', product.categoryId.toString());
-
-
-  if (!product.img) {
-    return null;
+    imgControl?.setErrors(null);
+    imgControl?.setValue(file);
   }
 
-  formData.append('img', product.img);
+  get f() {
+    return this.productForm.controls;
+  }
 
-  return formData;
-}
+  create() {
+    this.productForm.get('img')?.addValidators(Validators.required);
+    this.productForm.get('img')?.updateValueAndValidity();
 
-goToProduct(productId:number){
-  this.router.navigate([`product/${productId}`]);
-}
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
 
+    const formData = this.getFormData();
 
+    if (!formData) {
+      this.alertService.error('Ocurrio un error');
+      return;
+    }
+
+    this.productService.postProduct(formData).subscribe({
+      next: () => {
+        this.alertService.success('Producto creado');
+        this.loadProducts();
+        this.alertService.clear(2000);
+      },
+      error: (err) => {
+        this.alertService.error(err.error.error);
+        this.alertService.clear(2000);
+      },
+    });
+    this.closeDrawer();
+    this.clearForm();
+  }
+
+  edit() {
+    if (this.productForm.invalid) {
+      this.productForm.markAllAsTouched();
+      return;
+    }
+
+    const formData = this.getFormData();
+
+    if (!formData) {
+      this.alertService.error('Ocurrio un error');
+      return;
+    }
+
+    this.productService.putProduct(formData, formData.get('productId') as string).subscribe({
+      next: () => {
+        this.alertService.success('Producto actualizado');
+        this.loadProducts();
+        this.alertService.clear(2000);
+      },
+      error: (err) => {
+        this.alertService.error(err.error.error);
+        this.alertService.clear(2000);
+      },
+    });
+    this.closeDrawer();
+    this.clearForm();
+  }
+
+  delete(productId: number) {
+    this.productService.deleteProduct(productId).subscribe({
+      next: () => {
+        this.alertService.success('Producto eliminado');
+        this.loadProducts();
+        this.alertService.clear(2000);
+      },
+      error: (err) => {
+        this.alertService.error(err.error.error);
+        this.alertService.clear(2000);
+      },
+    });
+  }
+
+  clearForm() {
+    this.productForm.reset();
+    this.editing = false;
+  }
+
+  fillFormToEdit(product: Product) {
+    this.editing = true;
+    this.productForm.reset();
+    this.productForm.patchValue({
+      ...product,
+      categoryId: this.getCategory(product.categoryName)?.categoryId,
+    });
+    this.openDrawer();
+  }
+
+  getCategory(categoryName: string) {
+    return this.categories.find((c) => c.name === categoryName);
+  }
+
+  getFormData(): FormData | null {
+    const { productId, ...product } = this.productForm.getRawValue();
+
+    const formData = new FormData();
+
+    if (this.editing) formData.append('productId', productId.toString());
+
+    formData.append('name', product.name);
+    formData.append('description', product.description);
+    formData.append('price', product.price.toString());
+    formData.append('quant', product.quant.toString());
+    formData.append('categoryId', product.categoryId.toString());
+
+    if (product.img && !this.editing) {
+      console.log('adding img');
+      formData.append('img', product.img);
+    }
+
+    return formData;
+  }
+
+  goToProduct(productId: number) {
+    this.router.navigate([`product/${productId}`]);
+  }
+
+  applyFilters(filters: ProductFilters) {
+    this.filters = filters;
+    this.currentPage = 1; // reset to first page when filtering
+    this.loadProducts();
+  }
+
+  changePage(page: number) {
+    this.currentPage = page;
+    this.loadProducts();
+  }
+
+  // Drawner
+  openDrawer() {
+    this.drawerAnimated = true;
+    this.drawerOpen = true;
+  }
+
+  closeDrawer() {
+    this.drawerOpen = false;
+  }
 }

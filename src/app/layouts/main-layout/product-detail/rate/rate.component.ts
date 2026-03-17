@@ -4,7 +4,7 @@ import { AsyncPipe } from '@angular/common';
 import { OrderService } from '../../services/order.service';
 import { RateList } from '../rate-list/rate-list.component';
 import { SendRate } from '../send-rate/send-rate.component';
-import { Response } from '../../../../core/responses/genericResponse.response';
+import { Response } from '../../../../core/dtos/responses/genericResponse.response';
 import { Order } from '../../../../core/models/order.model';
 import { Rate } from '../../../../core/models/rate.model';
 import { SessionService } from '../../../../core/session/session.service';

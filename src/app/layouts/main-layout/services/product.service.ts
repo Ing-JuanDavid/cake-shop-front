@@ -1,8 +1,10 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { Product, ProductDto } from '../../../core/models/product.model';
-import { Response } from '../../../core/responses/genericResponse.response';
+import { Response } from '../../../core/dtos/responses/genericResponse.response';
+import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
+import { ProductFilters } from '../../../core/dtos/requests/productFilters.request';
 
 @Injectable({
   providedIn: 'root',
@@ -31,13 +33,33 @@ export class ProductService {
 
   }
 
-  public getProducts() : Observable<Response<Product[] | null>>
+  public getAllProducts() : Observable<Response<Product[] | null>>
   {
-    return this.http.get<Response<Product[] | null>>(this.baseUrl)
+    return this.http.get<Response<Product[] | null>>(this.baseUrl + '/all')
     .pipe(
       catchError(err => this.handlerError(err)),
     );
   }
+
+
+  public getProducts(
+    currentPage: number = 1,
+    sizePage: number = 5,
+    filters?: ProductFilters
+): Observable<Response<PaginatedResponse<Product>>> {
+
+    let params = new HttpParams()
+        .set('currentPage', currentPage)
+        .set('sizePage', sizePage);
+
+    if (filters?.name)      params = params.set('name', filters.name);
+    if (filters?.category)  params = params.set('category', filters.category);
+    if (filters?.minPrice)  params = params.set('minPrice', filters.minPrice);
+    if (filters?.maxPrice)  params = params.set('maxPrice', filters.maxPrice);
+    if (filters?.available != null) params = params.set('available', filters.available);
+
+    return this.http.get<Response<PaginatedResponse<Product>>>(this.baseUrl, { params });
+}
 
   public getProductById(id:string): Observable<Response<Product | null>>
   {

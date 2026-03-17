@@ -1,218 +1,447 @@
 <div class="p-6 space-y-8">
 
-      <!-- Título -->
-      <div>
-        <h1 class="text-3xl font-bold">Gestión de Productos</h1>
-        <p class="text-gray-500 text-sm">
-          Crear, actualizar y eliminar productos
-        </p>
+  <!-- Botón para abrir el drawer -->
+<div class="flex items-center justify-between mb-6">
+  <div>
+    <h1 class="text-3xl font-bold">Gestión de Productos</h1>
+    <p class="text-gray-500 text-sm">Crear, actualizar y eliminar productos</p>
+  </div>
+  <button
+    (click)="openDrawer()"
+    class="flex items-center gap-2 text-white px-5 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
+    style="background: #D97706;">
+    <i class="fa-solid fa-plus text-xs"></i>
+    <span class="text-sm font-medium">Crear producto</span>
+  </button>
+</div>
+
+ <!-- Overlay -->
+<div
+  (click)="closeDrawer()"
+  class="fixed inset-0 h-full bg-black/40 z-40"
+  [class.transition-opacity]="drawerAnimated"
+  [class.duration-300]="drawerAnimated"
+  [class.ease-in-out]="drawerAnimated"
+  [class.opacity-0]="!drawerOpen"
+  [class.opacity-100]="drawerOpen"
+  [class.pointer-events-none]="!drawerOpen">
+</div>
+
+<!-- Drawer -->
+<div
+  class="fixed top-0 right-0 h-full w-full md:w-[480px] bg-white z-50 shadow-2xl flex flex-col"
+  [class.transition-transform]="drawerAnimated"
+  [class.duration-500]="drawerAnimated"
+  [class.ease-in-out]="drawerAnimated"
+  [class.translate-x-full]="!drawerOpen"
+  [class.translate-x-0]="drawerOpen">
+
+  <!-- Drawer header -->
+  <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+    <div>
+      <h2 class="text-base font-medium">
+        {{ editing ? 'Actualizar producto' : 'Crear producto' }}
+      </h2>
+      <p class="text-xs text-gray-500">
+        {{ editing ? 'Modifica los campos que desees' : 'Completa los campos del nuevo producto' }}
+      </p>
+    </div>
+    <button
+      (click)="closeDrawer()"
+      class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors p-1">
+      <i class="fa-solid fa-xmark fa-lg"></i>
+    </button>
+  </div>
+
+  <!-- Drawer body -->
+  <div class="flex-1 overflow-y-auto px-6 py-5">
+    <form [formGroup]="productForm" class="flex flex-col gap-4">
+
+      <!-- Nombre -->
+      <div class="flex flex-col gap-1">
+        <label class="text-xs text-gray-500 font-medium">Nombre</label>
+        <input
+          type="text"
+          formControlName="name"
+          placeholder="Ej: Torta de chocolate"
+          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none"
+        />
+        @if (f.name.touched && f.name.invalid) {
+          <p class="text-xs text-red-500">Nombre inválido</p>
+        }
       </div>
 
-      <!-- ===================== -->
-      <!-- FORMULARIO -->
-      <!-- ===================== -->
-      <section class="bg-white shadow-xl rounded-2xl p-6 space-y-4" id="form-section">
-
-        <h2 class="text-xl font-semibold">
-          {{ editing ? 'Actualizar producto' : 'Crear producto' }}
-        </h2>
-
-        <form [formGroup]="productForm" class="grid md:grid-cols-2 gap-4">
-
-          <!-- Nombre -->
-          <div>
-            <label class="block text-sm font-medium mb-1">Nombre</label>
-            <input type="text" formControlName="name"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none">
-              @if(f.name.touched && f.name.invalid) {
-                <p class="text-sm text-red-500">Nombre invalido</p>
-              }
+      <!-- Precio y Cantidad -->
+      <div class="grid grid-cols-2 gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="text-xs text-gray-500 font-medium">Precio</label>
+          <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-1 focus-within:ring-2 focus-within:ring-yellow-500">
+            <span class="text-gray-300 text-xs">$</span>
+            <input
+              type="number"
+              formControlName="price"
+              placeholder="0"
+              class="flex-1 outline-none text-sm bg-transparent"
+            />
           </div>
-
-          <!-- Precio -->
-          <div>
-            <label class="block text-sm font-medium mb-1">Precio</label>
-            <input type="number" formControlName="price"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none">
-              @if(f.price.touched && f.price.invalid) {
-                <p class="text-sm text-red-500">Precio invalido</p>
-              }
-          </div>
-
-          <!-- Cantidad -->
-          <div>
-            <label class="block text-sm font-medium mb-1">Cantidad</label>
-            <input type="number" formControlName="quant"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none">
-            @if(f.quant.touched && f.quant.invalid) {
-                <p class="text-sm text-red-500">Cantidad invalida</p>
-              }
-          </div>
-
-          <!-- Categoría -->
-          <div>
-            <label class="block text-sm font-medium mb-1">Categoría</label>
-            <select class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none" formControlName="categoryId">
-
-              @if(categories.length > 0) {
-                <option [value]="0">Categoria</option>
-                @for(category of categories; track category.categoryId) {
-                <option [value]="category.categoryId">{{category.name}}</option>
-              }
-              }
-
-            </select>
-            @if(f.categoryId.touched && f.categoryId.invalid) {
-                <p class="text-sm text-red-500">Categoria invalida</p>
-              }
-          </div>
-
-          <!-- Imagen URL -->
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium mb-1">Imagen URL</label>
-            <input type="file" accept="image/*" (change)="onFileChange($event)"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none">
-
-              @if(f.img.touched) {
-
-                @if(f.img.getError('maxSize')) {
-                <p class="text-sm text-red-500">Imagen invalida limite(2MB)</p>
-                }
-
-                @if(f.img.getError('invalidType')) {
-                <p class="text-sm text-red-500">Tipo invalido</p>
-                }
-
-                @if(f.img.getError('required')) {
-                <p class="text-sm text-red-500">La imagen es obligatoria</p>
-                }
-
-              }
-          </div>
-
-          <!-- Descripción -->
-          <div class="md:col-span-2">
-            <label class="block text-sm font-medium mb-1">Descripción</label>
-            <textarea rows="3" formControlName="description"
-              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none"></textarea>
-              @if(f.description.touched && f.description.invalid) {
-                <p class="text-sm text-red-500">Descripcion invalida</p>
-              }
-          </div>
-
-          <!-- Botones -->
-          <div class="md:col-span-2 flex gap-3 pt-2">
-            <button type="submit"  (click)="editing ? edit() : create()"
-              class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2 rounded-lg transition hover:cursor-pointer">
-              {{ editing ? 'Actualizar' : 'Crear' }}
-            </button>
-
-            <button type="button"
-              class="bg-gray-300 hover:bg-gray-400 px-5 py-2 rounded-lg transition hover:cursor-pointer" (click)="clearForm()">
-              Cancelar
-            </button>
-          </div>
-
-        </form>
-      </section>
-
-      <!-- ===================== -->
-      <!-- TABLA PRODUCTOS -->
-      <!-- ===================== -->
-      <section class="bg-white shadow-xl rounded-2xl p-6">
-
-        <h2 class="text-xl font-semibold mb-4">Lista de productos</h2>
-
-        <div class="overflow-x-auto">
-
-          <table class="w-full text-sm">
-
-            <thead class="bg-yellow-600 text-white">
-              <tr>
-                <th class="p-3 text-left">Imagen</th>
-                <th class="p-3 text-left">Nombre</th>
-                <th class="p-3 text-left">Precio</th>
-                <th class="p-3 text-left">Stock</th>
-                <th class="p-3 text-left">Categoría</th>
-                <th class="p-3 text-left">Score</th>
-                <th class="p-3 text-left">Acciones</th>
-              </tr>
-            </thead>
-
-            <tbody class="">
-
-              @for(product of products; track product.productId){
-
-                <tr class="border-b hover:bg-yellow-50 transition">
-
-                  <!-- Imagen -->
-                  <td class="p-3">
-                    <img
-                      [src]="product.imgUrl"
-                      class="w-14 h-14 object-cover rounded-lg shadow">
-                  </td>
-
-                  <!-- Nombre -->
-                  <td class="p-3 font-medium hover:cursor-pointer" (click)="goToProduct(product.productId)" title="Ir al producto">
-                    {{ product.name }}
-                  </td>
-
-                  <!-- Precio -->
-                  <td class="p-3">
-                    ${{ product.price }}
-                  </td>
-
-                  <!-- Stock -->
-                  <td class="p-3">
-                    {{ product.quant }}
-                  </td>
-
-                  <!-- Categoría -->
-                  <td class="p-3">
-                    {{ product.categoryName }}
-                  </td>
-
-                  <!-- Score -->
-                  <td class="p-3 flex items-center gap-1">
-
-                    <span class="text-yellow-500">
-                      ★
-                    </span>
-
-                    {{ product.score }}
-                    <span class="text-gray-400 text-xs">
-                      ({{ product.rateNumber }})
-                    </span>
-
-                  </td>
-
-                  <!-- Acciones -->
-                  <td class="p-3 space-x-2">
-
-                    <button
-                    (click)="fillFormToEdit(product)" href=""
-                      class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
-                      Editar
-                    </button>
-
-                    <button
-                    (click)="delete(product.productId)"
-                      class="bg-red-500 hover:bg-red-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
-                      Eliminar
-                    </button>
-
-                  </td>
-
-                </tr>
-
-              }
-
-            </tbody>
-
-          </table>
-
+          @if (f.price.touched && f.price.invalid) {
+            <p class="text-xs text-red-500">Precio inválido</p>
+          }
         </div>
 
-      </section>
+        <div class="flex flex-col gap-1">
+          <label class="text-xs text-gray-500 font-medium">Cantidad</label>
+          <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-1 focus-within:ring-2 focus-within:ring-yellow-500">
+            <i class="fa-solid fa-boxes-stacked text-gray-300 text-xs"></i>
+            <input
+              type="number"
+              formControlName="quant"
+              placeholder="0"
+              class="flex-1 outline-none text-sm bg-transparent"
+            />
+          </div>
+          @if (f.quant.touched && f.quant.invalid) {
+            <p class="text-xs text-red-500">Cantidad inválida</p>
+          }
+        </div>
+      </div>
 
+      <!-- Categoría -->
+      <div class="flex flex-col gap-1">
+        <label class="text-xs text-gray-500 font-medium">Categoría</label>
+        <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
+          <i class="fa-solid fa-tag text-gray-300 text-xs"></i>
+          <select
+            formControlName="categoryId"
+            class="flex-1 outline-none text-sm bg-transparent cursor-pointer"
+          >
+            <option [value]="0">Seleccionar categoría</option>
+            @for (category of categories; track category.categoryId) {
+              <option [value]="category.categoryId">{{ category.name }}</option>
+            }
+          </select>
+        </div>
+        @if (f.categoryId.touched && f.categoryId.invalid) {
+          <p class="text-xs text-red-500">Categoría inválida</p>
+        }
+      </div>
+
+      <!-- Imagen -->
+      <div class="flex flex-col gap-1">
+        <label class="text-xs text-gray-500 font-medium">Imagen</label>
+        <input
+          type="file"
+          accept="image/*"
+          (change)="onFileChange($event)"
+          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none cursor-pointer"
+        />
+        @if (f.img.touched) {
+          @if (f.img.getError('maxSize')) {
+            <p class="text-xs text-red-500">Imagen inválida, límite 2MB</p>
+          }
+          @if (f.img.getError('invalidType')) {
+            <p class="text-xs text-red-500">Tipo inválido</p>
+          }
+          @if (f.img.getError('required')) {
+            <p class="text-xs text-red-500">La imagen es obligatoria</p>
+          }
+        }
+      </div>
+
+      <!-- Descripción -->
+      <div class="flex flex-col gap-1">
+        <label class="text-xs text-gray-500 font-medium">Descripción</label>
+        <textarea
+          rows="3"
+          formControlName="description"
+          placeholder="Describe el producto..."
+          class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none resize-none"
+        ></textarea>
+        @if (f.description.touched && f.description.invalid) {
+          <p class="text-xs text-red-500">Descripción inválida</p>
+        }
+      </div>
+
+    </form>
+  </div>
+
+  <!-- Drawer footer -->
+  <div class="px-6 py-4 border-t border-gray-100 flex gap-3">
+    <button
+      (click)="editing ? edit() : create()"
+      class="flex-1 text-white py-2 rounded-lg text-sm font-medium transition cursor-pointer hover:opacity-90"
+      style="background: #D97706;">
+      {{ editing ? 'Actualizar' : 'Crear producto' }}
+    </button>
+    <button
+      (click)="closeDrawer(); clearForm()"
+      class="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 py-2 rounded-lg text-sm font-medium transition cursor-pointer">
+      Cancelar
+    </button>
+  </div>
+
+</div>
+
+
+
+  <!-- Filters -->
+<section class="bg-white shadow-xl rounded-2xl p-6">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-5">
+    <div>
+      <h2 class="text-base font-medium">Filtros</h2>
+      <p class="text-sm text-gray-400">Refina los resultados de búsqueda</p>
     </div>
+    <button
+      (click)="applyFilters({})"
+      class="text-sm text-gray-400 hover:text-yellow-600 transition-colors cursor-pointer underline">
+      Limpiar filtros
+    </button>
+  </div>
+
+  <div class="grid md:grid-cols-3 gap-3">
+
+    <!-- Nombre -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-500 font-medium">Nombre</label>
+      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
+        <i class="fa-solid fa-magnifying-glass text-gray-300 text-xs"></i>
+        <input
+          type="text"
+          placeholder="Buscar por nombre..."
+          #nameFilter
+          class="flex-1 outline-none text-sm bg-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Categoría -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-500 font-medium">Categoría</label>
+      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
+        <i class="fa-solid fa-tag text-gray-300 text-xs"></i>
+        <select
+          #categoryFilter
+          class="flex-1 outline-none text-sm bg-transparent"
+          >
+
+          <option value="">Buscar por categoria</option>
+          @for(category of categories; track category.categoryId)
+          {
+            <option [value]="category.name">{{category.name}}</option>
+          }
+
+        </select>
+
+      </div>
+    </div>
+
+    <!-- Disponibilidad -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-500 font-medium">Disponibilidad</label>
+      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
+        <i class="fa-solid fa-circle-check text-gray-300 text-xs"></i>
+        <select
+          #availableFilter
+          class="flex-1 outline-none text-sm bg-transparent cursor-pointer"
+        >
+          <option value="">Todos</option>
+          <option value="true">Disponible</option>
+          <option value="false">No disponible</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Precio mínimo -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-500 font-medium">Precio mínimo</label>
+      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
+        <span class="text-gray-300 text-xs font-medium">$</span>
+        <input
+          type="number"
+          placeholder="0"
+          #minPriceFilter
+          class="flex-1 outline-none text-sm bg-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Precio máximo -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-gray-500 font-medium">Precio máximo</label>
+      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
+        <span class="text-gray-300 text-xs font-medium">$</span>
+        <input
+          type="number"
+          placeholder="999999"
+          #maxPriceFilter
+          class="flex-1 outline-none text-sm bg-transparent"
+        />
+      </div>
+    </div>
+
+    <!-- Botón buscar -->
+    <div class="flex flex-col gap-1">
+      <label class="text-sm text-transparent font-medium select-none">.</label>
+      <button
+        (click)="applyFilters({
+          name: nameFilter.value || undefined,
+          category: categoryFilter.value || undefined,
+          minPrice: minPriceFilter.value ? +minPriceFilter.value : undefined,
+          maxPrice: maxPriceFilter.value ? +maxPriceFilter.value : undefined,
+          available: availableFilter.value !== '' ? availableFilter.value === 'true' : undefined
+        })"
+        class="flex items-center justify-center gap-2 text-white px-5 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
+        style="background: #D97706;">
+        <i class="fa-solid fa-magnifying-glass text-xs"></i>
+        <span class="text-sm font-medium">Buscar</span>
+      </button>
+    </div>
+
+  </div>
+</section>
+
+
+  <!-- Product table -->
+<section class="py-4">
+
+  <!-- Header -->
+  <div class="flex items-center justify-between mb-4">
+    <span class="text-base font-medium">Lista de productos</span>
+    <span class="text-xs px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
+      {{ page.totalElements }} productos
+    </span>
+  </div>
+
+  <!-- Table -->
+  <div class="overflow-x-auto rounded-xl border border-gray-200">
+    <table class="w-full border-collapse text-md">
+      <thead>
+        <tr style="background: #D97706;">
+          <th class="p-3 text-left text-white text-sm font-medium rounded-tl-xl w-16">Img</th>
+          <th class="p-3 text-left text-white text-sm font-medium">Id</th>
+          <th class="p-3 text-left text-white text-sm font-medium">Nombre</th>
+          <th class="p-3 text-left text-white text-sm font-medium">Precio</th>
+          <th class="p-3 text-left text-white text-sm font-medium">Stock</th>
+          <th class="p-3 text-left text-white text-sm font-medium">Categoría</th>
+          <th class="p-3 text-left text-white text-sm font-medium">Score</th>
+          <th class="p-3 text-left text-white text-sm font-medium rounded-tr-xl">Acciones</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @for (product of page.data; track product.productId) {
+          <tr class="border-b border-gray-100 hover:bg-yellow-50 transition-colors duration-150 last:border-none">
+
+            <!-- Imagen -->
+            <td class="p-3 align-middle">
+              <img [src]="product.imgUrl"
+                   class="w-11 h-11 object-cover rounded-lg" />
+            </td>
+
+            <!-- Id -->
+            <td class="p-3 text-gray-400 text-xs cursor-pointer hover:text-yellow-600"
+                (click)="goToProduct(product.productId)">
+              #{{ product.productId }}
+            </td>
+
+            <!-- Nombre -->
+            <td class="p-3 font-medium cursor-pointer hover:text-yellow-600 hover:underline transition-colors"
+                (click)="goToProduct(product.productId)">
+              {{ product.name }}
+            </td>
+
+            <!-- Precio -->
+            <td class="p-3 font-medium text-emerald-600">
+              {{ '$' + (product.price | number: '1.0-0') }}
+            </td>
+
+            <!-- Stock -->
+            <td class="p-3">
+              @if (product.quant === 0) {
+                <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                  Sin stock
+                </span>
+              } @else if (product.quant <= 3) {
+                <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                  {{ product.quant }} bajo
+                </span>
+              } @else {
+                <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-200 text-emerald-800">
+                  {{ product.quant }}
+                </span>
+              }
+            </td>
+
+            <!-- Categoría -->
+            <td class="p-3">
+              <span class="inline-block px-2 py-0.5 rounded-full text-xs border"
+                    style="background: #FEF9C3; color: #713F12; border-color: #FDE68A;">
+                {{ product.categoryName }}
+              </span>
+            </td>
+
+            <!-- Score -->
+            <td class="p-3">
+              <div class="flex items-center gap-1">
+                <span class="text-yellow-400 text-sm">★</span>
+                <span>{{ product.score }}</span>
+                <span class="text-xs text-gray-400">({{ product.rateNumber }})</span>
+              </div>
+            </td>
+
+            <!-- Acciones -->
+            <td class="p-3">
+              <div class="flex gap-2">
+                <button (click)="fillFormToEdit(product)"
+                        class="bg-blue-100 text-blue-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-blue-200 transition-colors">
+                  <i class="fa-solid fa-pen fa-lg"></i>
+                </button>
+                <button (click)="delete(product.productId)"
+                        class="bg-red-100 text-red-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-red-200 transition-colors">
+                  <i class="fa-regular fa-trash-can fa-lg"></i>
+                </button>
+              </div>
+            </td>
+
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  <div class="flex items-center justify-between mt-4">
+
+    <span class="text-xs text-gray-500">
+      Mostrando {{ page.pageLength }} de {{ page.totalElements }} elementos
+    </span>
+
+    <div class="flex gap-1">
+      <button [disabled]="currentPage === 1"
+              (click)="changePage(currentPage - 1)"
+              class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+        ←
+      </button>
+
+      @for (p of [].constructor(page.totalPages); track $index) {
+        <button (click)="changePage($index + 1)"
+                [class]="$index + 1 === currentPage
+                  ? 'text-white rounded-md px-3 py-1 text-xs cursor-pointer border transition-colors'
+                  : 'bg-white text-gray-700 border border-gray-200 rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 transition-colors'"
+                [style]="$index + 1 === currentPage ? 'background: #D97706; border-color: #D97706;' : ''">
+          {{ $index + 1 }}
+        </button>
+      }
+
+      <button [disabled]="currentPage === page.totalPages"
+              (click)="changePage(currentPage + 1)"
+              class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+        →
+      </button>
+    </div>
+
+  </div>
+
+</section>

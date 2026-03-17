@@ -16,5 +16,9 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./layouts/auth-layout/auth.routes').then(m => m.AUTH_ROUTES)
   },
+  {
+    path: 'unauthorized',
+    loadComponent: ()=> import('./shared/unauthorized/unauthorized.component').then(m=> m.Unauthorized)
+  },
   {path: '**', redirectTo: '', pathMatch: 'full'},
 ];

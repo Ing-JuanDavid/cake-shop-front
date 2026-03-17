@@ -3,6 +3,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CategoryService } from '../services/category.service';
 import { AlertService } from '../../main-layout/services/alert.service';
 import { Category } from '../../../core/models/category.model';
+import { CategoryFilters } from '../../../core/dtos/requests/categoryFilters.request';
+import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
 
 @Component({
   selector: 'admin-categories-view',
@@ -17,7 +19,18 @@ export class Categories {
   categoryService = inject(CategoryService);
   alertService = inject(AlertService);
 
-  categories : Category[] | null = null;
+  currentPage = 1;
+  sizePage = 5;
+  filters: CategoryFilters = {};
+
+  page: PaginatedResponse<Category> = {
+      currentPage: 1,
+      pageLength: 0,
+      nextPage: 1,
+      data: [],
+      totalPages: 1,
+      totalElements: 0,
+    };
 
   categoryForm = this.fb.nonNullable.group(
     {
@@ -114,7 +127,7 @@ export class Categories {
         next: res=> {
           this.clearForm();
           this.alertService.success('Categoria eliminada');
-          this.loadData();
+          //this.loadData();
           this.alertService.clear(2000);
         }
       }
@@ -124,11 +137,22 @@ export class Categories {
 
   loadData()
   {
-    this.categoryService.getCategories().subscribe(
+    this.categoryService.getCategories(this.currentPage, this.sizePage, this.filters).subscribe(
       {
-        next: res=> this.categories = res.data
+        next: res=> this.page = res.data
       }
     )
+  }
+
+  applyFilters(filters: CategoryFilters) {
+      this.filters = filters;
+      this.currentPage = 1; // reset to first page when filtering
+      this.loadData();
+    }
+
+    changePage(page: number) {
+    this.currentPage = page;
+    this.loadData();
   }
 
 

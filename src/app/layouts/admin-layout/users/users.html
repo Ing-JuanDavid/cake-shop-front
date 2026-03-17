@@ -99,8 +99,8 @@
                     <!-- Acciones -->
                     <td class="p-3 space-x-2">
                       <button
-                        class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
-                        Editar
+                        class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white px-2 py-2 rounded-md text-xs transition">
+                        <i class="fa-solid fa-lg fa-pen"></i>
                       </button>
 
                       <button
@@ -108,8 +108,14 @@
                          [ngClass]="user.accountNonLocked
                                     ? 'bg-red-500 hover:bg-red-600'
                                     : 'bg-green-600 hover:bg-green-700'"
-                        class="hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
-                        Bloquear
+                        class="hover:cursor-pointer text-white px-2 py-2 rounded-md text-xs transition">
+                         @if(user.accountNonLocked)
+                        {
+                          <i class="fa-solid fa-lock fa-lg"></i>
+                        }
+                        @else {
+                          <i class="fa-solid fa-unlock fa-lg"></i>
+                        }
                       </button>
 
                     </td>
@@ -127,18 +133,26 @@
                     <!-- Acciones -->
                     <td class="p-3 space-x-2">
                       <button
+                      title="editar"
                       (click)="showModal(user)"
-                        class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
-                        Editar
+                        class="bg-blue-500 hover:bg-blue-600 hover:cursor-pointer text-white px-2 py-2 rounded-md text-xs transition">
+                        <i class="fa-solid fa-pen fa-lg"></i>
                       </button>
 
                       <button
+                      title="bloquear"
                         (click)="user.accountNonLocked ? lockUser(user) : unLockUser(user)"
                          [ngClass]="user.accountNonLocked
                                     ? 'bg-red-500 hover:bg-red-600'
                                     : 'bg-green-600 hover:bg-green-700'"
-                        class="hover:cursor-pointer text-white px-3 py-1 rounded-md text-xs transition">
-                        {{user.accountNonLocked ? 'Bloquear' : 'Desbloquear'}}
+                        class="hover:cursor-pointer text-white px-2 py-2 rounded-md text-xs transition">
+                        @if(user.accountNonLocked)
+                        {
+                          <i class="fa-solid fa-lock fa-lg"></i>
+                        }
+                        @else {
+                          <i class="fa-solid fa-unlock fa-lg"></i>
+                        }
                       </button>
 
                     </td>

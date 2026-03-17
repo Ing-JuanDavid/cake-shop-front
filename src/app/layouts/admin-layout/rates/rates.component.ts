@@ -56,7 +56,7 @@ export class Rates {
 
   loadCategories()
   {
-    this.categoryService.getCategories().subscribe(
+    this.categoryService.getAllCategories().subscribe(
       {
         next: res=>this.categories = res.data
       }

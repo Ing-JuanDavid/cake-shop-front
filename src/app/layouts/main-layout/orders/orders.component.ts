@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { OrderService } from '../services/order.service';
 import { Order } from '../../../core/models/order.model';
 import { OrderCard } from "./order-card/order-card.component";
-import { NotFoundView } from '../info-views/not-found/not-found.component';
+import { NotFoundView } from '../../../shared/info-views/not-found/not-found.component';
 
 @Component({
   selector: 'orders-view',

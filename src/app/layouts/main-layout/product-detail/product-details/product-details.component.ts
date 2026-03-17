@@ -8,7 +8,7 @@ import { FormsModule } from "@angular/forms";
 import { CartProduct, CartProducts } from '../../../../core/models/cart.model';
 import { Router } from '@angular/router';
 import { SessionService } from '../../../../core/session/session.service';
-import { NotFoundView } from "../../info-views/not-found/not-found.component";
+import { NotFoundView } from "../../../../shared/info-views/not-found/not-found.component";
 
 @Component({
   selector: 'product-details',

@@ -5,9 +5,9 @@ import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from "../home/product-card/product-card.component";
 import { Product } from '../../../core/models/product.model';
-import { Response } from '../../../core/responses/genericResponse.response';
+import { Response } from '../../../core/dtos/responses/genericResponse.response';
 import { SessionService } from '../../../core/session/session.service';
-import { NotFoundView } from '../info-views/not-found/not-found.component';
+import { NotFoundView } from '../../../shared/info-views/not-found/not-found.component';
 
 
 @Component({
@@ -52,7 +52,7 @@ export class HomeComponent {
   }
 
   ngOnInit() {
-    this.products$ = this.productService.getProducts();
+    this.products$ = this.productService.getAllProducts();
     console.log('Current user:', this.sessionService.currentUser());
   }
 }

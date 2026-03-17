@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UpdatedUser, User } from '../../../core/models/user.model';
-import { Response } from '../../../core/responses/genericResponse.response';
+import { Response } from '../../../core/dtos/responses/genericResponse.response';
 
 @Injectable({
   providedIn: 'root',
