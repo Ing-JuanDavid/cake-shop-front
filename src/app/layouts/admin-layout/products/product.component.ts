@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { Product } from '../../../core/models/product.model';
 import { CategoryService } from '../services/category.service';
 import { Category } from '../../../core/models/category.model';
@@ -43,6 +43,14 @@ export class ProductComponent {
   // Drawner
   drawerOpen = false;
   drawerAnimated = false; // ← nuevo flag
+
+
+  // Filters variables
+  @ViewChild('nameFilter') nameFilter! : ElementRef;
+  @ViewChild('categoryFilter') categoryFilter! : ElementRef;
+  @ViewChild('availableFilter') availableFilter! : ElementRef;
+  @ViewChild('minPriceFilter') minPriceFilter! : ElementRef;
+  @ViewChild('maxPriceFilter') maxPriceFilter! : ElementRef;
 
   productForm = this.fb.nonNullable.group({
     productId: [0],
@@ -237,6 +245,17 @@ export class ProductComponent {
     this.filters = filters;
     this.currentPage = 1; // reset to first page when filtering
     this.loadProducts();
+  }
+
+  cleanFilters()
+  {
+    this.applyFilters({});
+    this.nameFilter.nativeElement.value = '';
+    this.categoryFilter.nativeElement.value = '';
+    this.availableFilter.nativeElement.value = '';
+    this.minPriceFilter.nativeElement.value = '';
+    this.maxPriceFilter.nativeElement.value = '';
+
   }
 
   changePage(page: number) {

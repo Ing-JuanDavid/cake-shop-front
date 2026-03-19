@@ -1,10 +1,13 @@
-import { Component, inject } from '@angular/core';
+import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { User } from '../../../core/models/user.model';
 import { UserService } from '../services/user.service';
 import { UserForm } from "./user-form/user-form.component";
 import { NgClass } from '@angular/common';
 import { AlertService } from '../../main-layout/services/alert.service';
+import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
+import { filter } from 'rxjs';
+import { UserFilters } from '../../../core/dtos/requests/userFilters.request';
 
 
 @Component({
@@ -30,7 +33,26 @@ export class Users {
   editing = false;
   userEdit: User | null = null;
   user : User | null = null;
-  users: User[] | null = null;
+
+
+  currentPage = 1;
+  sizePage = 5;
+  filters: UserFilters = {};
+
+  page: PaginatedResponse<User> = {
+    currentPage: 1,
+    pageLength: 5,
+    nextPage: 1,
+    data: [],
+    totalElements: 0,
+    totalPages: 1
+  }
+
+  @ViewChild('nameFilter') nameFilter! : ElementRef;
+  @ViewChild('emailFilter') emailFilter! : ElementRef;
+  @ViewChild('nipFilter') nipFilter! : ElementRef;
+  @ViewChild('rolFilter') rolFilter! : ElementRef;
+  @ViewChild('isAccountNonLocked') isAccountNonLocked! : ElementRef;
 
 
   ngOnInit()
@@ -52,10 +74,11 @@ export class Users {
 
   loadUsers()
   {
-    this.userService.getUsers().subscribe(
+    this.userService.getUsers(this.currentPage, this.sizePage, this.filters).subscribe(
       {
         next: res=> {
-          this.users = res.data
+          this.page = res.data;
+          console.log('users res:', res);
         }
       }
     )
@@ -112,4 +135,36 @@ export class Users {
     this.userEdit = user;
     this.editing = true;
   }
+
+  changePage(currentPage: number)
+  {
+    this.currentPage = currentPage;
+    this.loadUsers();
+  }
+
+  applyFilters(filters: UserFilters) {
+      this.filters = filters;
+      this.currentPage = 1; // reset to first page when filtering
+      this.loadUsers();
+    }
+
+    cleanFilters()
+    {
+      this.applyFilters({});
+      this.nameFilter.nativeElement.value = '';
+      this.emailFilter.nativeElement.value = '';
+      this.nipFilter.nativeElement.value = '';
+      this.rolFilter.nativeElement.value = '';
+      this.isAccountNonLocked.nativeElement.value = '';
+    }
+
+    parseAccountFilter(value: string )
+    {
+      if(value === '') return undefined;
+
+      return value==='true';
+    }
+
 }
+
+

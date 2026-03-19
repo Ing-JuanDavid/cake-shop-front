@@ -1,236 +1,281 @@
 <div class="p-6 space-y-8">
-  <!-- Título -->
-  <div>
-    <h1 class="text-3xl font-bold">Gestión de categorias</h1>
-    <p class="text-gray-500 text-sm">Crear, actualizar y eliminar categorias</p>
-  </div>
 
-  <!-- ===================== -->
-  <!-- FORMULARIO -->
-  <!-- ===================== -->
-  <section class="bg-white shadow-xl rounded-2xl p-6 space-y-4" id="form-section">
-    <h2 class="text-xl font-semibold">
-      {{ editing ? 'Actualizar categoria' : 'Crear categoria' }}
-    </h2>
-
-    <form [formGroup]="categoryForm" class="grid md:grid-cols-2 gap-4">
-      <!-- Nombre -->
-      <div class="md:col-span-2">
-        <label class="block text-sm font-medium mb-1">Nombre Categoria</label>
-        <input
-          type="text"
-          formControlName="name"
-          class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none"
-        />
-        @if (f.name.touched && f.name.invalid) {
-          <p class="text-sm text-red-500">Nombre invalido</p>
-        }
-      </div>
-
-      <!-- Botones -->
-
-      <div class="md:col-span-2 flex gap-3 pt-2">
-        <button
-          type="submit"
-          (click)="editing ? edit() : create()"
-          class="bg-yellow-600 hover:bg-yellow-700 text-white px-5 py-2 rounded-lg transition hover:cursor-pointer"
-        >
-          {{ editing ? 'Actualizar' : 'Crear' }}
-        </button>
-
-        <button
-          type="button"
-          class="bg-gray-300 hover:bg-gray-400 px-5 py-2 rounded-lg transition hover:cursor-pointer"
-          (click)="clearForm()"
-        >
-          Cancelar
-        </button>
-      </div>
-    </form>
-  </section>
-
-
-  <!-- Filters -->
-<section class="bg-white shadow-xl rounded-2xl p-6">
-
-  <!-- Header -->
-  <div class="flex items-center justify-between mb-5">
+  <div class="flex items-center justify-between mb-6">
+    <!-- Título -->
     <div>
-      <h2 class="text-base font-medium">Filtros</h2>
-      <p class="text-sm text-gray-400">Refina los resultados de búsqueda</p>
+      <h1 class="text-3xl font-bold">Gestión de categorias</h1>
+      <p class="text-gray-500 text-sm">Crear, actualizar y eliminar categorias</p>
     </div>
+
     <button
-      (click)="applyFilters({})"
-      class="text-sm text-gray-400 hover:text-yellow-600 transition-colors cursor-pointer underline">
-      Limpiar filtros
+      (click)="showModal = true"
+      class="flex items-center gap-2 text-white px-4 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
+      style="background: #d97706"
+    >
+      <i class="fa-solid fa-plus text-xs"></i>
+      <span class="text-sm font-medium">Nueva categoria</span>
     </button>
   </div>
 
-  <div class="grid md:grid-cols-3 gap-3">
+  <!-- Modal -->
+  @if (showModal) {
+    <!-- Backdrop -->
+    <div
+      class="fixed inset-0 h-full bg-black/50 z-40 flex items-center justify-center"
+      (click)="clearForm()"
+    >
+      <!-- Modal box — stop click from closing when clicking inside -->
+      <div
+        class="bg-white rounded-2xl shadow-2xl p-6 w-full max-w-md mx-4 z-50 space-y-4"
+        (click)="$event.stopPropagation()"
+      >
+        <!-- Modal header -->
+        <div class="flex items-center justify-between">
+          <h2 class="text-xl font-semibold">
+            {{ editing ? 'Actualizar categoria' : 'Crear categoria' }}
+          </h2>
+          <button
+            (click)="clearForm()"
+            class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
+          >
+            <i class="fa-solid fa-xmark text-lg"></i>
+          </button>
+        </div>
 
-    <!-- Nombre -->
-    <div class="flex flex-col gap-1">
-      <label class="text-sm text-gray-500 font-medium">Nombre</label>
-      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
-        <i class="fa-solid fa-magnifying-glass text-gray-300 text-xs"></i>
-        <input
-          type="text"
-          placeholder="Buscar por nombre..."
-          #nameFilter
-          class="flex-1 outline-none text-sm bg-transparent"
-        />
+        <!-- Form -->
+        <form [formGroup]="categoryForm" class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium mb-1">Nombre Categoria</label>
+            <input
+              type="text"
+              formControlName="name"
+              class="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-yellow-500 outline-none"
+              placeholder="Ej: Pasteles, Galletas..."
+            />
+            @if (f.name.touched && f.name.invalid) {
+              <p class="text-sm text-red-500 mt-1">Nombre invalido</p>
+            }
+          </div>
+
+          <!-- Buttons -->
+          <div class="flex gap-3 pt-2">
+            <button
+              type="submit"
+              (click)="editing ? edit() : create()"
+              class="flex-1 text-white px-5 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
+              style="background: #d97706"
+            >
+              {{ editing ? 'Actualizar' : 'Crear' }}
+            </button>
+            <button
+              type="button"
+              class="flex-1 bg-gray-300 hover:bg-gray-400 px-5 py-2 rounded-lg transition cursor-pointer"
+              (click)="clearForm()"
+            >
+              Cancelar
+            </button>
+          </div>
+        </form>
       </div>
     </div>
+  }
 
-    <!-- Precio mínimo -->
-    <div class="flex flex-col gap-1">
-      <label class="text-sm text-gray-500 font-medium">Precio mínimo</label>
-      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
-        <span class="text-gray-300 text-xs font-medium">$</span>
-        <input
-          type="number"
-          placeholder="0"
-          #minPriceFilter
-          class="flex-1 outline-none text-sm bg-transparent"
-        />
+  <!-- Filters -->
+  <section class="bg-white shadow-xl rounded-2xl p-6">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-5">
+      <div>
+        <h2 class="text-base font-medium">Filtros</h2>
+        <p class="text-sm text-gray-400">Refina los resultados de búsqueda</p>
       </div>
-    </div>
-
-    <!-- Precio máximo -->
-    <div class="flex flex-col gap-1">
-      <label class="text-sm text-gray-500 font-medium">Precio máximo</label>
-      <div class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500">
-        <span class="text-gray-300 text-xs font-medium">$</span>
-        <input
-          type="number"
-          placeholder="999999"
-          #maxPriceFilter
-          class="flex-1 outline-none text-sm bg-transparent"
-        />
-      </div>
-    </div>
-
-    <!-- Botón buscar -->
-    <div class="flex flex-col gap-1 md:col-start-3">
-      <label class="text-sm text-transparent font-medium select-none">.</label>
       <button
-        (click)="applyFilters({
-          name: nameFilter.value || undefined,
-          minPrice: minPriceFilter.value ? +minPriceFilter.value : undefined,
-          maxPrice: maxPriceFilter.value ? +maxPriceFilter.value : undefined,
-        })"
-        class="flex items-center justify-center gap-2 text-white px-5 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
-        style="background: #D97706;">
-        <i class="fa-solid fa-magnifying-glass text-xs"></i>
-        <span class="text-sm font-medium">Buscar</span>
+        (click)="cleanFilters()"
+        class="text-sm text-gray-400 hover:text-yellow-600 transition-colors cursor-pointer underline"
+      >
+        Limpiar filtros
       </button>
     </div>
 
-  </div>
-</section>
+    <div class="grid md:grid-cols-3 gap-3">
+      <!-- Nombre -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm text-gray-500 font-medium">Nombre</label>
+        <div
+          class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500"
+        >
+          <i class="fa-solid fa-magnifying-glass text-gray-300 text-xs"></i>
+          <input
+            type="text"
+            placeholder="Buscar por nombre..."
+            #nameFilter
+            class="flex-1 outline-none text-sm bg-transparent"
+          />
+        </div>
+      </div>
 
+      <!-- Min Products -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm text-gray-500 font-medium">Min # de productos </label>
+        <div
+          class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500"
+        >
+          <i class="text-gray-300 text-xs font-medium fa-solid fa-boxes-stacked"></i>
+          <input
+            type="number"
+            placeholder="0"
+            #minProductsFilter
+            class="flex-1 outline-none text-sm bg-transparent"
+          />
+        </div>
+      </div>
 
-  <!-- Product table -->
-<section class="py-4">
+      <!-- Max products -->
+      <div class="flex flex-col gap-1">
+        <label class="text-sm text-gray-500 font-medium">max # productos</label>
+        <div
+          class="flex items-center border border-gray-200 rounded-lg px-3 py-2 gap-2 focus-within:ring-2 focus-within:ring-yellow-500"
+        >
+          <i class="text-gray-300 text-xs font-medium fa-solid fa-boxes-stacked"></i>
+          <input
+            type="number"
+            placeholder="999999"
+            #maxProductsFilter
+            class="flex-1 outline-none text-sm bg-transparent"
+          />
+        </div>
+      </div>
 
-  <!-- Header -->
-  <div class="flex items-center justify-between mb-4">
-    <span class="text-base font-medium">Lista de productos</span>
-    <span class="text-xs px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
-      {{ page.totalElements }} productos
-    </span>
-  </div>
+      <!-- Botón buscar -->
+      <div class="flex flex-col gap-1 md:col-start-3">
+        <label class="text-sm text-transparent font-medium select-none">.</label>
+        <button
+          (click)="
+            applyFilters({
+              name: nameFilter.value || undefined,
+              minProducts: minProductsFilter.value ? +minProductsFilter.value : undefined,
+              maxProducts: maxProductsFilter.value ? +maxProductsFilter.value : undefined,
+            })
+          "
+          class="flex items-center justify-center gap-2 text-white px-5 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
+          style="background: #d97706"
+        >
+          <i class="fa-solid fa-magnifying-glass text-xs"></i>
+          <span class="text-sm font-medium">Buscar</span>
+        </button>
+      </div>
+    </div>
+  </section>
 
-  <!-- Table -->
-  <div class="overflow-x-auto rounded-xl border border-gray-200">
-    <table class="w-full border-collapse text-md">
-      <thead>
-        <tr style="background: #D97706;">
-          <th class="p-3 text-left text-white text-sm font-medium">Id</th>
-          <th class="p-3 text-left text-white text-sm font-medium">Categoria</th>
-          <th class="p-3 text-left text-white text-sm font-medium"># productos</th>
-          <th class="p-3 text-left text-white text-sm font-medium rounded-tr-xl">Acciones</th>
-        </tr>
-      </thead>
+  <!-- Categories table -->
+  <section class="py-4">
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-4">
+      <span class="text-base font-medium">Lista de categorias</span>
+      <span class="text-xs px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
+        {{ page.totalElements }} productos
+      </span>
+    </div>
 
-      <tbody>
-        @for (category of page.data; track category.categoryId) {
-          <tr class="border-b border-gray-100 hover:bg-yellow-50 transition-colors duration-150 last:border-none">
+    <!-- Table -->
+    <div class="overflow-x-auto rounded-xl border border-gray-200">
+      <table class="w-full border-collapse text-md">
+        <thead>
+          <tr style="background: #d97706">
+            <th class="p-3 text-left text-white text-sm font-medium">Id</th>
+            <th class="p-3 text-left text-white text-sm font-medium">Categoria</th>
+            <th class="p-3 text-left text-white text-sm font-medium"># productos</th>
+            <th class="p-3 text-left text-white text-sm font-medium rounded-tr-xl">Acciones</th>
+          </tr>
+        </thead>
 
-            <!-- Id -->
-            <td class="p-3 text-gray-400 text-xs cursor-pointer hover:text-yellow-600">
-              #{{ category.categoryId }}
-            </td>
+        <tbody>
+          @for (category of page.data; track category.categoryId) {
+            <tr
+              class="border-b border-gray-100 hover:bg-yellow-50 transition-colors duration-150 last:border-none"
+            >
+              <!-- Id -->
+              <td class="p-3 text-gray-400 text-xs cursor-pointer hover:text-yellow-600">
+                #{{ category.categoryId }}
+              </td>
 
-            <!-- Nombre -->
-            <td class="p-3 font-medium cursor-pointer hover:text-yellow-600 hover:underline transition-colors"
+              <!-- Nombre -->
+              <td
+                class="p-3 font-medium cursor-pointer hover:text-yellow-600 hover:underline transition-colors"
+              >
+                {{ category.name }}
+              </td>
+
+              <!-- Stock -->
+              <td class="p-3">
+                <span
+                  class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-200 text-emerald-800"
                 >
-              {{ category.name }}
-            </td>
-
-            <!-- Stock -->
-            <td class="p-3">
-
-                <span class="inline-block px-2 py-0.5 rounded-full text-xs font-medium bg-emerald-200 text-emerald-800">
                   {{ category.productsNumber }}
                 </span>
+              </td>
 
-            </td>
-
-
-            <!-- Acciones -->
-            <td class="p-3">
-              <div class="flex gap-2">
-                <button (click)="fillFormToEdit(category)"
-                        class="bg-blue-100 text-blue-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-blue-200 transition-colors">
-                  <i class="fa-solid fa-pen fa-lg"></i>
-                </button>
-                <button (click)="delete(category.categoryId)"
-                        class="bg-red-100 text-red-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-red-200 transition-colors">
-                  <i class="fa-regular fa-trash-can fa-lg"></i>
-                </button>
-              </div>
-            </td>
-
-          </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-
-  <!-- Pagination -->
-  <div class="flex items-center justify-between mt-4">
-
-    <span class="text-xs text-gray-500">
-      Mostrando {{ page.pageLength }} de {{ page.totalElements }} elementos
-    </span>
-
-    <div class="flex gap-1">
-      <button [disabled]="currentPage === 1"
-              (click)="changePage(currentPage - 1)"
-              class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-        ←
-      </button>
-
-      @for (p of [].constructor(page.totalPages); track $index) {
-        <button (click)="changePage($index + 1)"
-                [class]="$index + 1 === currentPage
-                  ? 'text-white rounded-md px-3 py-1 text-xs cursor-pointer border transition-colors'
-                  : 'bg-white text-gray-700 border border-gray-200 rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 transition-colors'"
-                [style]="$index + 1 === currentPage ? 'background: #D97706; border-color: #D97706;' : ''">
-          {{ $index + 1 }}
-        </button>
-      }
-
-      <button [disabled]="currentPage === page.totalPages"
-              (click)="changePage(currentPage + 1)"
-              class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
-        →
-      </button>
+              <!-- Acciones -->
+              <td class="p-3">
+                <div class="flex gap-2">
+                  <button
+                    (click)="fillFormToEdit(category)"
+                    class="bg-blue-100 text-blue-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-blue-200 transition-colors"
+                  >
+                    <i class="fa-solid fa-pen fa-lg"></i>
+                  </button>
+                  <button
+                    (click)="delete(category.categoryId)"
+                    class="bg-red-100 text-red-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-red-200 transition-colors"
+                  >
+                    <i class="fa-regular fa-trash-can fa-lg"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
     </div>
 
-  </div>
+    <!-- Pagination -->
+    <div class="flex items-center justify-between mt-4">
+      <span class="text-xs text-gray-500">
+        Mostrando {{ page.pageLength }} de {{ page.totalElements }} elementos
+      </span>
 
-</section>
+      <div class="flex gap-1">
+        <button
+          [disabled]="currentPage === 1"
+          (click)="changePage(currentPage - 1)"
+          class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          ←
+        </button>
 
+        @for (p of [].constructor(page.totalPages); track $index) {
+          <button
+            (click)="changePage($index + 1)"
+            [class]="
+              $index + 1 === currentPage
+                ? 'text-white rounded-md px-3 py-1 text-xs cursor-pointer border transition-colors'
+                : 'bg-white text-gray-700 border border-gray-200 rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 transition-colors'
+            "
+            [style]="
+              $index + 1 === currentPage ? 'background: #D97706; border-color: #D97706;' : ''
+            "
+          >
+            {{ $index + 1 }}
+          </button>
+        }
+
+        <button
+          [disabled]="currentPage === page.totalPages"
+          (click)="changePage(currentPage + 1)"
+          class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+        >
+          →
+        </button>
+      </div>
+    </div>
+  </section>
 </div>

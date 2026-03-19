@@ -32,8 +32,8 @@ export class CategoryService {
       .set('sizePage', sizePage);;
 
     if(filters?.name) params = params.set('name', filters.name);
-    if(filters?.minPrice) params = params.set('minPrice', filters.minPrice);
-    if(filters?.maxPrice) params = params.set('maxPrice', filters.maxPrice);
+    if(filters?.minProducts) params = params.set('minProducts', filters.minProducts);
+    if(filters?.maxProducts) params = params.set('maxProducts', filters.maxProducts);
 
     return this.http.get<Response<PaginatedResponse<Category>>>(this.baseUrl, {params});
   }
