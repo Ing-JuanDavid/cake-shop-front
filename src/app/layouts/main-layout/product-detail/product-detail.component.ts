@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { RateComponent } from './rate/rate.component';
 import { ProductDetails } from './product-details/product-details.component';
 import { RateService } from '../services/rate.service';
-import { ProductService } from '../services/product.service';
+import { productService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { Rate } from '../../../core/models/rate.model';
 import { RateList } from './rate-list/rate-list.component';
@@ -33,7 +33,7 @@ export class ProductDetailComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductService,
+    private productService: productService,
     private rateService: RateService,
   ) {}
 

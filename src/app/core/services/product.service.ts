@@ -1,21 +1,20 @@
 import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
-import { Product, ProductDto } from '../../../core/models/product.model';
-import { Response } from '../../../core/dtos/responses/genericResponse.response';
-import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
-import { ProductFilters } from '../../../core/dtos/requests/productFilters.request';
+import { Response } from '../dtos/responses/genericResponse.response';
+import { Product } from '../models/product.model';
+import { ProductFilters } from '../dtos/requests/productFilters.request';
+import { PaginatedResponse } from '../dtos/responses/paginatedProduct.response';
 
 @Injectable({
   providedIn: 'root',
 })
-export class ProductService {
+export class productService {
 
-  private baseUrl = 'http://localhost:8080/products';
-
+  baseUrl = 'http://localhost:8080/products';
   http = inject(HttpClient);
 
-  private handlerError(error: HttpErrorResponse) {
+   private handlerError(error: HttpErrorResponse) {
 
     if(error.status !== 0) {
       return of({
@@ -80,6 +79,11 @@ export class ProductService {
   public deleteProduct(productId: number): Observable<Response<Product>>
   {
     return this.http.delete<Response<Product>>(`${this.baseUrl}/${productId}`);
+  }
+
+  public getProductsByCategory(categoryId: number) : Observable<Response<Product[]>>
+  {
+    return this.http.get<Response<Product[]>>(`${this.baseUrl}/categories/${categoryId}`);
   }
 
 }

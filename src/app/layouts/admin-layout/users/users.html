@@ -1,18 +1,28 @@
 <div class="p-6 space-y-8">
   <!-- Título -->
-  <div>
-    <h1 class="text-3xl font-bold">Gestión de usuarios</h1>
-    <p class="text-gray-500 text-sm">Ver, actualizar y eliminar usuarios</p>
+  <div class="flex items-center justify-between mb-6">
+    <div>
+      <h1 class="text-3xl font-bold">Gestión de Usuarios</h1>
+      <p class="text-gray-500 text-sm">Crear, actualizar y restriccion de acceso de usuarios</p>
+    </div>
+    <button
+      (click)="createuser()"
+      class="flex items-center gap-2 text-white px-5 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
+      style="background: #d97706"
+    >
+      <i class="fa-solid fa-plus text-xs"></i>
+      <span class="text-sm font-medium">Crear usuario</span>
+    </button>
   </div>
 
-  @if (userEdit) {
-    <user-view-user-form
-      [user]="userEdit"
-      [editing]="editing"
-      (close)="userEdit = null"
-      (refresh)="loadUsers()"
-    ></user-view-user-form>
-  }
+  <user-view-user-form
+    [user]="userEdit"
+    [editing]="editing"
+    [drawerOpen]="drawerOpen"
+    [drawerAnimated]="drawerAnimated"
+    (closeDrawerEvent)="closeDrawer()"
+    (refresh)="loadUsers()"
+  ></user-view-user-form>
 
   <!-- Filters -->
   <section class="bg-white shadow-xl rounded-2xl p-6">
@@ -170,21 +180,18 @@
 
               <!-- Nombre -->
               <td
+              (click)="goToUserDetails(user.nip.toString())"
                 class="p-3 font-medium cursor-pointer hover:text-yellow-600 hover:underline transition-colors"
               >
                 {{ user.name }}
               </td>
 
               <!-- Email -->
-              <td
-                class="p-3 font-medium cursor-pointer transition-colors"
-              >
+              <td class="p-3 font-medium cursor-pointer transition-colors">
                 {{ user.email }}
               </td>
 
-              <td
-                class="p-3 font-medium cursor-pointer transition-colors"
-              >
+              <td class="p-3 font-medium cursor-pointer transition-colors">
                 {{ user.roles[0] }}
               </td>
 
@@ -192,7 +199,9 @@
               <td class="p-3">
                 <div class="flex gap-2">
                   <button
+                    (click)="editUser(user)"
                     class="bg-blue-100 text-blue-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-blue-200 transition-colors"
+                    title="Editar"
                   >
                     <i class="fa-solid fa-pen fa-lg"></i>
                   </button>
@@ -205,6 +214,7 @@
                         : 'bg-green-100 text-green-800 hover:bg-green-200'
                     "
                     class="border-none rounded-md px-2 py-1.5 cursor-pointer text-xs transition"
+                    [title]="user.accountNonLocked ? 'Bloquear' : 'Desbloquear'"
                   >
                     @if (user.accountNonLocked) {
                       <i class="fa-solid fa-lock fa-lg"></i>

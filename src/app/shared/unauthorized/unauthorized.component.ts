@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { Location } from '@angular/common';
-import { UserService } from '../../layouts/main-layout/services/user.service';
 import { SessionService } from '../../core/session/session.service';
 import { Router } from '@angular/router';
 

@@ -2,8 +2,8 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CartProduct } from '../../../../core/models/cart.model';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from "@angular/forms";
-import { AlertService } from '../../services/alert.service';
-import { CartService } from '../../services/cart.service';
+import { AlertService } from '../../../../core/services/alert.service';
+import { CartService } from '../../../../core/services/cart.service';
 
 @Component({
   selector: 'cart-product-card',

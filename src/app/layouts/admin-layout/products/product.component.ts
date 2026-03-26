@@ -1,15 +1,15 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { Product } from '../../../core/models/product.model';
-import { CategoryService } from '../services/category.service';
+import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../core/models/category.model';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { ProductService } from '../../main-layout/services/product.service';
-import { AlertService } from '../../main-layout/services/alert.service';
+import { AlertService } from '../../../core/services/alert.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 ('../../../core/dtos/responses/paginatedProduct.response');
 import { ProductFilters } from '../../../core/dtos/requests/productFilters.request';
 import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
+import { productService } from '../../../core/services/product.service';
 
 @Component({
   selector: 'admin-product-view',
@@ -36,7 +36,7 @@ export class ProductComponent {
 
   fb = inject(FormBuilder);
   categoryService = inject(CategoryService);
-  productService = inject(ProductService);
+  productService = inject(productService);
   alertService = inject(AlertService);
   router = inject(Router);
 

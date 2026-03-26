@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { CartService } from '../services/cart.service';
+import { CartService } from '../../../core/services/cart.service';
 import { CartProduct, CartProducts } from '../../../core/models/cart.model';
 import { CommonModule } from '@angular/common';
 import { ProductCart } from './cart-product-card/cart-product-card.component';
-import { AlertService } from '../services/alert.service';
+import { AlertService } from '../../../core/services/alert.service';
 import { OrderService } from '../services/order.service';
 import { NotFoundView } from '../../../shared/info-views/not-found/not-found.component';
 

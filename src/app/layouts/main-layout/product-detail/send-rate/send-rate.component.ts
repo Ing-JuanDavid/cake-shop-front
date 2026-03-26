@@ -3,7 +3,7 @@ import { InteractiveStars } from "../interactive-stars/interactive-stars.compone
 import { FormsModule } from "@angular/forms";
 import { RateService } from '../../services/rate.service';
 import { Rate } from '../../../../core/models/rate.model';
-import { AlertService } from '../../services/alert.service';
+import { AlertService } from '../../../../core/services/alert.service';
 import { SpinnerComponent } from "../../../../shared/spinner/spinner.component";
 import { finalize } from 'rxjs';
 import { SessionService } from '../../../../core/session/session.service';

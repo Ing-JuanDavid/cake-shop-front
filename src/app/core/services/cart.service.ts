@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { Response } from '../../../core/dtos/responses/genericResponse.response';
-import { CartProduct, CartProducts } from '../../../core/models/cart.model';
+import { Response } from '../dtos/responses/genericResponse.response';
+import { CartProduct, CartProducts } from '../models/cart.model';
 import { filter } from 'rxjs/operators';
 
 

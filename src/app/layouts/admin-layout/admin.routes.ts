@@ -26,6 +26,15 @@ export const ADMIN_ROUTES: Routes = [
         path: 'users',
         loadComponent: () => import('./users/users.component').then(m=> m.Users),
         canActivate: [AdminGuard]
+      },
+      {
+        path: 'users/:userId',
+        loadComponent: ()=> import('./user-details/user-details.component').then(m => m.UserDetails),
+        canActivate: [AdminGuard]
+      },
+      {
+        path: 'users/:userId/orders/:orderId',
+        loadComponent: ()=> import('./order-details/order-details.component').then(m => m.OrderDetails),
       }
     ]
   }

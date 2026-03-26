@@ -1,10 +1,12 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Response } from '../../../core/dtos/responses/genericResponse.response';
-import { User, UserDto } from '../../../core/models/user.model';
-import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
-import { UserFilters } from '../../../core/dtos/requests/userFilters.request';
+import { Response } from '../dtos/responses/genericResponse.response';
+import { UpdatedUser, User, UserDto } from '../models/user.model';
+import { PaginatedResponse } from '../dtos/responses/paginatedProduct.response';
+import { UserFilters } from '../dtos/requests/userFilters.request';
+import { UserRegisterDto } from '../dtos/requests/userRegister.request';
+import { UserComplete } from '../models/userComplete.model';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +18,25 @@ export class UserService {
 
   baseUrl = 'http://localhost:8080/users';
 
-  public getUser(userId: number): Observable<Response<User>>
+    public getUserInfo(): Observable<Response<User>>
   {
-    return this.http.get<Response<User>>(`${this.baseUrl}/${userId}`);
+    return this.http.get<Response<User>>(this.baseUrl+'/me');
+  }
+
+  public updateUserInfo(updatedUser: UpdatedUser): Observable<Response<User>>
+  {
+    return this.http.put<Response<User>>(`${this.baseUrl}/me`, updatedUser);
+  }
+
+
+  public postUser(user: UserRegisterDto ) : Observable<Response<User>>
+  {
+    return this.http.post<Response<User>>(this.baseUrl, user);
+  }
+
+  public getUser(userId: string): Observable<Response<UserComplete>>
+  {
+    return this.http.get<Response<UserComplete>>(`${this.baseUrl}/${userId}`);
   }
 
   public getAllUsers(): Observable<Response<User[]>>

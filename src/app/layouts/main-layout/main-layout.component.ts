@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { RouterOutlet } from '@angular/router';
 import { Alert } from "./shared/alert/alert.component";
-import { AlertService } from './services/alert.service';
+import { AlertService } from '../../core/services/alert.service';
 
 
 @Component({

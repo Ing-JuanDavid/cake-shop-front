@@ -1,7 +1,7 @@
 import { Component, ElementRef, inject, ViewChild } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CategoryService } from '../services/category.service';
-import { AlertService } from '../../main-layout/services/alert.service';
+import { CategoryService } from '../../../core/services/category.service';
+import { AlertService } from '../../../core/services/alert.service';
 import { Category } from '../../../core/models/category.model';
 import { CategoryFilters } from '../../../core/dtos/requests/categoryFilters.request';
 import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
@@ -44,7 +44,7 @@ export class Categories {
   @ViewChild('maxProductsFilter') maxProductaFilter! : ElementRef;
 
   ngOnInit() {
-    this.loadData();
+    this.loadCategories();
   }
 
   fillFormToEdit(category: Category) {
@@ -81,7 +81,7 @@ export class Categories {
       next: (res) => {
         this.clearForm();
         this.alertService.success('Categoria creada');
-        this.loadData();
+        this.loadCategories();
         this.alertService.clear(2000);
       },
       error: (err) => {
@@ -103,7 +103,7 @@ export class Categories {
       next: (res) => {
         this.clearForm();
         this.alertService.success('Categoria actualizada');
-        this.loadData();
+        this.loadCategories();
         this.alertService.clear(2000);
       },
       error: (err) => {
@@ -118,13 +118,13 @@ export class Categories {
       next: (res) => {
         this.clearForm();
         this.alertService.success('Categoria eliminada');
-        //this.loadData();
+        this.loadCategories();
         this.alertService.clear(2000);
       },
     });
   }
 
-  loadData() {
+  loadCategories() {
     this.categoryService.getCategories(this.currentPage, this.sizePage, this.filters).subscribe({
       next: (res) => (this.page = res.data),
     });
@@ -133,7 +133,7 @@ export class Categories {
   applyFilters(filters: CategoryFilters) {
     this.filters = filters;
     this.currentPage = 1; // reset to first page when filtering
-    this.loadData();
+    this.loadCategories();
   }
 
   cleanFilters()
@@ -146,6 +146,6 @@ export class Categories {
 
   changePage(page: number) {
     this.currentPage = page;
-    this.loadData();
+    this.loadCategories();
   }
 }

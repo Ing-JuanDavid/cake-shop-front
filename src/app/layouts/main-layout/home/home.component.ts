@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProductService } from '../services/product.service';
+import { productService } from '../../../core/services/product.service';
 import { AsyncPipe } from '@angular/common';
 import { Observable } from 'rxjs';
 import { ProductCardComponent } from "../home/product-card/product-card.component";
@@ -42,7 +42,7 @@ export class HomeComponent {
   public constructor(
     public sessionService: SessionService,
     private router:Router,
-    private productService: ProductService
+    private productService: productService
   ) {}
 
 

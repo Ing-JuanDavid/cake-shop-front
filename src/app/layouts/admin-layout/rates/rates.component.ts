@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
-import { FormBuilder, ReactiveFormsModule, Validators, ɵInternalFormsSharedModule } from '@angular/forms';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { RateService } from '../../main-layout/services/rate.service';
 import { Rate } from '../../../core/models/rate.model';
-import { AlertService } from '../../main-layout/services/alert.service';
-import { CategoryService } from '../services/category.service';
+import { AlertService } from '../../../core/services/alert.service';
+import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../core/models/category.model';
-import { productService } from '../services/product.service';
+import { productService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 
 @Component({

@@ -1,9 +1,9 @@
 import { Component, inject } from '@angular/core';
 import { SessionService } from '../../../core/session/session.service';
-import { UserService } from '../services/user.service';
 import { User } from '../../../core/models/user.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { AlertService } from '../services/alert.service';
+import { AlertService } from '../../../core/services/alert.service';
+import { UserService } from '../../../core/services/user.service';
 
 @Component({
   selector: 'user-profile-view',

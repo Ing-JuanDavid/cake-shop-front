@@ -1,11 +1,11 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Response } from '../../../core/dtos/responses/genericResponse.response';
-import { Category } from '../../../core/models/category.model';
-import { CategoryFilters } from '../../../core/dtos/requests/categoryFilters.request';
-import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
-import { Product } from '../../../core/models/product.model';
+import { Response } from '../dtos/responses/genericResponse.response';
+import { Category } from '../models/category.model';
+import { CategoryFilters } from '../dtos/requests/categoryFilters.request';
+import { PaginatedResponse } from '../dtos/responses/paginatedProduct.response';
+
 
 @Injectable({
   providedIn: 'root',

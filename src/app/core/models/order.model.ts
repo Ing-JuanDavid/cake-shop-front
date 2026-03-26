@@ -7,4 +7,5 @@ export interface Order {
   status: string,
   date: Date,
   orderId: number
+  address: string;
 }

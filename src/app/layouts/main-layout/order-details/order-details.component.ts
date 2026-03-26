@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { OrderService } from '../services/order.service';
 import { Order } from '../../../core/models/order.model';
-import { AlertService } from '../services/alert.service';
+import { AlertService } from '../../../core/services/alert.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { OrderProduct } from './order-product/order-product.component';
