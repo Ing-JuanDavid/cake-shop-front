@@ -51,8 +51,8 @@ import { SessionService } from '../../../../core/session/session.service';
         <button
           [disabled]="loading"
           (click)="!foundRate ? sendRate() : updateRate()"
-          class="px-4 py-2 bg-yellow-900 text-white text-sm font-medium
-                rounded-md hover:bg-yellow-800 transition hover:cursor-pointer"
+          class="px-4 py-2 bg-yellow-600 text-white text-sm font-medium
+                rounded-md hover:bg-yellow-700 transition hover:cursor-pointer"
         >
           @if (!loading && !foundRate) {
             Enviar calificación

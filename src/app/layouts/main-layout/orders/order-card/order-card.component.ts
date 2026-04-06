@@ -2,34 +2,58 @@ import { Component, Input } from '@angular/core';
 import { Order } from '../../../../core/models/order.model';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { ORDER_STATUSES } from '../../../../core/models/orderStatuses.model';
 
 @Component({
   selector: 'orders-order-card',
   imports: [CommonModule],
   template: `
-    <div class="flex flex-col gap-3 p-4 border border-zinc-300 rounded-md shadow-sm mb-7">
+     <div class="border-b border-yellow-900/10 py-4 hover:bg-yellow-900/5 transition-colors px-2 cursor-pointer"
+         (click)="goToOrden(order?.orderId)">
 
-      <!-- Header -->
-      <div class="border-b border-zinc-300 pb-2 w-full">
-        <p class="text-sm text-zinc-600">
-          {{ order?.date | date: 'mediumDate' }}
-        </p>
+      <!-- Top row -->
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-box text-yellow-900/40 text-sm"></i>
+          <span class="text-sm font-semibold">Pedido #{{ order?.orderId }}</span>
+        </div>
+        <span class="text-xs text-yellow-900/40">{{ order?.date | date:'mediumDate' }}</span>
       </div>
 
-      <!-- Order Info -->
-      <div class="flex flex-col gap-1 text-left w-full text-yellow-900/80">
-        <p class="font-medium">Estado: <span class="font-bold">{{ order?.status }}</span></p>
-        <p class="text-sm">Productos: <span class="text-zinc-700">{{ order?.products?.length }}</span></p>
-        <p class="font-semibold">Total: {{ '$' + (order?.total | number: '1.0-0') }}</p>
+      <!-- Info row -->
+      <div class="flex items-center justify-between">
+
+        <div class="flex flex-col gap-0.5">
+          <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50">Productos</p>
+          <p class="text-sm">{{ order?.products?.length }} producto(s)</p>
+        </div>
+
+        <div class="flex flex-col gap-0.5 items-center">
+          <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50">Estado</p>
+          <span class="text-xs px-2.5 py-0.5 rounded-full font-medium"
+            [ngClass]="{
+              'bg-yellow-100 text-yellow-800':   order?.status === 'PENDING',
+              'bg-blue-100 text-blue-800':        order?.status === 'IN_PROGRESS',
+              'bg-purple-100 text-purple-800':    order?.status === 'SHIPPED',
+              'bg-green-100 text-green-800':      order?.status === 'DELIVERED',
+              'bg-red-100 text-red-800':          order?.status === 'CANCELED'
+            }">
+            {{ statusLabel(order?.status) }}
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-0.5 items-end">
+          <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50">Total</p>
+          <p class="text-sm font-semibold">{{ "" + (order?.total | number:'1.0-0') }}</p>
+        </div>
+
       </div>
 
-      <!-- Action -->
-      <div class="flex justify-end w-full">
-        <button
-        (click)="goToOrden(order?.orderId)"
-        class="bg-yellow-600 text-white px-3 py-1.5 rounded-sm text-sm hover:bg-yellow-700 hover:cursor-pointer transition">
-          Ver orden
-        </button>
+      <!-- Footer -->
+      <div class="flex justify-end mt-3">
+        <span class="flex items-center gap-1.5 text-xs font-semibold text-yellow-900/50 hover:text-yellow-700 transition-colors">
+          Ver detalles <i class="fa-solid fa-arrow-right text-xs"></i>
+        </span>
       </div>
 
     </div>
@@ -47,6 +71,11 @@ export class OrderCard {
 
    goToOrden(id: any) {
     this.router.navigate([`/user/orders/${id}`]);
+  }
+
+  statusLabel(status?: string)
+  {
+    return ORDER_STATUSES.find(o => o.value == status)?.label ?? status;
   }
 
 }

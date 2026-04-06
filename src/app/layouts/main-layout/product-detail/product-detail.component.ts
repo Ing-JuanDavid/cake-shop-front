@@ -4,17 +4,17 @@ import { CommonModule } from '@angular/common';
 import { RateComponent } from './rate/rate.component';
 import { ProductDetails } from './product-details/product-details.component';
 import { RateService } from '../services/rate.service';
-import { productService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
 import { Rate } from '../../../core/models/rate.model';
 import { RateList } from './rate-list/rate-list.component';
+import { ProductService } from '../../../core/services/product.service';
 
 @Component({
   selector: 'product-detail-view',
   standalone: true,
   imports: [CommonModule, RateComponent, ProductDetails],
   template: `
-    <div class="pt-5 px-10 md:px-20 min-h-screen">
+    <div class="pt-10 px-10 md:px-20">
       <product-details [product]="product"></product-details>
       <product-details-rate
         [productId]="productId"
@@ -33,7 +33,7 @@ export class ProductDetailComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private productService: productService,
+    private productService: ProductService,
     private rateService: RateService,
   ) {}
 

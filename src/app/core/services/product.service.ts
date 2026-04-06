@@ -9,7 +9,7 @@ import { PaginatedResponse } from '../dtos/responses/paginatedProduct.response';
 @Injectable({
   providedIn: 'root',
 })
-export class productService {
+export class ProductService {
 
   baseUrl = 'http://localhost:8080/products';
   http = inject(HttpClient);
@@ -81,7 +81,7 @@ export class productService {
     return this.http.delete<Response<Product>>(`${this.baseUrl}/${productId}`);
   }
 
-  public getProductsByCategory(categoryId: number) : Observable<Response<Product[]>>
+  public getProductsByCategory(categoryId: string) : Observable<Response<Product[]>>
   {
     return this.http.get<Response<Product[]>>(`${this.baseUrl}/categories/${categoryId}`);
   }

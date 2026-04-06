@@ -8,7 +8,7 @@ import { RouterOutlet } from '@angular/router';
 
   <div class="flex h-screen">
     <div class="hidden md:block w-1/2">
-      <img src="assets/auth-image.jpg" alt=""
+      <img src="assets/img/auth-image.jpg" alt=""
         class="w-full h-full object-cover">
     </div>
 

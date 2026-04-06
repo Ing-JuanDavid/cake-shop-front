@@ -11,55 +11,75 @@ import { NotFoundView } from '../../../shared/info-views/not-found/not-found.com
   selector: 'app-cart',
   imports: [CommonModule, ProductCart, NotFoundView],
   template: `
-    @if (cart && cart.products.length>0) {
-      <div class="min-h-screen m-auto px-4 sm:px-6 md:px-10 lg:px-20 max-w-7xl mx-auto">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-10">
+  @if (cart && cart.products.length > 0) {
+    <div class="min-h-screen pt-6 px-4 sm:px-6 md:px-10 lg:px-20 max-w-5xl mx-auto">
 
-          <!-- Cart products -->
+      <!-- Header -->
+      <div class="mb-6">
+        <h1 class="text-3xl font-bold">Tu Carrito</h1>
+        <p class="text-gray-500 text-sm">{{ totalItems }} producto(s) agregado(s)</p>
+      </div>
 
-          <div class="flex flex-col col-span-1 md:col-span-2 max-h-[400px] overflow-y-auto">
-            @for (item of cart.products; track item.productId) {
-              <cart-product-card [cartProduct]="item" (deleteItem)="deleteItem($event)" (updateItem)="updateItem($event)"></cart-product-card>
-            }
-          </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          <!-- Shop summary -->
-          <div class="flex flex-col col-span-1 gap-2 text-yellow-900/80">
-            <h2 class="text-xl font-semibold tracking-wide mb-2 border-b">
+        <!-- Cart products -->
+        <div class="flex flex-col col-span-1 md:col-span-2 gap-3 max-h-[60vh] overflow-y-auto pr-1">
+          @for (item of cart.products; track item.productId) {
+            <cart-product-card
+              [cartProduct]="item"
+              (deleteItem)="deleteItem($event)"
+              (updateItem)="updateItem($event)">
+            </cart-product-card>
+          }
+        </div>
+
+        <!-- Summary -->
+        <div class="col-span-1">
+          <div class="bg-white rounded-xl border border-[#EFE0C8] shadow-sm p-5 space-y-4 sticky top-6">
+
+            <h2 class="text-base font-semibold border-b border-[#EFE0C8] pb-3">
               Resumen de compra
             </h2>
 
-            <div class="flex justify-between">
-              <p class="text-sm font-semibold">
-                # productos:              </p>
-              <p class="text-sm font-semibold">
-                {{ totalItems}}
-              </p>
+            <div class="space-y-2">
+              <div class="flex justify-between text-sm text-gray-500">
+                <p>Productos</p>
+                <p>{{ totalItems }} item(s)</p>
+              </div>
+              <div class="flex justify-between text-sm text-gray-500">
+                <p>Subtotal</p>
+                <p>{{ "$" + (cart.cartTotal | number:'1.0-0') }}</p>
+              </div>
             </div>
 
-            <div class="flex justify-between">
-              <p class="text-2xl font-semibold">
-                Total:              </p>
-              <p class="text-2xl font-semibold">
-                {{ '$' + (cart.cartTotal | number:'1.0-0') }}
-              </p>
+            <div class="border-t border-[#EFE0C8] pt-3 flex justify-between items-center">
+              <p class="text-base font-semibold text-gray-700">Total</p>
+              <p class="text-xl font-bold text-yellow-700">{{ "$" + (cart.cartTotal | number:'1.0-0') }}</p>
             </div>
 
             <button
-            (click)="makeOrder()"
-              class="px-4 py-3 bg-yellow-600 text-white text-sm font-medium
-                    rounded-md hover:bg-yellow-700 transition hover:cursor-pointer w-2/4 self-end md:w-full"
-            >
-              Continuar compra
-        </button>
-          </div>
+              (click)="makeOrder()"
+              class="w-full flex items-center justify-center gap-2 text-white py-3 rounded-xl text-sm font-medium transition cursor-pointer hover:opacity-90"
+              style="background: #D97706;">
+              <i class="fa-solid fa-bag-shopping text-xs"></i>
+              <span>Continuar compra</span>
+            </button>
 
+            <p class="text-xs text-gray-400 text-center">
+              <i class="fa-solid fa-lock text-xs mr-1"></i>
+              Compra segura y protegida
+            </p>
+
+          </div>
         </div>
+
       </div>
-    } @else {
-      <info-view-not-found [msj]="'Tú carrito está vacío'"></info-view-not-found>
-    }
-  `,
+    </div>
+
+  } @else {
+    <info-view-not-found [msj]="'Tu carrito está vacío'"></info-view-not-found>
+  }
+`,
   styles: ``,
 })
 export class Cart {

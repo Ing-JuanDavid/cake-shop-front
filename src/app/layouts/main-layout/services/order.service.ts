@@ -3,6 +3,7 @@ import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Response } from '../../../core/dtos/responses/genericResponse.response';
 import { Order } from '../../../core/models/order.model';
+import { orderDto } from '../../../core/dtos/requests/order.request';
 
 
 @Injectable({
@@ -30,6 +31,11 @@ export class OrderService {
   public getOrderById(orderId: string): Observable<Response<Order>>
   {
     return this.http.get<Response<Order>>(this.baseUrl+`/${orderId}`);
+  }
+
+  public updateOrderStatus(orderId: string, order: orderDto): Observable<Response<Order>>
+  {
+    return this.http.put<Response<Order>>(`${this.baseUrl}/${orderId}`, order);
   }
 
 }

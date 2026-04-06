@@ -34,9 +34,4 @@ import { CommonModule } from '@angular/common';
 export class RateList {
   @Input() rateList: Rate[] | null = null;
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (changes['rateList']) {
-      console.log('rate list: ', this.rateList);
-    }
-  }
 }

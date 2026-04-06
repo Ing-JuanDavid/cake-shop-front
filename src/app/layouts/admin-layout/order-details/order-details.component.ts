@@ -6,6 +6,7 @@ import { ActivatedRoute, Router } from "@angular/router";
 import { OrderService } from "../../main-layout/services/order.service";
 import { AlertService } from "../../../core/services/alert.service";
 import { SessionService } from "../../../core/session/session.service";
+import { ORDER_STATUSES } from "../../../core/models/orderStatuses.model";
 
 @Component({
   selector: 'order-details-view',
@@ -103,13 +104,7 @@ export class OrderDetails {
   order: Order | null = null;
   isAdmin = false; // ← set this based on your auth service
 
-  statuses = [
-    { value: 'PENDING',     label: 'Pendiente' },
-    { value: 'IN_PROGRESS', label: 'En progreso' },
-    { value: 'SHIPPED',     label: 'Enviado' },
-    { value: 'DELIVERED',   label: 'Entregado' },
-    { value: 'CANCELED',    label: 'Cancelado' },
-  ];
+   statuses = ORDER_STATUSES;
 
   constructor(
     private route: ActivatedRoute,
@@ -135,7 +130,19 @@ export class OrderDetails {
   }
 
   changeStatus(status: string) {
-    // ← wire up your endpoint here
+    this.orderService.updateOrderStatus(this.orderId, {orderStatus: status}).subscribe(
+      {
+        next: res => {
+          this.alertService.success('Orden actualizada');
+          this.loadOrder();
+          this.alertService.clear(3000);
+        },
+        error: err => {
+          this.alertService.error(err.error.error);
+          this.alertService.clear(3000);
+        }
+      }
+    )
   }
 
   statusLabel(status: string): string {

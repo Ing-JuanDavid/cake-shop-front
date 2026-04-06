@@ -1,6 +1,12 @@
 /* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
 
+
+/* styles.css */
+body {
+  /* background-color: #FDF6EC; */
+}
+
 @font-face {
   font-family: 'Kaushan';
   src: url('./assets/fonts/KaushanScript-Regular.ttf') format('truetype');

@@ -5,10 +5,13 @@ import { AlertService } from '../../../core/services/alert.service';
 import { Category } from '../../../core/models/category.model';
 import { CategoryFilters } from '../../../core/dtos/requests/categoryFilters.request';
 import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
+import { Product } from '../../../core/models/product.model';
+import { ProductService } from '../../../core/services/product.service';
+import { CategoryProduct } from "./category-product/category-product.component";
 
 @Component({
   selector: 'admin-categories-view',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, CategoryProduct],
   templateUrl: './categories.html',
   styles: ``,
 })
@@ -19,10 +22,15 @@ export class Categories {
   fb = inject(FormBuilder);
   categoryService = inject(CategoryService);
   alertService = inject(AlertService);
+  productService = inject(ProductService);
 
   currentPage = 1;
   sizePage = 5;
   filters: CategoryFilters = {};
+
+  expandedCategoryId: number | null = null;
+  categoryProducts: Product[] = [];
+  loadingProducts = false;
 
   page: PaginatedResponse<Category> = {
     currentPage: 1,
@@ -36,6 +44,7 @@ export class Categories {
   categoryForm = this.fb.nonNullable.group({
     categoryId: [0],
     name: ['', [Validators.required, Validators.maxLength(20)]],
+    img: this.fb.control<null | File>(null)
   });
 
   // filters variables
@@ -45,6 +54,39 @@ export class Categories {
 
   ngOnInit() {
     this.loadCategories();
+  }
+
+    onFileChange(event: Event) {
+    const input = event.target as HTMLInputElement;
+    const imgControl = this.f.img;
+
+    // if (this.editing && !input.files?.length) {
+    //   imgControl?.setErrors(null);
+    //   return;
+    // }
+
+    // imgControl?.addValidators(Validators.required);
+    imgControl?.markAsTouched();
+
+    if (!input.files?.length) {
+      return;
+    }
+
+    const file = input.files[0];
+    const maxSize = 2 * 1024 * 1024;
+
+    if (!file.type.startsWith('image/')) {
+      imgControl?.setErrors({ invalidType: true });
+      return;
+    }
+
+    if (file.size > maxSize) {
+      imgControl?.setErrors({ maxSize: true });
+      return;
+    }
+
+    imgControl?.setErrors(null);
+    imgControl?.setValue(file);
   }
 
   fillFormToEdit(category: Category) {
@@ -75,9 +117,14 @@ export class Categories {
       return;
     }
 
-    const { categoryId, ...category } = this.categoryForm.getRawValue();
 
-    this.categoryService.postCategory(category).subscribe({
+    const formData = new FormData;
+
+    const data = this.categoryForm.getRawValue();
+    formData.append('name', data.name);
+    if(data.img != null) formData.append('img', data.img);
+
+    this.categoryService.postCategory(formData).subscribe({
       next: (res) => {
         this.clearForm();
         this.alertService.success('Categoria creada');
@@ -148,4 +195,25 @@ export class Categories {
     this.currentPage = page;
     this.loadCategories();
   }
+
+  toggleCategory(category: Category) {
+    if (this.expandedCategoryId === category.categoryId) {
+        this.expandedCategoryId = null;  // collapse
+        return;
+    }
+    this.expandedCategoryId = category.categoryId;
+    this.loadingProducts = true;
+    this.productService.getProductsByCategory(category.categoryId.toString()).subscribe(
+      {
+        next: res => {
+          this.categoryProducts = res.data;
+          this.loadingProducts = false;
+        },
+        error: err => {
+          this.alertService.error(err.error.error);
+          this.alertService.clear(3000);
+          }
+      }
+    )
+}
 }

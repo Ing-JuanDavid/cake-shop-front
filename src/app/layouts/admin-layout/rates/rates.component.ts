@@ -5,8 +5,8 @@ import { Rate } from '../../../core/models/rate.model';
 import { AlertService } from '../../../core/services/alert.service';
 import { CategoryService } from '../../../core/services/category.service';
 import { Category } from '../../../core/models/category.model';
-import { productService } from '../../../core/services/product.service';
 import { Product } from '../../../core/models/product.model';
+import { ProductService } from '../../../core/services/product.service';
 
 @Component({
   selector: 'admin-rates-view',
@@ -18,7 +18,7 @@ export class Rates {
 
   rateService = inject(RateService);
   categoryService =inject(CategoryService);
-  productService = inject(productService);
+  productService = inject(ProductService);
   rateservice = inject(RateService)
   alertservice = inject(AlertService);
   fb = inject(FormBuilder);
@@ -84,7 +84,7 @@ export class Rates {
 
   loadProducts(categoryId: number)
   {
-    this.productService.getProductsByCategory(categoryId).subscribe({
+    this.productService.getProductsByCategory(categoryId.toString()).subscribe({
       next: res=> {this.products = res.data}
     })
   }

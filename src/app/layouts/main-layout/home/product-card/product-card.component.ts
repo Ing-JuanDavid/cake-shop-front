@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
       </div>
 
       <!-- Cuerpo -->
-      <div class="p-3 flex flex-col gap-0 text-yellow-900/80 items-center">
+      <div class="p-3 flex flex-col gap-0 text-yellow-900 items-center">
         <h3 class="text-sm tracking-wider">
           {{ product?.name | uppercase}}
         </h3>

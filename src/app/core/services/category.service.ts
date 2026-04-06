@@ -38,9 +38,9 @@ export class CategoryService {
     return this.http.get<Response<PaginatedResponse<Category>>>(this.baseUrl, {params});
   }
 
-  public postCategory(category: {name: string}) : Observable<Response<Category>>
+  public postCategory(data: FormData) : Observable<Response<Category>>
   {
-    return this.http.post<Response<Category>>(this.baseUrl, category);
+    return this.http.post<Response<Category>>(this.baseUrl, data);
   }
 
   public putCategory(category: {name: string}, categoryId: number) : Observable<Response<Category>>

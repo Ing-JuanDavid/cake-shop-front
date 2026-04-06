@@ -6,55 +6,76 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { OrderProduct } from './order-product/order-product.component';
 import { OrderProductList } from './order-product-list/order-product-list.component';
+import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
 
 @Component({
   selector: 'order-details-view',
   imports: [CommonModule, OrderProductList],
   template: `
-    <div
-      class="flex flex-col gap-4 p-6 border border-zinc-300 rounded-md shadow-sm max-w-lg mx-auto"
-    >
-      @if (order) {
-        <!-- Header -->
-        <div class="border-b border-zinc-300 pb-2 text-yellow-900/70">
-          <h2 class="text-xl font-semibold">Detalles de la Orden</h2>
-          <p class="text-s">Fecha: {{ order.date | date: 'mediumDate' }}</p>
-        </div>
+  <div class="p-6 max-w-2xl mx-auto space-y-6">
+    @if (order) {
 
-        <!-- Order Info -->
-        <div class="text-yellow-900/70 flex flex-col gap-2">
-          <p class="font-medium">
-            Estado: <span class="font-normal">{{ order.status }}</span>
+      <!-- Header -->
+      <div class="flex items-center gap-3">
+        <button
+          (click)="goToOrders()"
+          class="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors">
+          <i class="fa-solid fa-arrow-left fa-lg"></i>
+        </button>
+        <div>
+          <h1 class="text-2xl font-bold">Pedido #{{ order.orderId }}</h1>
+          <p class="text-gray-500 text-sm">{{ order.date | date:'mediumDate' }}</p>
+        </div>
+      </div>
+
+      <!-- Status + Info -->
+      <section class="bg-white rounded-2xl border border-[#EFE0C8] shadow-sm p-5 space-y-4">
+
+        <!-- Status + Total -->
+        <div class="flex items-center justify-between">
+          <span
+            class="text-xs px-2.5 py-0.5 rounded-full font-medium"
+            [ngClass]="{
+              'bg-yellow-100 text-yellow-800': order.status === 'PENDING',
+              'bg-blue-100 text-blue-800': order.status === 'IN_PROGRESS',
+              'bg-purple-100 text-purple-800': order.status === 'SHIPPED',
+              'bg-green-100 text-green-800': order.status === 'DELIVERED',
+              'bg-red-100 text-red-800': order.status === 'CANCELED'
+            }">
+            {{ statusLabel(order.status) }}
+          </span>
+          <p class="text-lg font-bold text-yellow-700">
+            {{ "$" + (order.total | number:'1.0-0') }}
           </p>
-          <p class="text-sm">Productos: {{ order.products.length }}</p>
-          <p class="font-semibold text-lg">Total: {{ '$' + (order.total | number: '1.0-0') }}</p>
         </div>
 
-        <!-- Products List -->
-
-        @if (order.products.length > 0) {
-          <div class="border-t border-zinc-300 pt-3">
-            <h3 class="text-yellow-900/70 text-md font-medium mb-2">Productos</h3>
-
-            <div class="flex flex-col gap-1 text-sm text-zinc-700 max-h-72 overflow-y-auto">
-              <order-details-order-product-list [order]="order"></order-details-order-product-list>
-            </div>
+        <!-- Info grid -->
+        <div class="grid grid-cols-2 gap-4 pt-2 border-t border-[#EFE0C8]">
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-gray-400 font-medium">Fecha</label>
+            <p class="text-sm font-medium text-gray-700">{{ order.date | date:'mediumDate' }}</p>
           </div>
-        }
-
-        <!-- Action -->
-        <div class="flex justify-end">
-          <button
-            (click)="goToOrders()"
-            class="mt-4 bg-yellow-600 text-white px-6 py-2 rounded-md hover:cursor-pointer
-                     hover:bg-yellow-700 transition"
-          >
-            Volver
-          </button>
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-gray-400 font-medium">Productos</label>
+            <p class="text-sm font-medium text-gray-700">{{ order.products.length }} producto(s)</p>
+          </div>
         </div>
+
+      </section>
+
+      <!-- Products -->
+      @if (order.products.length > 0) {
+        <section class="bg-white rounded-2xl border border-[#EFE0C8] shadow-sm p-5">
+          <h2 class="text-base font-medium mb-4">Productos</h2>
+          <div class="max-h-72 overflow-y-auto pr-1">
+            <order-details-order-product-list [order]="order"></order-details-order-product-list>
+          </div>
+        </section>
       }
-    </div>
-  `,
+
+    }
+  </div>
+`,
   styles: ``,
 })
 export class OrderDetails {
@@ -86,4 +107,9 @@ export class OrderDetails {
   goToOrders() {
     this.router.navigate(['user/orders']);
   }
+
+   statusLabel(status?: string)
+    {
+      return ORDER_STATUSES.find(o => o.value == status)?.label ?? status;
+    }
 }

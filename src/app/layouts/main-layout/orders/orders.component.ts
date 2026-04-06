@@ -1,43 +1,46 @@
 import { Component } from '@angular/core';
 import { OrderService } from '../services/order.service';
 import { Order } from '../../../core/models/order.model';
-import { OrderCard } from "./order-card/order-card.component";
+import { OrderCard } from './order-card/order-card.component';
 import { NotFoundView } from '../../../shared/info-views/not-found/not-found.component';
 
 @Component({
   selector: 'orders-view',
-  imports: [OrderCard, NotFoundView],
+  imports: [NotFoundView, OrderCard],
   template: `
+   <div class="max-w-2xl mx-auto px-4 py-8 text-yellow-900">
 
-  <div class="w-3/4 m-auto max-h-dvh overflow-y-auto">
-    @for(order of ordersList; track order.orderId) {
-      <orders-order-card [order]="order" class="w-3/4"></orders-order-card>
-    }
-    @empty {
-      <info-view-not-found [msj]="'Aún no tienes pedidos'"></info-view-not-found>
-    }
+      <!-- Header -->
+      <div class="mb-6 border-b border-yellow-900/20 pb-4">
+        <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50 mb-1">Historial</p>
+        <h2 class="text-2xl font-semibold uppercase tracking-widest">Mis Pedidos</h2>
+        <p class="text-sm text-yellow-900/50 mt-1">{{ ordersList.length }} pedidos realizados</p>
+      </div>
 
-  </div>
+      <!-- List -->
+      <div class="flex flex-col gap-4 overflow-y-auto max-h-[65vh]">
+        @for (order of ordersList; track order.orderId) {
+          <orders-order-card [order]="order"></orders-order-card>
+        } @empty {
+          <info-view-not-found [msj]="'Aún no tienes pedidos'"></info-view-not-found>
+        }
+      </div>
 
-
-  `,
-  styles: `
-  `,
+    </div>
+`,
+  styles: ``,
 })
 export class Orders {
-
   ordersList: Order[] | [] = [];
 
-constructor(
-  private orderService: OrderService
-){}
+  constructor(private orderService: OrderService) {}
 
-  ngOnInit(){
-    this.orderService.getAllOrders().subscribe(
-      {
-        next: res=> this.ordersList = res.data.map(order=> ({...order, date: new Date(order.date)}))
-                                              .sort((a,b)=>b.date.getTime() - a.date.getTime())
-      }
-    )
+  ngOnInit() {
+    this.orderService.getAllOrders().subscribe({
+      next: (res) =>
+        (this.ordersList = res.data
+          .map((order) => ({ ...order, date: new Date(order.date) }))
+          .sort((a, b) => b.date.getTime() - a.date.getTime())),
+    });
   }
 }
