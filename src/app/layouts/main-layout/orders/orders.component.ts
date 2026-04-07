@@ -8,7 +8,7 @@ import { NotFoundView } from '../../../shared/info-views/not-found/not-found.com
   selector: 'orders-view',
   imports: [NotFoundView, OrderCard],
   template: `
-   <div class="max-w-2xl mx-auto px-4 py-8 text-yellow-900">
+   <div class="max-w-4xl mx-auto px-4 py-8 text-yellow-900">
 
       <!-- Header -->
       <div class="mb-6 border-b border-yellow-900/20 pb-4">

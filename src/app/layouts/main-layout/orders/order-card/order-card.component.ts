@@ -30,13 +30,13 @@ import { ORDER_STATUSES } from '../../../../core/models/orderStatuses.model';
 
         <div class="flex flex-col gap-0.5 items-center">
           <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50">Estado</p>
-          <span class="text-xs px-2.5 py-0.5 rounded-full font-medium"
+          <span class="text-xs px-2.5 py-0.5 border rounded-full font-medium"
             [ngClass]="{
-              'bg-yellow-100 text-yellow-800':   order?.status === 'PENDING',
-              'bg-blue-100 text-blue-800':        order?.status === 'IN_PROGRESS',
-              'bg-purple-100 text-purple-800':    order?.status === 'SHIPPED',
-              'bg-green-100 text-green-800':      order?.status === 'DELIVERED',
-              'bg-red-100 text-red-800':          order?.status === 'CANCELED'
+              'border-yellow-400 text-yellow-700':   order?.status === 'PENDING',
+              'border-blue-400 text-blue-700':        order?.status === 'IN_PROGRESS',
+              'border-purple-400 text-purple-700':    order?.status === 'SHIPPED',
+              'border-green-400 text-green-700':      order?.status === 'DELIVERED',
+              'border-red-400 text-red-700':          order?.status === 'CANCELED'
             }">
             {{ statusLabel(order?.status) }}
           </span>

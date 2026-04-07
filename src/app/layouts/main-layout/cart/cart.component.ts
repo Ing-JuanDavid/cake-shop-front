@@ -1,99 +1,101 @@
 import { Component } from '@angular/core';
 import { CartService } from '../../../core/services/cart.service';
 import { CartProduct, CartProducts } from '../../../core/models/cart.model';
-import { CommonModule } from '@angular/common';
 import { ProductCart } from './cart-product-card/cart-product-card.component';
 import { AlertService } from '../../../core/services/alert.service';
 import { OrderService } from '../services/order.service';
 import { NotFoundView } from '../../../shared/info-views/not-found/not-found.component';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-cart',
-  imports: [CommonModule, ProductCart, NotFoundView],
+  imports: [ CommonModule, ProductCart, NotFoundView],
   template: `
-  @if (cart && cart.products.length > 0) {
-    <div class="min-h-screen pt-6 px-4 sm:px-6 md:px-10 lg:px-20 max-w-5xl mx-auto">
+    @if (cart && cart.products.length > 0) {
+      <div class="max-w-5xl mx-auto px-4 py-8 text-yellow-900">
 
-      <!-- Header -->
-      <div class="mb-6">
-        <h1 class="text-3xl font-bold">Tu Carrito</h1>
-        <p class="text-gray-500 text-sm">{{ totalItems }} producto(s) agregado(s)</p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-        <!-- Cart products -->
-        <div class="flex flex-col col-span-1 md:col-span-2 gap-3 max-h-[60vh] overflow-y-auto pr-1">
-          @for (item of cart.products; track item.productId) {
-            <cart-product-card
-              [cartProduct]="item"
-              (deleteItem)="deleteItem($event)"
-              (updateItem)="updateItem($event)">
-            </cart-product-card>
-          }
+        <!-- Header -->
+        <div class="mb-6 border-b border-yellow-900/20 pb-4">
+          <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50 mb-1">Compras</p>
+          <h2 class="text-2xl font-semibold uppercase tracking-widest">Tu Carrito</h2>
+          <p class="text-sm text-yellow-900/50 mt-1">{{ totalItems }} producto(s) agregado(s)</p>
         </div>
 
-        <!-- Summary -->
-        <div class="col-span-1">
-          <div class="bg-white rounded-xl border border-[#EFE0C8] shadow-sm p-5 space-y-4 sticky top-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
 
-            <h2 class="text-base font-semibold border-b border-[#EFE0C8] pb-3">
-              Resumen de compra
-            </h2>
-
-            <div class="space-y-2">
-              <div class="flex justify-between text-sm text-gray-500">
-                <p>Productos</p>
-                <p>{{ totalItems }} item(s)</p>
-              </div>
-              <div class="flex justify-between text-sm text-gray-500">
-                <p>Subtotal</p>
-                <p>{{ "$" + (cart.cartTotal | number:'1.0-0') }}</p>
-              </div>
-            </div>
-
-            <div class="border-t border-[#EFE0C8] pt-3 flex justify-between items-center">
-              <p class="text-base font-semibold text-gray-700">Total</p>
-              <p class="text-xl font-bold text-yellow-700">{{ "$" + (cart.cartTotal | number:'1.0-0') }}</p>
-            </div>
-
-            <button
-              (click)="makeOrder()"
-              class="w-full flex items-center justify-center gap-2 text-white py-3 rounded-xl text-sm font-medium transition cursor-pointer hover:opacity-90"
-              style="background: #D97706;">
-              <i class="fa-solid fa-bag-shopping text-xs"></i>
-              <span>Continuar compra</span>
-            </button>
-
-            <p class="text-xs text-gray-400 text-center">
-              <i class="fa-solid fa-lock text-xs mr-1"></i>
-              Compra segura y protegida
-            </p>
-
+          <!-- Cart products -->
+          <div class="col-span-1 md:col-span-2 flex flex-col max-h-[60vh] overflow-y-auto pr-1">
+            @for (item of cart.products; track item.productId) {
+              <cart-product-card
+                [cartProduct]="item"
+                (deleteItem)="deleteItem($event)"
+                (updateItem)="updateItem($event)">
+              </cart-product-card>
+            }
           </div>
+
+          <!-- Summary -->
+          <div class="col-span-1">
+            <div class="sticky top-6 flex flex-col gap-4">
+
+              <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50">Resumen</p>
+
+              <!-- Rows -->
+              <div class="flex flex-col gap-3 border-b border-yellow-900/10 pb-4">
+                <div class="flex justify-between text-sm">
+                  <span class="text-yellow-900/50">Productos</span>
+                  <span>{{ totalItems }} item(s)</span>
+                </div>
+                <div class="flex justify-between text-sm">
+                  <span class="text-yellow-900/50">Subtotal</span>
+                  <span>{{ "$" + (cart.cartTotal | number:'1.0-0') }}</span>
+                </div>
+              </div>
+
+              <!-- Total -->
+              <div class="flex justify-between items-center">
+                <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50">Total</p>
+                <p class="text-lg font-semibold">{{  "$" + (cart.cartTotal | number:'1.0-0') }}</p>
+              </div>
+
+              <!-- CTA -->
+              <button
+                (click)="makeOrder()"
+                class="w-full flex items-center justify-center gap-2 border border-yellow-900 text-yellow-900 py-2.5 rounded-full text-sm font-semibold
+                       hover:bg-yellow-900 hover:text-yellow-50 transition-all cursor-pointer">
+                <i class="fa-solid fa-bag-shopping text-xs"></i>
+                Continuar compra
+              </button>
+
+              <p class="text-xs text-yellow-900/30 text-center">
+                <i class="fa-solid fa-lock text-xs mr-1"></i>
+                Compra segura y protegida
+              </p>
+
+            </div>
+          </div>
+
         </div>
-
       </div>
-    </div>
 
-  } @else {
-    <info-view-not-found [msj]="'Tu carrito está vacío'"></info-view-not-found>
-  }
-`,
+    } @else {
+      <info-view-not-found [msj]="'Tu carrito está vacío'"></info-view-not-found>
+    }
+  `,
   styles: ``,
 })
 export class Cart {
 
+  cart: CartProducts | null = null;
+  totalItems: number = 0;
+
   constructor(
     private cartService: CartService,
     private alertService: AlertService,
-    private orderService: OrderService) {}
-
-   cart: CartProducts | null = null;
-    totalItems: number = 0;
+    private orderService: OrderService
+  ) {}
 
   ngOnInit() {
-    // Suscribirse al estado compartido del servicio
     this.cartService.cart$.subscribe(cart => {
       this.cart = cart;
       this.totalItems = cart?.products
@@ -101,11 +103,8 @@ export class Cart {
         .reduce((acc, val) => acc + val, 0) ?? 0;
     });
 
-    // Cargar datos iniciales desde backend
     this.cartService.get().subscribe({
-      next: (res) => {
-        this.cartService.setCart(res.data);
-      }
+      next: (res) => this.cartService.setCart(res.data)
     });
   }
 
@@ -128,35 +127,29 @@ export class Cart {
       .map(p => p.quant)
       .reduce((acc, val) => acc + val, 0);
 
-    // Actualizar el estado global
     this.cartService.setCart(this.cart);
   }
 
   deleteItem(product: CartProduct) {
     this.cartService.delete(product.productId).subscribe({
-      next: res => {
+      next: () => {
         this.alertService.success(`${product.name} eliminado`);
-        this.cart!.products = this.cart!.products.filter(p => p.productId != product.productId);
+        this.cart!.products = this.cart!.products.filter(p => p.productId !== product.productId);
         this.updateCart();
       },
-      error: err => {
-        this.alertService.error(err.error.error);
-      }
+      error: err => this.alertService.error(err.error.error)
     });
-
     this.alertService.clear(3000);
   }
 
   makeOrder() {
-    this.orderService.makeOrder().subscribe(
-      {
-        next: res=>{
-          this.alertService.success('Compra realizada');
-          this.cartService.setCart(null);
-        },
-        error: err=>this.alertService.error(err.error.error)
-      }
-    )
+    this.orderService.makeOrder().subscribe({
+      next: () => {
+        this.alertService.success('Compra realizada');
+        this.cartService.setCart(null);
+      },
+      error: err => this.alertService.error(err.error.error)
+    });
     this.alertService.clear(3000);
   }
 }

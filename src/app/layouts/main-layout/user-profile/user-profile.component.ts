@@ -12,6 +12,7 @@ import { UserService } from '../../../core/services/user.service';
 
       <!-- Header -->
       <div class="mb-8">
+        <p class="text-sm text-yellow-900/50 mt-0.5 uppercase tracking-widest">Perfil</p>
         <h2 class="text-2xl font-semibold uppercase tracking-widest text-yellow-900">Actualizar Perfil</h2>
         <p class="text-sm text-yellow-900/50 mt-0.5">Mantén tu información al día</p>
       </div>

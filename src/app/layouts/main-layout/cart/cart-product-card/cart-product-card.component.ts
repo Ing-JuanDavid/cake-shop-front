@@ -8,37 +8,54 @@ import { CartService } from '../../../../core/services/cart.service';
 @Component({
   selector: 'cart-product-card',
   imports: [CommonModule, FormsModule],
+  standalone: true,
   template: `
-    <div class="flex gap-4 p-4 border-b-2 border-b-yellow-900/30 rounded-sm bg-white">
-          <!-- Imagen placeholder (puedes reemplazar con cartProduct.imgUrl si lo tienes en el modelo) -->
-          <div class="w-24 h-24 rounded-md overflow-hidden bg-yellow-100 flex cartProducts-center justify-center">
-            <img [src]="cartProduct.img" alt="">
-          </div>
+    <div class="flex items-center gap-4 py-3 border-b border-yellow-900/10 hover:bg-yellow-900/5 transition-colors">
 
-          <!-- Info producto -->
-          <div class="flex flex-col flex-1 text-yellow-900/80">
-            <h3 class="text-xl font-semibold">{{ cartProduct.name }}</h3>
-            <p class="text-sm">Stock: {{ cartProduct.stock }}</p>
-            <p class="text-lg font-semibold">
-              {{ '$' + (cartProduct.price | number:'1.0-0') }}
-            </p>
-          </div>
+      <!-- Image -->
+      <img
+        [src]="cartProduct.img"
+        [alt]="cartProduct.name"
+        class="w-12 h-12 object-cover rounded-lg border border-yellow-900/10 shrink-0" />
 
-          <!-- update quant button -->
-           <div class="border-2 rounded-lg border-yellow-900/80 text-yellow-900/80 flex justify-evenly items-center self-center max-w-24 text-3xl">
-            <button (click)="decrement()">-</button>
-            <input class="w-1/3 text-xl" type="number" [(ngModel)]="cartProduct.quant">
-            <button (click)="increment()">+</button>
-           </div>
-
-          <!-- Botón eliminar -->
-          <button
-          (click)="deleteItem.emit(cartProduct)"
-            class="bg-red-600 text-white px-3 py-1 rounded-md hover:bg-red-500 transition self-center hover:cursor-pointer"
-          >
-            Eliminar
-          </button>
+      <!-- Info -->
+      <div class="flex flex-col flex-1 min-w-0">
+        <p class="text-sm font-medium truncate">{{ cartProduct.name }}</p>
+        <p class="text-xs text-yellow-900/50 mt-0.5">
+          <i class="fa-solid fa-box text-xs"></i> Stock: {{ cartProduct.stock }}
+        </p>
+        <p class="text-sm font-semibold mt-0.5">{{ "$" + (cartProduct.price | number:'1.0-0') }}</p>
       </div>
+
+      <!-- Quantity controls -->
+      <div class="flex items-center gap-1 border border-yellow-900/30 rounded-full px-2 py-1">
+        <button
+          (click)="decrement()"
+          class="w-6 h-6 flex items-center justify-center text-yellow-900/60 hover:text-yellow-900 transition-colors disabled:opacity-30"
+          [disabled]="cartProduct.quant <= 1">
+          <i class="fa-solid fa-minus text-xs"></i>
+        </button>
+        <input
+          type="number"
+          [(ngModel)]="cartProduct.quant"
+          class="w-8 text-center text-sm font-medium bg-transparent outline-none text-yellow-900" />
+        <button
+          (click)="increment()"
+          class="w-6 h-6 flex items-center justify-center text-yellow-900/60 hover:text-yellow-900 transition-colors disabled:opacity-30"
+          [disabled]="cartProduct.quant >= cartProduct.stock">
+          <i class="fa-solid fa-plus text-xs"></i>
+        </button>
+      </div>
+
+      <!-- Delete -->
+      <button
+        (click)="deleteItem.emit(cartProduct)"
+        class="text-yellow-900/30 hover:text-red-400 transition-colors shrink-0"
+        title="Eliminar">
+        <i class="fa-solid fa-trash text-sm"></i>
+      </button>
+
+    </div>
   `,
   styles: ``,
 })
@@ -47,17 +64,20 @@ export class ProductCart {
   @Output() deleteItem = new EventEmitter<CartProduct>();
   @Output() updateItem = new EventEmitter<CartProduct>();
 
-  constructor(private alertService: AlertService, private cartService: CartService) {}
+  constructor(
+    private alertService: AlertService,
+    private cartService: CartService
+  ) {}
 
   decrement() {
-    if(this.cartProduct.quant>1) {
-        this.cartProduct.quant--;
-        this.updateCart();
+    if (this.cartProduct.quant > 1) {
+      this.cartProduct.quant--;
+      this.updateCart();
     }
   }
 
-  increment(){
-    if(this.cartProduct.quant >= this.cartProduct.stock) {
+  increment() {
+    if (this.cartProduct.quant >= this.cartProduct.stock) {
       this.alertService.error('Cantidad fuera de stock');
       this.alertService.clear(3000);
       return;
@@ -66,11 +86,10 @@ export class ProductCart {
     this.updateCart();
   }
 
-  updateCart(){
-    this.cartService.add({productId: this.cartProduct.productId,  quant: this.cartProduct.quant}).subscribe(
-      {
-        next: res=>this.updateItem.emit(this.cartProduct),
-        error: err=>this.alertService.error(err.error.error)}
-    )
+  updateCart() {
+    this.cartService.add({ productId: this.cartProduct.productId, quant: this.cartProduct.quant }).subscribe({
+      next: () => this.updateItem.emit(this.cartProduct),
+      error: err => this.alertService.error(err.error.error)
+    });
   }
 }
