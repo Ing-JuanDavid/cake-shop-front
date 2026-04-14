@@ -43,20 +43,22 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
             {{ '$' + (product.price | number: '1.0-0') }}
           </p>
 
-          <label
-            >Cantidad
-            <input
-              class="block w-20 px-1 py-2 border border-yellow-900 rounded-lg focus:outline-none"
-              type="number"
-              [(ngModel)]="quant"
-              min="1"
-            />
-          </label>
+          @if (product.quant != 0) {
+            <label
+              >Cantidad
+              <input
+                class="block w-20 px-1 py-2 border border-yellow-900 rounded-lg focus:outline-none"
+                type="number"
+                [(ngModel)]="quant"
+                min="1"
+              />
+            </label>
+          }
 
           <p class="text-sm leading-relaxed text-yellow-900/50">
             Stock disponible:
             <span
-              [ngClass]="product.quant == 0 ? 'bg-red-200 text-red-600 px-2 py-0.5 rounded-xl' : ''"
+              [ngClass]="product.quant == 0 ? 'border border-red-40 text-red-700 font-medium px-2 py-0.5 rounded-xl' : ''"
             >
               {{ product.quant != 0 ? product.quant : 'Agotado' }}
             </span>
@@ -112,7 +114,8 @@ export class ProductDetails {
   }
 
   ngOnInit() {
-    if (!this.sessionService.currentUser()) return;
+    if (!this.sessionService.currentUser() || this.sessionService.currentUser()?.roles[0]!='ROLE_USER') return;
+
     this.cartService.cart$.subscribe((cart) => {
       if (cart == null) return;
 

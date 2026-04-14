@@ -24,7 +24,7 @@ import { SessionService } from '../../../../core/session/session.service';
         <li class="hover:text-yellow-600 transition-colors">
           <a routerLink="home" class="flex items-center gap-1.5 text-sm">
             <i class="fa-solid fa-house"></i>
-            <span>Home</span>
+            <span>Inicio</span>
           </a>
         </li>
 

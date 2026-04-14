@@ -6,7 +6,7 @@ import { RouterLink } from '@angular/router';
   standalone: true,
   imports: [RouterLink],
   template: `
-    <footer class="border-t border-yellow-900/20 mt-16 px-6 py-10 text-yellow-900">
+    <footer class="border-t border-yellow-900/20 px-6 py-10 text-yellow-900">
 
       <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-10">
 
@@ -35,7 +35,7 @@ import { RouterLink } from '@angular/router';
           <ul class="space-y-2 text-sm">
             <li>
               <a routerLink="home" class="flex items-center gap-2 text-yellow-900/70 hover:text-yellow-700 transition-colors">
-                <i class="fa-solid fa-house text-xs"></i> Home
+                <i class="fa-solid fa-house text-xs"></i> Inicio
               </a>
             </li>
             <li>

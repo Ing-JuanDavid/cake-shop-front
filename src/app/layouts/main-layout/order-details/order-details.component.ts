@@ -16,8 +16,9 @@ import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
       @if (order) {
 
         <!-- Header -->
-        <div class="mb-6 border-b border-yellow-900/20 pb-4">
-          <button
+        <div class="mb-6 border-b border-yellow-900/20 pb-4 flex justify-between items-start">
+          <div>
+            <button
             (click)="goToOrders()"
             class="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-yellow-900/50 hover:text-yellow-700 transition-colors mb-3 cursor-pointer">
             <i class="fa-solid fa-arrow-left text-xs"></i>
@@ -26,6 +27,9 @@ import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
           <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50 mb-1">Detalle</p>
           <h2 class="text-2xl font-semibold uppercase tracking-widest">Pedido #{{ order.orderId }}</h2>
           <p class="text-sm text-yellow-900/50 mt-1">{{ order.date | date:'mediumDate' }}</p>
+          </div>
+          <p class="text-yellow-900/50">Enviado a {{order.address}}</p>
+
         </div>
 
         <!-- Status + Total -->

@@ -12,7 +12,7 @@ import { FormsModule, NgModel } from '@angular/forms';
   imports: [ProductCardComponent, NotFoundView, FormsModule],
   template: `
 
-    <div class="flex flex-col text-yellow-900 gap-8 px-4 pt-10 max-w-7xl mx-auto">
+    <div class="flex flex-col text-yellow-900 gap-15 px-4 py-10 max-w-7xl mx-auto">
 
       <!-- Header + Filters bar -->
       <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-yellow-900/20 pb-5">
@@ -81,7 +81,9 @@ import { FormsModule, NgModel } from '@angular/forms';
             (click)="goToProduct(product.productId)">
           </home-product-card>
         } @empty {
-          <info-view-not-found [msj]="'Aún no hay nada que mostrar'"></info-view-not-found>
+
+            <info-view-not-found [msj]="'Aún no hay nada que mostrar'"></info-view-not-found>
+
         }
 
       </div>

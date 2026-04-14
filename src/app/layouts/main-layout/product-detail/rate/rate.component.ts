@@ -47,10 +47,16 @@ export class RateComponent {
   ) {}
 
   ngOnInit() {
-    if (this.sessionService.currentUser()) {
-      this.orderService
-        .getOrdersByProductId(this.productId!)
-        .subscribe({ next: (res) => (this.orders = res.data) });
+    if (this.sessionService.currentUser() && this.sessionService.currentUser()?.roles[0] == 'ROLE_USER') {
+      this.loadOrdersByUser();
     }
   }
+
+
+loadOrdersByUser()
+{
+  this.orderService.getOrdersByProductId(this.productId!).subscribe(
+    { next: res => this.orders = res.data }
+  );
+}
 }

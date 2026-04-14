@@ -6,6 +6,8 @@ import { Component } from '@angular/core';
 import { AlertService } from '../../../core/services/alert.service';
 import { Order } from '../../../core/models/order.model';
 import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
+import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
+import { OrderService } from '../../main-layout/services/order.service';
 
 @Component({
   selector: 'admin-user-details',
@@ -122,11 +124,11 @@ import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
             <div class="flex items-center justify-between mb-4">
               <h2 class="text-base font-medium">Historial de pedidos</h2>
               <span class="text-xs px-3 py-1 rounded-full bg-yellow-100 text-yellow-800">
-                {{ currentUser.orders.length }} pedidos
+                {{ orders.totalElements }} pedidos
               </span>
             </div>
 
-            @if (currentUser.orders.length === 0) {
+            @if (orders.totalElements === 0) {
               <p class="text-sm text-gray-400 text-center py-4">No hay pedidos registrados</p>
             } @else {
               <div class="overflow-x-auto rounded-xl border border-gray-200">
@@ -141,7 +143,7 @@ import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
                     </tr>
                   </thead>
                   <tbody>
-                    @for (order of currentUser.orders; track order.orderId) {
+                    @for (order of orders.data; track order.orderId) {
                       <tr
                         (click)="goToOrderDetails(currentUser.nip.toString(), order.orderId.toString())"
                         class="border-b border-gray-100 hover:bg-yellow-50 transition-colors last:border-none hover:cursor-pointer"
@@ -169,6 +171,37 @@ import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
                   </tbody>
                 </table>
               </div>
+
+               <div class="flex items-center justify-between mt-4">
+
+                <span class="text-xs text-gray-500">
+                  Mostrando {{ orders.pageLength }} de {{ orders.totalElements }} elementos
+                </span>
+
+                <div class="flex gap-1">
+                  <button [disabled]="currentPage === 1"
+                          (click)="changePage(currentPage - 1)"
+                          class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                    ←
+                  </button>
+
+                  @for (p of [].constructor(orders.totalPages); track $index) {
+                    <button (click)="changePage($index + 1)"
+                            [class]="$index + 1 === currentPage
+                              ? 'text-white rounded-md px-3 py-1 text-xs cursor-pointer border transition-colors'
+                              : 'bg-white text-gray-700 border border-gray-200 rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 transition-colors'"
+                            [style]="$index + 1 === currentPage ? 'background: #D97706; border-color: #D97706;' : ''">
+                      {{ $index + 1 }}
+                    </button>
+                  }
+
+                  <button [disabled]="currentPage === orders.totalPages"
+                          (click)="changePage(currentPage + 1)"
+                          class="border border-gray-200 bg-white rounded-md px-3 py-1 text-xs cursor-pointer hover:bg-gray-100 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">
+                    →
+                  </button>
+                </div>
+               </div>
             }
           </section>
         }
@@ -224,11 +257,24 @@ export class UserDetails {
   currentUser!: UserComplete;
   statuses = ORDER_STATUSES;
 
+  currentPage = 1;
+  pageSize = 5;
+
+  orders: PaginatedResponse<Order> = {
+    currentPage: 1,
+    nextPage : 1,
+    pageLength : 0,
+    totalPages: 1,
+    totalElements: 0,
+    data: []
+  }
+
   constructor(
     public route: ActivatedRoute,
     public router: Router,
     private userService: UserService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private orderService: OrderService
   ) {}
 
   ngOnInit() {
@@ -244,11 +290,21 @@ export class UserDetails {
     this.userService.getUser(this.userId).subscribe({
       next: (res) => {
         this.currentUser = res.data;
+        this.loadOrders();
       },
       error: () => {
         this.router.navigate(['admin/users/not-found']);
       },
     });
+  }
+
+  loadOrders()
+  {
+    this.orderService.getOrdersByUser(this.currentUser.nip, this.currentPage, this.pageSize).subscribe(
+      {
+        next: res => {this.orders = res.data; console.log('paginated response: ', res.data)}
+      }
+    )
   }
 
   get userId() {
@@ -295,5 +351,11 @@ export class UserDetails {
 
     statusLabel(status: string): string {
     return this.statuses.find(s => s.value === status)?.label ?? status;
+  }
+
+  changePage(page: number)
+  {
+    this.currentPage = page;
+    this.loadOrders();
   }
 }

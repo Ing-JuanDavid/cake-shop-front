@@ -10,16 +10,18 @@ import { CommonModule } from '@angular/common';
 import { ProductFilters } from '../../../core/dtos/requests/productFilters.request';
 import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
 import { ProductService } from '../../../core/services/product.service';
+import { SpinnerComponent } from "../../../shared/spinner/spinner.component";
 
 @Component({
   selector: 'admin-product-view',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule],
+  imports: [ReactiveFormsModule, CommonModule, SpinnerComponent],
   templateUrl: 'product.html',
   styles: ``,
 })
 export class ProductComponent {
   editing = false;
+  loading = false;
   categories: Category[] | [] = [];
   currentPage = 1;
   sizePage = 5;
@@ -140,19 +142,23 @@ export class ProductComponent {
       return;
     }
 
+    this.loading = true;
+
     this.productService.postProduct(formData).subscribe({
       next: () => {
         this.alertService.success('Producto creado');
+        this.loading = false;
+        this.clearForm();
         this.loadProducts();
+        this.closeDrawer();
         this.alertService.clear(2000);
       },
       error: (err) => {
         this.alertService.error(err.error.error);
+        this.closeDrawer();
         this.alertService.clear(2000);
       },
     });
-    this.closeDrawer();
-    this.clearForm();
   }
 
   edit() {
@@ -168,19 +174,24 @@ export class ProductComponent {
       return;
     }
 
+    this.loading = true;
+
     this.productService.putProduct(formData, formData.get('productId') as string).subscribe({
       next: () => {
         this.alertService.success('Producto actualizado');
+        this.loading = false;
+        this.clearForm();
         this.loadProducts();
+        this.closeDrawer();
         this.alertService.clear(2000);
       },
       error: (err) => {
         this.alertService.error(err.error.error);
+        this.loading = false;
+        this.closeDrawer();
         this.alertService.clear(2000);
       },
     });
-    this.closeDrawer();
-    this.clearForm();
   }
 
   delete(productId: number) {
@@ -229,7 +240,7 @@ export class ProductComponent {
     formData.append('quant', product.quant.toString());
     formData.append('categoryId', product.categoryId.toString());
 
-    if (product.img && !this.editing) {
+    if (product.img) {
       console.log('adding img');
       formData.append('img', product.img);
     }

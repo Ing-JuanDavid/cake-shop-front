@@ -1,18 +1,16 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input } from "@angular/core";
 
 @Component({
   selector: 'info-view-not-found',
-  imports: [],
   standalone: true,
+  imports: [],
   template: `
-    <div class="px-10 md:px-20 min-h-screen flex items-center justify-center">
-      <p class="text-yellow-900/70 text-lg">{{msj}}</p>
+    <div class="flex flex-col items-center justify-center gap-3 py-12 text-yellow-900/50 min-h-96">
+      <i class="fa-solid fa-box-open fa-2xl"></i>
+      <p class="text-sm font-semibold uppercase tracking-widest">{{ msj }}</p>
     </div>
   `,
-  styles: ``,
 })
 export class NotFoundView {
-
-  @Input() msj! : string;
-
+  @Input() msj!: string;
 }

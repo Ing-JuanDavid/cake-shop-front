@@ -8,11 +8,12 @@ import { NotFoundView } from '../../../shared/info-views/not-found/not-found.com
   selector: 'orders-view',
   imports: [NotFoundView, OrderCard],
   template: `
-   <div class="max-w-4xl mx-auto px-4 py-8 text-yellow-900">
-
+    <div class="max-w-4xl mx-auto px-4 py-8 text-yellow-900">
       <!-- Header -->
       <div class="mb-6 border-b border-yellow-900/20 pb-4">
-        <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50 mb-1">Historial</p>
+        <p class="text-xs font-semibold uppercase tracking-widest text-yellow-900/50 mb-1">
+          Historial
+        </p>
         <h2 class="text-2xl font-semibold uppercase tracking-widest">Mis Pedidos</h2>
         <p class="text-sm text-yellow-900/50 mt-1">{{ ordersList.length }} pedidos realizados</p>
       </div>
@@ -25,22 +26,18 @@ import { NotFoundView } from '../../../shared/info-views/not-found/not-found.com
           <info-view-not-found [msj]="'Aún no tienes pedidos'"></info-view-not-found>
         }
       </div>
-
     </div>
-`,
+  `,
   styles: ``,
 })
 export class Orders {
-  ordersList: Order[] | [] = [];
+  ordersList: Order[] = [];
 
   constructor(private orderService: OrderService) {}
 
   ngOnInit() {
     this.orderService.getAllOrders().subscribe({
-      next: (res) =>
-        (this.ordersList = res.data
-          .map((order) => ({ ...order, date: new Date(order.date) }))
-          .sort((a, b) => b.date.getTime() - a.date.getTime())),
+      next: res => this.ordersList = res.data
     });
   }
 }

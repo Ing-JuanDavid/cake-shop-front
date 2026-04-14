@@ -92,17 +92,19 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
           type="submit"
           class="
             w-full
+          text-yellow-50
+            text-sm
           bg-yellow-800
-          text-white
+          hover:bg-yellow-900
             font-semibold
             py-1 px-2
             rounded-md
             mt-2
-          hover:bg-yellow-700
             cursor-pointer
-            flex items-center justify-center"
+            flex items-center justify-center gap-2"
         >
         @if(!loading){
+          <i class="fa-solid fa-right-to-bracket"></i>
           Ingresar
         } @else {
           <app-spinner [size]="'sm'"></app-spinner>
@@ -117,17 +119,17 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
       <div class="w-full mb-3">
         <a
         class="
-          block
-          w-full
-        bg-yellow-800
-        text-white
-          font-semibold
-          py-1 px-2
-          rounded-md
-          mt-2
-        hover:bg-yellow-700
-          cursor-pointer
-          text-center"
+            w-full
+            text-sm
+          bg-yellow-800
+          hover:bg-yellow-900
+          text-yellow-50
+            font-semibold
+            py-1 px-2
+            rounded-md
+            mt-2
+            cursor-pointer
+            flex items-center justify-center gap-2"
         routerLink="register">Registrate</a>
       </div>
 
