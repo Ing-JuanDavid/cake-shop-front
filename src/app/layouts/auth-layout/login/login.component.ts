@@ -99,6 +99,7 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
             font-semibold
             py-1 px-2
             rounded-md
+            transition-all
             mt-2
             cursor-pointer
             flex items-center justify-center gap-2"
@@ -124,6 +125,7 @@ import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
           bg-yellow-800
           hover:bg-yellow-900
           text-yellow-50
+          transition-all
             font-semibold
             py-1 px-2
             rounded-md

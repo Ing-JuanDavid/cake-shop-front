@@ -8,6 +8,8 @@ import { Order } from '../../../core/models/order.model';
 import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
 import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
 import { OrderService } from '../../main-layout/services/order.service';
+import { getDefaultAddress, addressToString } from '../../../core/helpers/defaultAddress';
+import { Address } from '../../../core/models/address.model';
 
 @Component({
   selector: 'admin-user-details',
@@ -94,8 +96,8 @@ import { OrderService } from '../../main-layout/services/order.service';
             </div>
 
             <div class="flex flex-col gap-1">
-              <label class="text-xs text-gray-400 font-medium">Dirección</label>
-              <p class="text-sm font-medium">{{ currentUser.address || 'No especificado' }}</p>
+              <label class="text-xs text-gray-400 font-medium">Domicilio</label>
+              <p class="text-sm font-medium">{{ defaultAddress ? addressToString(defaultAddress) : 'No especificado' }}</p>
             </div>
 
             <div class="flex flex-col gap-1">
@@ -255,6 +257,7 @@ import { OrderService } from '../../main-layout/services/order.service';
 })
 export class UserDetails {
   currentUser!: UserComplete;
+  defaultAddress: Address | null = null;
   statuses = ORDER_STATUSES;
 
   currentPage = 1;
@@ -269,6 +272,7 @@ export class UserDetails {
     data: []
   }
 
+  addressToString = addressToString;
   constructor(
     public route: ActivatedRoute,
     public router: Router,
@@ -290,6 +294,8 @@ export class UserDetails {
     this.userService.getUser(this.userId).subscribe({
       next: (res) => {
         this.currentUser = res.data;
+        this.defaultAddress = getDefaultAddress(res.data.addresses);
+        console.log(this.currentUser);
         this.loadOrders();
       },
       error: () => {

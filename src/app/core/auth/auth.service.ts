@@ -109,7 +109,7 @@ export class AuthService {
       birth: null,
       roles: payload.roles,
       sex: '',
-      address: '',
+      addresses: [],
       telf: '',
       accountNonLocked: true
     };

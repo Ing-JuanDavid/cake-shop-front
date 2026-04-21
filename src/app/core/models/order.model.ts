@@ -1,3 +1,4 @@
+import { Address } from "./address.model";
 import { CartProduct } from "./cart.model";
 import { Product } from "./product.model";
 
@@ -7,5 +8,5 @@ export interface Order {
   status: string,
   date: Date,
   orderId: number
-  address: string;
+  address : Address;
 }

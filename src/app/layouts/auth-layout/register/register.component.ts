@@ -33,9 +33,6 @@ export class RegisterComponent {
         Validators.required,
         Validators.minLength(8)
       ]),
-      address: new FormControl('', [
-        Validators.required
-      ]),
       telf: new FormControl('', [
         Validators.required
       ])

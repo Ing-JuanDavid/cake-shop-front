@@ -102,25 +102,6 @@
   </div>
 
   <div class="mb-3">
-    <label>Direccion:</label>
-    <input
-      class="block w-full border border-zinc-400 px-1 focus:outline-yellow-900 py-0.5 rounded-md text-zinc-600 placeholder:text-zinc-500"
-      type="text"
-      name="address"
-      placeholder="CR 10A # 20-30"
-      formControlName="address"
-    />
-    @if(registerForm.get('address')?.errors; as errors) {
-    <p class="text-red-600 text-sm">
-      @if(registerForm.get('address')?.touched && errors['required']){ La direccion es obligatoria }
-      @if(errors['backend']) {
-      {{registerForm.get('address')?.errors?.['backend']}}
-      }
-    </p>
-    }
-  </div>
-
-  <div class="mb-3">
     <label>Telefono:</label>
     <input
       class="block w-full border border-zinc-400 px-1 focus:outline-yellow-900 py-0.5 rounded-md text-zinc-600 placeholder:text-zinc-500"

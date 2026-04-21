@@ -28,7 +28,7 @@ import { ORDER_STATUSES } from '../../../core/models/orderStatuses.model';
           <h2 class="text-2xl font-semibold uppercase tracking-widest">Pedido #{{ order.orderId }}</h2>
           <p class="text-sm text-yellow-900/50 mt-1">{{ order.date | date:'mediumDate' }}</p>
           </div>
-          <p class="text-yellow-900/50">Enviado a {{order.address}}</p>
+          <p class="text-yellow-900/50 text-sm">Enviado a {{order.address.addressLine }} en {{order.address.city}}, {{order.address.department}}</p>
 
         </div>
 

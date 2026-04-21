@@ -1,3 +1,5 @@
+import { Address } from "./address.model";
+
 export interface User {
   nip: number;
   email : string;
@@ -5,7 +7,7 @@ export interface User {
   birth: Date | null;
   roles : string[];
   sex: string;
-  address: string;
+  addresses: Address[] | [];
   telf: string;
  accountNonLocked: boolean;
 }
@@ -25,6 +27,5 @@ export interface UpdatedUser {
   name: string;
   birth: Date;
   sex: string;
-  address: string;
   telf: string;
 }

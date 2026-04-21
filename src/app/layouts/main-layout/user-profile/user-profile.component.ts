@@ -2,11 +2,15 @@ import { Component, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertService } from '../../../core/services/alert.service';
 import { UserService } from '../../../core/services/user.service';
+import { Address } from '../../../core/models/address.model';
+import { addressToString, getDefaultAddress } from '../../../core/helpers/defaultAddress';
+import { AddressService } from '../../../core/services/address.service';
+import { AddressList } from "./address-list/address-list.component";
 
 @Component({
   selector: 'user-profile-view',
   standalone: true,
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, AddressList],
   template: `
     <div class="max-w-2xl mx-auto px-4 py-8">
 
@@ -96,27 +100,6 @@ import { UserService } from '../../../core/services/user.service';
               </div>
             </div>
 
-            <!-- Dirección -->
-            <div>
-              <label class="block text-xs font-semibold uppercase tracking-wider text-yellow-900/60 mb-1">Dirección</label>
-              <div class="flex items-center gap-2 border-b-2 pb-1 transition-colors"
-                [class.border-yellow-900]="f.address.touched && f.address.valid"
-                [class.border-red-400]="f.address.touched && f.address.invalid"
-                [class.border-yellow-900/20]="!f.address.touched">
-                <i class="fa-solid fa-location-dot text-sm text-yellow-900/40"></i>
-                <input
-                  type="text"
-                  formControlName="address"
-                  placeholder="Tu dirección"
-                  class="bg-transparent outline-none text-sm text-yellow-900 placeholder:text-yellow-900/30 w-full py-1" />
-              </div>
-              @if (f.address.touched && f.address.invalid) {
-                <small class="text-red-400 text-xs mt-1 flex items-center gap-1">
-                  <i class="fa-solid fa-circle-exclamation"></i> Mínimo 5 caracteres
-                </small>
-              }
-            </div>
-
             <!-- Teléfono -->
             <div>
               <label class="block text-xs font-semibold uppercase tracking-wider text-yellow-900/60 mb-1">Teléfono</label>
@@ -154,6 +137,8 @@ import { UserService } from '../../../core/services/user.service';
           </div>
 
         </form>
+
+        <user-profile-address-list [addresses]="addresses"></user-profile-address-list>
       }
     </div>
   `,
@@ -163,7 +148,10 @@ export class UserProfile {
   private fb = inject(FormBuilder);
   private userService = inject(UserService);
   private alertService = inject(AlertService);
+  private addressService = inject(AddressService);
 
+  addresses : Address[] = [];
+  addressToString = addressToString
   loading = true;
 
   form = this.fb.nonNullable.group({
@@ -172,21 +160,26 @@ export class UserProfile {
     name:    ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     birth:   [new Date(), Validators.required],
     sex:     [''],
-    address: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(100)]],
     telf:    ['', [Validators.required, Validators.pattern(/^[0-9]{7,15}$/)]],
   });
 
   ngOnInit(): void {
+    this.loadUser();
+  }
+
+  loadUser()
+  {
+
     this.userService.getUserInfo().subscribe({
       next: (res) => {
         const user = res.data;
+        this.addresses = user.addresses.reverse();
         this.form.patchValue({
           nip:     user.nip,
           email:   user.email,
           name:    user.name,
           birth:   user.birth ?? new Date(),
           sex:     user.sex ?? '',
-          address: user.address,
           telf:    user.telf,
         });
         this.loading = false;
@@ -216,4 +209,6 @@ export class UserProfile {
   get f() {
     return this.form.controls;
   }
+
+
 }

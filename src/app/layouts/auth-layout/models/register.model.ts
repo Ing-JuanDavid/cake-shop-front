@@ -4,6 +4,5 @@ export interface RegisterModel {
   name: string;
   birth: string;
   nip: number | null;
-  address: string;
   telf: string;
 }
