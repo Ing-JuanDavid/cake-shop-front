@@ -1,6 +1,6 @@
 <div class="p-6 space-y-8">
 
-  <!-- Botón para abrir el drawer -->
+  <!-- Button to open drawer   -->
 <div class="flex items-center justify-between mb-6">
   <div>
     <h1 class="text-3xl font-bold">Gestión de Productos</h1>
@@ -126,24 +126,50 @@
         }
       </div>
 
+
+      @if(editing) {
+        <div class="flex gap-1">
+          <label class="text-xs text-gray-500 font-medium">Reemplazar imagenes</label>
+          <input type="checkbox" id="" formControlName="overWriteImages">
+        </div>
+      }
+
+
       <!-- Imagen -->
       <div class="flex flex-col gap-1">
         <label class="text-xs text-gray-500 font-medium">Imagen</label>
         <input
           type="file"
+          multiple
           accept="image/*"
           (change)="onFileChange($event)"
           class="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:ring-2 focus:ring-yellow-500 outline-none cursor-pointer"
         />
-        @if (f.img.touched) {
-          @if (f.img.getError('maxSize')) {
+
+        @if(f.images.value?.length) {
+          <ul class="decoration-0  text-xs text-gray-500 mt-1">
+            @for(file of f.images.value; track file.name) {
+              <li>{{file.name}}</li>
+            }
+          </ul>
+        }
+
+        @if (f.images.touched) {
+
+          @if (f.images.getError('maxTotalSize')) {
+            <p class="text-xs text-red-500">Limite 20MB</p>
+          }
+          @if (f.images.getError('maxSize')) {
             <p class="text-xs text-red-500">Imagen inválida, límite 2MB</p>
           }
-          @if (f.img.getError('invalidType')) {
+          @if (f.images.getError('invalidType')) {
             <p class="text-xs text-red-500">Tipo inválido</p>
           }
-          @if (f.img.getError('required')) {
+          @if (f.images.getError('required')) {
             <p class="text-xs text-red-500">La imagen es obligatoria</p>
+          }
+           @if (f.images.getError('maxFiles')) {
+            <p class="text-xs text-red-500">Solo puede subir 4 imagenes</p>
           }
         }
       </div>
@@ -161,6 +187,13 @@
           <p class="text-xs text-red-500">Descripción inválida</p>
         }
       </div>
+
+
+        <div class="flex gap-1">
+          <label class="text-xs text-gray-500 font-medium">Habilitar producto</label>
+          <input type="checkbox" id="" formControlName="isActive">
+        </div>
+
 
     </form>
   </div>
@@ -188,6 +221,7 @@
   </div>
 
 </div>
+
 
 
 
@@ -333,6 +367,7 @@
           <th class="p-3 text-left text-white text-sm font-medium">Stock</th>
           <th class="p-3 text-left text-white text-sm font-medium">Categoría</th>
           <th class="p-3 text-left text-white text-sm font-medium">Score</th>
+          <th class="p-3 text-left text-white text-sm font-medium">Estado</th>
           <th class="p-3 text-left text-white text-sm font-medium rounded-tr-xl">Acciones</th>
         </tr>
       </thead>
@@ -342,9 +377,24 @@
           <tr class="border-b border-gray-100 hover:bg-yellow-50 transition-colors duration-150 last:border-none">
 
             <!-- Imagen -->
-            <td class="p-3 align-middle">
-              <img [src]="product.imgUrl"
-                   class="w-11 h-11 object-cover rounded-lg" />
+            <td class="p-3 align-middle text-center">
+
+              @if(product.images.length > 0) {
+                @if(product.mainImg) {
+                <img [src]="product.mainImg.imageUrl" (click)="imagePicker.open()" title="seleccionar imagen principal"
+                   class="w-11 h-11 object-cover rounded-lg cursor-pointer" />
+
+                }@else {
+                  <i class="fa-regular fa-image" (click)="imagePicker.open()" title="seleccionar imagen principal"></i>
+                }
+
+              }@else {
+                <i class="fa-regular fa-image"></i>
+              }
+
+
+              <product-image-picker #imagePicker [images]="product.images" [currentMain]="product.mainImg" (mainSelected)="changeMainImg($event)" ></product-image-picker>
+
             </td>
 
             <!-- Id -->
@@ -394,7 +444,19 @@
               <div class="flex items-center gap-1">
                 <span class="text-yellow-400 text-sm">★</span>
                 <span>{{ product.score }}</span>
-                <span class="text-xs text-gray-400">({{ product.rateNumber }})</span>
+                <span class="text-xs text-gray-400">({{ product.rates.length }})</span>
+              </div>
+            </td>
+
+
+            <td class="p-3">
+              <div class="flex items-center gap-1">
+                <span
+                class="inline-block px-2 py-0.5 rounded-full text-xs font-medium"
+                  [ngClass]="product.active ? 'bg-emerald-200 text-green-700' : 'bg-red-200 text-red-700'">
+                  {{ product.active ? "Activo" : "Inactivo" }}
+              </span>
+
               </div>
             </td>
 
@@ -450,5 +512,7 @@
     </div>
 
   </div>
+
+
 
 </section>

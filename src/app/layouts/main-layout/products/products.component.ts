@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Product } from '../../../core/models/product.model';
+import { Product, SimpleProduct } from '../../../core/models/product.model';
 import { ProductService } from '../../../core/services/product.service';
 import { ProductCardComponent } from "../home/product-card/product-card.component";
 import { NotFoundView } from "../../../shared/info-views/not-found/not-found.component";
@@ -96,8 +96,8 @@ export class Products {
 
   categoryId: string | null = null;
   categoryName: string | null = null;
-  products: Product[] = [];
-  sortedProducts: Product[] = [];
+  products: SimpleProduct[] = [];
+  sortedProducts: SimpleProduct[] = [];
   sortOrder: 'asc' | 'desc' | 'name' = 'asc';
   layout: 'grid' | 'list' = 'grid';
 
@@ -120,6 +120,7 @@ export class Products {
     this.productService.getProductsByCategory(this.categoryId).subscribe({
       next: res => {
         this.products = res.data;
+        console.log("products:",this.products);
         this.applySort();
       }
     });

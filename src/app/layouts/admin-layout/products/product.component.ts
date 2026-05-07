@@ -11,11 +11,14 @@ import { ProductFilters } from '../../../core/dtos/requests/productFilters.reque
 import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
 import { ProductService } from '../../../core/services/product.service';
 import { SpinnerComponent } from "../../../shared/spinner/spinner.component";
+import { ProductImage } from '../../../core/models/productImage.model';
+import { ProductImageService } from '../../../core/services/product-image.service';
+import { ProductImagePicker } from "./image-picker/image-picker.component";
 
 @Component({
   selector: 'admin-product-view',
   standalone: true,
-  imports: [ReactiveFormsModule, CommonModule, SpinnerComponent],
+  imports: [ReactiveFormsModule, CommonModule, SpinnerComponent, ProductImagePicker],
   templateUrl: 'product.html',
   styles: ``,
 })
@@ -36,9 +39,11 @@ export class ProductComponent {
     totalElements: 0,
   };
 
+
   fb = inject(FormBuilder);
   categoryService = inject(CategoryService);
   productService = inject(ProductService);
+  imageService = inject(ProductImageService);
   alertService = inject(AlertService);
   router = inject(Router);
 
@@ -67,7 +72,11 @@ export class ProductComponent {
 
     description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
 
-    img: this.fb.control<null | File>(null),
+    isActive: [true, [Validators.required]],
+
+    overWriteImages: false,
+
+    images: this.fb.control<null | File[]>(null),
   });
 
   ngOnInit() {
@@ -83,6 +92,11 @@ export class ProductComponent {
   loadProducts() {
     this.productService.getProducts(this.currentPage, this.sizePage, this.filters).subscribe({
       next: (res) => {
+
+        res.data.data = res.data.data.map(d=>(
+          {  ...d,
+            mainImg: this.getMainImage(d.images)
+          }));
         this.page = res.data;
       },
     });
@@ -90,36 +104,53 @@ export class ProductComponent {
 
   onFileChange(event: Event) {
     const input = event.target as HTMLInputElement;
-    const imgControl = this.productForm.get('img');
+    const imagesControl = this.productForm.get('images');
 
-    if (this.editing && !input.files?.length) {
-      imgControl?.setErrors(null);
-      return;
-    }
+    if (!imagesControl) return;
 
-    imgControl?.addValidators(Validators.required);
-    imgControl?.markAsTouched();
+    imagesControl.markAsTouched(); // 👈
 
     if (!input.files?.length) {
-      imgControl?.setErrors({ required: true });
+      imagesControl.setValue(null);
+      imagesControl.setErrors(null);
       return;
     }
 
-    const file = input.files[0];
-    const maxSize = 2 * 1024 * 1024;
-
-    if (!file.type.startsWith('image/')) {
-      imgControl?.setErrors({ invalidType: true });
+    if(input.files.length > 4) {
+      imagesControl.setErrors({ maxFiles: true});
       return;
     }
 
-    if (file.size > maxSize) {
-      imgControl?.setErrors({ maxSize: true });
-      return;
+
+    const files: File[] = Array.from(input.files);
+
+     const maxFileSize = 3 * 1024 * 1024;
+     const maxTotalFileSize = 20 * 1024 * 1024;
+     let totalFileSize = 0;
+
+    for (let file of files) {
+
+      if (!file.type.startsWith('image/')) {
+        imagesControl?.setErrors({ invalidType: true });
+        return;
+      }
+
+      if (file.size > maxFileSize) {
+        imagesControl?.setErrors({ maxSize: true });
+        return;
+      }
+
+      totalFileSize += file.size;
+
+      if(totalFileSize > maxTotalFileSize) {
+        imagesControl?.setErrors({ maxTotalSize: true });
+        return;
+      }
+
     }
 
-    imgControl?.setErrors(null);
-    imgControl?.setValue(file);
+    imagesControl?.setErrors(null);
+    imagesControl?.setValue(files);
   }
 
   get f() {
@@ -127,8 +158,7 @@ export class ProductComponent {
   }
 
   create() {
-    this.productForm.get('img')?.addValidators(Validators.required);
-    this.productForm.get('img')?.updateValueAndValidity();
+    this.updateImageValidators();
 
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
@@ -162,10 +192,14 @@ export class ProductComponent {
   }
 
   edit() {
+
+    this.updateImageValidators();
+
     if (this.productForm.invalid) {
       this.productForm.markAllAsTouched();
       return;
     }
+
 
     const formData = this.getFormData();
 
@@ -218,6 +252,8 @@ export class ProductComponent {
     this.productForm.reset();
     this.productForm.patchValue({
       ...product,
+      images: null,
+      isActive: product.active,
       categoryId: this.getCategory(product.categoryName)?.categoryId,
     });
     this.openDrawer();
@@ -228,7 +264,7 @@ export class ProductComponent {
   }
 
   getFormData(): FormData | null {
-    const { productId, ...product } = this.productForm.getRawValue();
+    const { productId, overWriteImages, ...product } = this.productForm.getRawValue();
 
     const formData = new FormData();
 
@@ -239,10 +275,17 @@ export class ProductComponent {
     formData.append('price', product.price.toString());
     formData.append('quant', product.quant.toString());
     formData.append('categoryId', product.categoryId.toString());
+    formData.append('isActive', product.isActive ? "true": "false");
 
-    if (product.img) {
+    if(overWriteImages) formData.append("overWriteImages", overWriteImages ? "true" : "false");
+
+    if (product.images?.length) {
       console.log('adding img');
-      formData.append('img', product.img);
+
+      product.images.forEach(image => {
+        formData.append('images', image);
+      })
+
     }
 
     return formData;
@@ -281,6 +324,56 @@ export class ProductComponent {
   }
 
   closeDrawer() {
+
+    if(this.editing) {
+      this.clearForm();
+    }
+
     this.drawerOpen = false;
   }
+
+  updateImageValidators()
+  {
+    const imagesControl = this.productForm.get('images');
+
+    if (!this.editing) {
+      imagesControl?.setValidators(Validators.required);
+    } else {
+      imagesControl?.clearValidators();
+    }
+
+    }
+
+    changeMainImg(img : ProductImage)
+    {
+
+      this.imageService.updateImageProduct(img.imageId, true).subscribe(
+        {
+          next: res => {
+            this.alertService.success("Imagen principal actualizada");
+            this.alertService.clear(2000);
+            this.loadProducts()
+          },
+          error: err => {
+            this.alertService.error(err.error.error);
+            this.alertService.clear(2000);
+          }
+        }
+      )
+
+    }
+
+
+    getMainImage(images: ProductImage[]) : ProductImage | null
+    {
+
+
+      if(images.length == 0) {
+        return null;
+      }
+
+      return images.find(i => i.isMain) ?? null;
+
+    }
+
 }

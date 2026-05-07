@@ -31,7 +31,7 @@ import { CommonModule } from '@angular/common';
                   (click)="goToProduct(product.productId)">
                 <td class="py-3 w-16">
                   <img
-                    [src]="product.imgUrl"
+                    [src]="product.images[0]"
                     [alt]="product.name"
                     class="w-18 h-18 object-cover rounded-lg border border-yellow-900/10" />
                 </td>
@@ -109,7 +109,7 @@ export class ProductSearch {
   }
 
   searchProduct(q: string, page: number) {
-    this.productService.getProducts(page, 10, { name: q }).subscribe({
+    this.productService.getProducts(page, 10, { name: q , active: true}).subscribe({
       next: res => this.products = res.data
     });
   }

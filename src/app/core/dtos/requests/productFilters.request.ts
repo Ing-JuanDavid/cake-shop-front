@@ -4,4 +4,5 @@ export interface ProductFilters {
     minPrice?: number;
     maxPrice?: number;
     available?: boolean;
+    active?: boolean
 }

@@ -5,7 +5,7 @@ import { AlertService } from '../../../core/services/alert.service';
 import { Category } from '../../../core/models/category.model';
 import { CategoryFilters } from '../../../core/dtos/requests/categoryFilters.request';
 import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct.response';
-import { Product } from '../../../core/models/product.model';
+import { Product, SimpleProduct } from '../../../core/models/product.model';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryProduct } from "./category-product/category-product.component";
 
@@ -29,7 +29,7 @@ export class Categories {
   filters: CategoryFilters = {};
 
   expandedCategoryId: number | null = null;
-  categoryProducts: Product[] = [];
+  categoryProducts: SimpleProduct[] = [];
   loadingProducts = false;
 
   page: PaginatedResponse<Category> = {

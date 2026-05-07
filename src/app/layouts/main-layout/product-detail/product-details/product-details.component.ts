@@ -18,11 +18,54 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
       <!-- Product info component -->
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-start">
-        <!-- Imagen -->
-        <div class="w-full flex justify-end">
-          <div class="w-120 aspect-square overflow-hidden rounded-lg shadow-md">
-            <img [src]="product.imgUrl" [alt]="product.name" class="w-full h-full object-cover" />
+        <!-- Imagen carousel -->
+        <div class="w-full flex flex-col items-end gap-3">
+          <!-- Main image -->
+          <div class="w-120 aspect-square overflow-hidden rounded-lg relative">
+            <img
+              [src]="product.images[currentImage].imageUrl"
+              [alt]="product.name"
+              class="w-full h-full object-cover transition-all duration-300"
+              [class.opacity-0]="isFading"
+              [class.scale-105]="!isFading"
+            />
+
+            <!-- Arrows -->
+            @if (product.images.length > 1) {
+              <button
+                (click)="prevImage()"
+                class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-yellow-900 rounded-full w-8 h-8 flex items-center justify-center shadow transition-all"
+              >
+                <i class="fa-solid fa-chevron-left text-xs"></i>
+              </button>
+              <button
+                (click)="nextImage()"
+                class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-yellow-900 rounded-full w-8 h-8 flex items-center justify-center shadow transition-all"
+              >
+                <i class="fa-solid fa-chevron-right text-xs"></i>
+              </button>
+            }
           </div>
+
+          <!-- Thumbnails -->
+          @if (product.images.length > 1) {
+            <div class="flex gap-2">
+              @for (img of product.images; track $index) {
+                <div
+                  (click)="currentImage = $index"
+                  class="w-14 h-14 rounded-md overflow-hidden cursor-pointer border-2 transition-all"
+                  [class.border-yellow-900]="currentImage === $index"
+                  [class.border-transparent]="currentImage !== $index"
+                >
+                  <img
+                    [src]="img.imageUrl"
+                    [alt]="product.name + ' ' + $index"
+                    class="w-full h-full object-cover"
+                  />
+                </div>
+              }
+            </div>
+          }
         </div>
 
         <!-- Info -->
@@ -36,7 +79,9 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
               <p>{{ product.score || 0 | number: '1.1-1' }}</p>
               <product-details-stars [score]="product.score"></product-details-stars>
             </div>
-            <p class="text-sm text-yellow-900/50 leading-relaxed">{{ product.rateNumber }} calificaciones</p>
+            <p class="text-sm text-yellow-900/50 leading-relaxed">
+              {{ product.rates.length}} calificaciones
+            </p>
           </div>
 
           <p class="text-3xl font-semibold">
@@ -58,7 +103,11 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
           <p class="text-sm leading-relaxed text-yellow-900/50">
             Stock disponible:
             <span
-              [ngClass]="product.quant == 0 ? 'border border-red-40 text-red-700 font-medium px-2 py-0.5 rounded-xl' : ''"
+              [ngClass]="
+                product.quant == 0
+                  ? 'border border-red-40 text-red-700 font-medium px-2 py-0.5 rounded-xl'
+                  : ''
+              "
             >
               {{ product.quant != 0 ? product.quant : 'Agotado' }}
             </span>
@@ -70,13 +119,11 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
               class="mt-4 md:w-100 text-sm font-semibold text-yellow-900 px-6 py-2 rounded-lg border border-yellow-900 cursor-pointer
                      hover:bg-yellow-900 hover:text-yellow-50 transition-all flex gap-2 items-center justify-center"
             >
-              @if(inCart) {
+              @if (inCart) {
                 Ir al carrito
-              }
-              @else {
-
-                  <i class="fa-solid fa-cart-plus"></i>
-                  Agregar al carrito
+              } @else {
+                <i class="fa-solid fa-cart-plus"></i>
+                Agregar al carrito
               }
             </button>
           }
@@ -100,7 +147,10 @@ export class ProductDetails {
   quant: number = 1;
   lastCart: CartProducts | null = null;
   inCart: CartProduct | null = null;
-  counter = 0;
+  currentImage = 0;
+  direction: 'next' | 'prev' | '' = '';
+  isFading = false;
+  nextIndex = 0;
 
   constructor(
     public cartService: CartService,
@@ -114,7 +164,11 @@ export class ProductDetails {
   }
 
   ngOnInit() {
-    if (!this.sessionService.currentUser() || this.sessionService.currentUser()?.roles[0]!='ROLE_USER') return;
+    if (
+      !this.sessionService.currentUser() ||
+      this.sessionService.currentUser()?.roles[0] != 'ROLE_USER'
+    )
+      return;
 
     this.cartService.cart$.subscribe((cart) => {
       if (cart == null) return;
@@ -171,4 +225,29 @@ export class ProductDetails {
       this.addToCart();
     }
   }
+
+  nextImage() {
+    if (!this.product) return;
+    this.isFading = true;
+
+    setTimeout(() => {
+      this.currentImage = (this.currentImage + 1) % this.product!.images.length;
+      this.isFading = false;
+    }, 200);
+  }
+
+  prevImage() {
+    if (!this.product) return;
+    if (!this.product) return;
+
+    this.isFading = true;
+
+    setTimeout(() => {
+      this.currentImage =
+        (this.currentImage - 1 + this.product!.images.length) % this.product!.images.length;
+      this.isFading = false;
+    }, 200);
+  }
+
+  //
 }

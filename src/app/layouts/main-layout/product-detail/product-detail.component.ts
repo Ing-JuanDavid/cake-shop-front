@@ -46,11 +46,11 @@ export class ProductDetailComponent {
     this.productService.getProductById(this.productId).subscribe({
       next: (res) => {
         this.product = res.data;
-        this.rateService.getRatesByProduct(this.productId).subscribe({
-          next: (res) => {
-            this.rateList = this.orderRateListByDate(res.data);
-          },
-        });
+
+        if(this.product?.rates != null) {
+          this.rateList = this.orderRateListByDate(this.product.rates);
+        }
+
       },
     });
   }

@@ -1,3 +1,6 @@
+import { ProductImage } from "./productImage.model";
+import { Rate } from "./rate.model";
+
 export interface Product {
   productId: number;
   name: string;
@@ -6,8 +9,18 @@ export interface Product {
   categoryName: string;
   description: string;
   score: number;
-  rateNumber: number;
-  imgUrl: string;
+  rates: Rate[];
+  images: ProductImage[];
+  mainImg: ProductImage | null;
+  active: boolean
+}
+
+export interface SimpleProduct {
+  productId: number,
+  name: string,
+  price: number,
+  categoryName: string,
+  mainImage: ProductImage
 }
 
 export interface ProductDto {
@@ -16,5 +29,5 @@ export interface ProductDto {
   quant: number;
   categoryId: number;
   description: string;
-  img: File | null;
+  img: File[] | null;
 }

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { Product } from '../../../../core/models/product.model';
+import { Product, SimpleProduct } from '../../../../core/models/product.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
     >
       <!-- Imagen -->
       <div class="w-full h-32">
-        <img [src]="product?.imgUrl" alt="{{ product?.name }}" class="w-full h-full object-cover" />
+        <img [src]="product?.mainImage?.imageUrl" alt="{{ product?.name }}" class="w-full h-full object-cover" />
       </div>
 
       <!-- Cuerpo -->
@@ -27,5 +27,5 @@ import { CommonModule } from '@angular/common';
   styles: ``,
 })
 export class ProductCardComponent {
-  @Input() product: Product | null = null;
+  @Input() product: SimpleProduct | null = null;
 }

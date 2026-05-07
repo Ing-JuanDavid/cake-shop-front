@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpParams } from '@angular/common/http'
 import { inject, Injectable } from '@angular/core';
 import { catchError, Observable, of } from 'rxjs';
 import { Response } from '../dtos/responses/genericResponse.response';
-import { Product } from '../models/product.model';
+import { Product, SimpleProduct } from '../models/product.model';
 import { ProductFilters } from '../dtos/requests/productFilters.request';
 import { PaginatedResponse } from '../dtos/responses/paginatedProduct.response';
 
@@ -56,6 +56,9 @@ export class ProductService {
     if (filters?.minPrice)  params = params.set('minPrice', filters.minPrice);
     if (filters?.maxPrice)  params = params.set('maxPrice', filters.maxPrice);
     if (filters?.available != null) params = params.set('available', filters.available);
+    if(filters?.active != null) params = params.set("active", filters.active)
+
+      console.log(params);
 
     return this.http.get<Response<PaginatedResponse<Product>>>(this.baseUrl, { params });
 }
@@ -81,9 +84,9 @@ export class ProductService {
     return this.http.delete<Response<Product>>(`${this.baseUrl}/${productId}`);
   }
 
-  public getProductsByCategory(categoryId: string) : Observable<Response<Product[]>>
+  public getProductsByCategory(categoryId: string) : Observable<Response<SimpleProduct[]>>
   {
-    return this.http.get<Response<Product[]>>(`${this.baseUrl}/categories/${categoryId}`);
+    return this.http.get<Response<SimpleProduct[]>>(`${this.baseUrl}/categories/${categoryId}`);
   }
 
 }

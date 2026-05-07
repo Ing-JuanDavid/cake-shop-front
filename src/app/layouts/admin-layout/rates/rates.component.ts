@@ -85,7 +85,7 @@ export class Rates {
   loadProducts(categoryId: number)
   {
     this.productService.getProductsByCategory(categoryId.toString()).subscribe({
-      next: res=> {this.products = res.data}
+      // next: res=> {this.products = res.data}
     })
   }
 
