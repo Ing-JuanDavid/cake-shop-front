@@ -22,6 +22,9 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
         <div class="w-full flex flex-col items-end gap-3">
           <!-- Main image -->
           <div class="w-120 aspect-square overflow-hidden rounded-lg relative">
+
+
+          @if(product.images.length > 0) {
             <img
               [src]="product.images[currentImage].imageUrl"
               [alt]="product.name"
@@ -45,6 +48,14 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
                 <i class="fa-solid fa-chevron-right text-xs"></i>
               </button>
             }
+          }
+          @else {
+            <div class="w-full h-full flex justify-center items-center bg-gray-100">
+              <i class="fa-regular fa-image text-9xl text-gray-400" [title]="product.name"></i>
+            </div>
+
+          }
+
           </div>
 
           <!-- Thumbnails -->

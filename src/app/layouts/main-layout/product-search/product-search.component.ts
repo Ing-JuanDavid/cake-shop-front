@@ -5,6 +5,8 @@ import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct
 import { Product } from '../../../core/models/product.model';
 import { NotFoundView } from "../../../shared/info-views/not-found/not-found.component";
 import { CommonModule } from '@angular/common';
+import { getMainImage } from '../../../core/helpers/ProductImages';
+import { AlertService } from '../../../core/services/alert.service';
 
 @Component({
   selector: 'main-layout-product-search',
@@ -28,12 +30,23 @@ import { CommonModule } from '@angular/common';
           <tbody>
             @for (product of products.data; track product.productId) {
               <tr class="border-b border-yellow-900/10 hover:bg-yellow-900/5 transition-colors cursor-pointer"
+              title="Ir al detalle de producto"
                   (click)="goToProduct(product.productId)">
                 <td class="py-3 w-16">
-                  <img
-                    [src]="product.images[0]"
-                    [alt]="product.name"
-                    class="w-18 h-18 object-cover rounded-lg border border-yellow-900/10" />
+
+                  @if(product?.mainImg?.imageUrl) {
+                    <img
+                      [src]="product?.mainImg?.imageUrl"
+                      [alt]="product.name"
+                      class="w-18 h-18 object-cover rounded-lg border border-yellow-900/10"
+                    />
+                  }
+                  @else {
+                    <div class="bg-gray-100 h-full w-full flex justify-center items-center p-3">
+                      <i class="fa-regular fa-image text-3xl text-gray-400"> </i>
+                    </div>
+                  }
+
                 </td>
                 <td class="py-3 pl-4 font-medium">{{ product.name }}</td>
                 <td class="py-3 text-right font-semibold">{{ "$" + (product.price | number:'1.0-1') }}</td>
@@ -93,7 +106,8 @@ export class ProductSearch {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private productService: ProductService
+    private productService: ProductService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
@@ -110,7 +124,22 @@ export class ProductSearch {
 
   searchProduct(q: string, page: number) {
     this.productService.getProducts(page, 10, { name: q , active: true}).subscribe({
-      next: res => this.products = res.data
+      next: res => {
+        res.data.data = res.data.data.map(d =>(
+            {
+              ...d,
+              mainImg: getMainImage(d.images)
+            }
+          )
+        );
+
+        this.products = res.data;
+      },
+      error: err => {
+        this.alertService.error(err.error.error);
+        this.alertService.clear(2000);
+        this.router.navigate(['/']);
+      }
     });
   }
 

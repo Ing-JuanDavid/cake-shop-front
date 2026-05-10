@@ -83,7 +83,15 @@
               class="flex-1 text-white px-5 py-2 rounded-lg transition cursor-pointer hover:opacity-90"
               style="background: #d97706"
             >
+
+            @if(loading) {
+              <div class="flex justify-center">
+                <app-spinner [size]="'sm'"></app-spinner>
+              </div>
+
+            }@else {
               {{ editing ? 'Actualizar' : 'Crear' }}
+            }
             </button>
             <button
               type="button"
@@ -267,7 +275,15 @@
                     (click)="delete(category.categoryId)"
                     class="bg-red-100 text-red-800 border-none rounded-md px-2 py-1.5 cursor-pointer text-xs hover:bg-red-200 transition-colors"
                   >
+                  @if(loading && deletingCategoryId === category.categoryId) {
+                    <div class="flex justify-center">
+                      <app-spinner [size]="'sm'"></app-spinner>
+                    </div>
+                  }
+                  @else {
                     <i class="fa-regular fa-trash-can fa-lg"></i>
+                  }
+
                   </button>
                 </div>
               </td>

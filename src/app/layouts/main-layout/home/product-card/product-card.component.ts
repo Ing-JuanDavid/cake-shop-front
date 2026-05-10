@@ -11,7 +11,16 @@ import { CommonModule } from '@angular/common';
     >
       <!-- Imagen -->
       <div class="w-full h-32">
+
+      @if(product?.mainImage?.imageUrl) {
         <img [src]="product?.mainImage?.imageUrl" alt="{{ product?.name }}" class="w-full h-full object-cover" />
+      }
+      @else {
+        <div class="w-full h-full flex justify-center items-center bg-gray-100">
+            <i class="fa-regular fa-image text-gray-400 text text-6xl"></i>
+        </div>
+      }
+
       </div>
 
       <!-- Cuerpo -->

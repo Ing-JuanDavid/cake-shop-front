@@ -14,6 +14,7 @@ import { SpinnerComponent } from "../../../shared/spinner/spinner.component";
 import { ProductImage } from '../../../core/models/productImage.model';
 import { ProductImageService } from '../../../core/services/product-image.service';
 import { ProductImagePicker } from "./image-picker/image-picker.component";
+import { getMainImage } from '../../../core/helpers/ProductImages';
 
 @Component({
   selector: 'admin-product-view',
@@ -95,7 +96,7 @@ export class ProductComponent {
 
         res.data.data = res.data.data.map(d=>(
           {  ...d,
-            mainImg: this.getMainImage(d.images)
+            mainImg: getMainImage(d.images)
           }));
         this.page = res.data;
       },
@@ -363,17 +364,5 @@ export class ProductComponent {
 
     }
 
-
-    getMainImage(images: ProductImage[]) : ProductImage | null
-    {
-
-
-      if(images.length == 0) {
-        return null;
-      }
-
-      return images.find(i => i.isMain) ?? null;
-
-    }
 
 }

@@ -8,16 +8,19 @@ import { PaginatedResponse } from '../../../core/dtos/responses/paginatedProduct
 import { Product, SimpleProduct } from '../../../core/models/product.model';
 import { ProductService } from '../../../core/services/product.service';
 import { CategoryProduct } from "./category-product/category-product.component";
+import { SpinnerComponent } from '../../../shared/spinner/spinner.component';
 
 @Component({
   selector: 'admin-categories-view',
-  imports: [ReactiveFormsModule, CategoryProduct],
+  imports: [ReactiveFormsModule, CategoryProduct, SpinnerComponent],
   templateUrl: './categories.html',
   styles: ``,
 })
 export class Categories {
+  loading = false;
   editing = false;
   showModal = false;
+  deletingCategoryId = 0;
 
   fb = inject(FormBuilder);
   categoryService = inject(CategoryService);
@@ -117,6 +120,8 @@ export class Categories {
       return;
     }
 
+    this.loading = true;
+
 
     const formData = new FormData;
 
@@ -128,11 +133,13 @@ export class Categories {
       next: (res) => {
         this.clearForm();
         this.alertService.success('Categoria creada');
+        this.loading = false;
         this.loadCategories();
         this.alertService.clear(2000);
       },
       error: (err) => {
         this.alertService.error(err.error.error);
+        this.loading = false;
         this.alertService.clear(2000);
       },
     });
@@ -144,11 +151,13 @@ export class Categories {
       return;
     }
 
+    this.loading = true;
     const { categoryId, ...category } = this.categoryForm.getRawValue();
 
     this.categoryService.putCategory(category, categoryId).subscribe({
       next: (res) => {
         this.clearForm();
+        this.loading = false;
         this.alertService.success('Categoria actualizada');
         this.loadCategories();
         this.alertService.clear(2000);
@@ -161,13 +170,21 @@ export class Categories {
   }
 
   delete(categoryId: number) {
+    this.deletingCategoryId = categoryId;
+    this.loading = true;
     this.categoryService.delteCategory(categoryId).subscribe({
-      next: (res) => {
+      next: res => {
         this.clearForm();
+        this.loading = false;
         this.alertService.success('Categoria eliminada');
         this.loadCategories();
         this.alertService.clear(2000);
       },
+      error: err => {
+         this.alertService.error(err.error.error);
+         this.loading = false;
+        this.alertService.clear(2000);
+      }
     });
   }
 

@@ -58,7 +58,6 @@ export class ProductService {
     if (filters?.available != null) params = params.set('available', filters.available);
     if(filters?.active != null) params = params.set("active", filters.active)
 
-      console.log(params);
 
     return this.http.get<Response<PaginatedResponse<Product>>>(this.baseUrl, { params });
 }

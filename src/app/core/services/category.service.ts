@@ -43,9 +43,14 @@ export class CategoryService {
     return this.http.post<Response<Category>>(this.baseUrl, data);
   }
 
-  public putCategory(category: {name: string}, categoryId: number) : Observable<Response<Category>>
+  public putCategory(category: {name: string, img: File | null}, categoryId: number) : Observable<Response<Category>>
   {
-    return this.http.put<Response<Category>>(`${this.baseUrl}/${categoryId}`, category);
+
+    let formData = new FormData();
+    formData.append('name', category.name);
+     if (category.img) formData.append('img', category.img);
+
+    return this.http.put<Response<Category>>(`${this.baseUrl}/${categoryId}`, formData);
   }
 
   public delteCategory(categoryId: number) : Observable<Response<Category>>
