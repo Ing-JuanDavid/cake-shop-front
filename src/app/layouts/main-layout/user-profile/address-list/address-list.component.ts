@@ -218,6 +218,11 @@ export class AddressList {
     isDefault:   [false],
   });
 
+  // ngOnInit()
+  // {
+  //   this.loadAddresses();
+  // }
+
   get af() {
     return this.addressForm.controls;
   }

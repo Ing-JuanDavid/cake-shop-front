@@ -37,13 +37,13 @@ import { NotFoundView } from '../../../../shared/info-views/not-found/not-found.
             @if (product.images.length > 1) {
               <button
                 (click)="prevImage()"
-                class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-yellow-900 rounded-full w-8 h-8 flex items-center justify-center shadow transition-all"
+                class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-yellow-900 rounded-full w-8 h-8 flex items-center justify-center shadow transition-all cursor-pointer"
               >
                 <i class="fa-solid fa-chevron-left text-xs"></i>
               </button>
               <button
                 (click)="nextImage()"
-                class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-yellow-900 rounded-full w-8 h-8 flex items-center justify-center shadow transition-all"
+                class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/80 hover:bg-white text-yellow-900 rounded-full w-8 h-8 flex items-center justify-center shadow transition-all cursor-pointer"
               >
                 <i class="fa-solid fa-chevron-right text-xs"></i>
               </button>

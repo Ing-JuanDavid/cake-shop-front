@@ -15,6 +15,7 @@ import { ProductImage } from '../../../core/models/productImage.model';
 import { ProductImageService } from '../../../core/services/product-image.service';
 import { ProductImagePicker } from "./image-picker/image-picker.component";
 import { getMainImage } from '../../../core/helpers/ProductImages';
+import { __addDisposableResource } from 'tslib';
 
 @Component({
   selector: 'admin-product-view',
@@ -69,7 +70,7 @@ export class ProductComponent {
 
     quant: [1, [Validators.required, Validators.min(0)]],
 
-    categoryId: [0, [Validators.min(1), Validators.required]],
+    categoryId: ['', Validators.min(1)],
 
     description: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
 
@@ -255,7 +256,7 @@ export class ProductComponent {
       ...product,
       images: null,
       isActive: product.active,
-      categoryId: this.getCategory(product.categoryName)?.categoryId,
+      categoryId: this.getCategory(product.categoryName)?.categoryId.toString() ?? '',
     });
     this.openDrawer();
   }
@@ -275,7 +276,11 @@ export class ProductComponent {
     formData.append('description', product.description);
     formData.append('price', product.price.toString());
     formData.append('quant', product.quant.toString());
-    formData.append('categoryId', product.categoryId.toString());
+
+    if(product.categoryId != '') {
+       formData.append('categoryId', product.categoryId);
+    }
+
     formData.append('isActive', product.isActive ? "true": "false");
 
     if(overWriteImages) formData.append("overWriteImages", overWriteImages ? "true" : "false");

@@ -115,9 +115,9 @@
             formControlName="categoryId"
             class="flex-1 outline-none text-sm bg-transparent cursor-pointer"
           >
-            <option [value]="0">Seleccionar categoría</option>
+            <option [ngValue]="''">Seleccionar categoría</option>
             @for (category of categories; track category.categoryId) {
-              <option [value]="category.categoryId">{{ category.name }}</option>
+              <option [ngValue]="category.categoryId.toString()">{{ category.name }}</option>
             }
           </select>
         </div>
