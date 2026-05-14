@@ -14,7 +14,7 @@ import { User } from '../../../../../core/models/user.model';
 
           @if(link.icon) {
             <li class="hover:text-yellow-600">
-              <a [routerLink]="link.path">
+              <a [routerLink]="link.path" [title]="link.title">
                 <i [ngClass]="link.icon"></i>
               </a>
             </li>
@@ -44,4 +44,5 @@ export interface Link {
  icon: string | null;
  class: string | null;
  path: string;
+ title: string;
 }

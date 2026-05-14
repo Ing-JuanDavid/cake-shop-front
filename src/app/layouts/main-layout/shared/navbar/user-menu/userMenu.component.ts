@@ -30,14 +30,16 @@ export class UserMenu {
       value: 'Mis pedidos',
       icon: null,
       class: "px-4 py-2 border-b border-zinc-400 hover:text-yellow-600",
-      path: 'user/orders'
+      path: 'user/orders',
+      title: ''
     },
     {
       rol: 'ROLE_USER',
       value: 'Ir al carrito',
       icon: null,
       class: "px-4 py-2 border-b border-zinc-400 hover:text-yellow-600",
-      path: 'user/cart'
+      path: 'user/cart',
+      title: ''
     }
   ]
 

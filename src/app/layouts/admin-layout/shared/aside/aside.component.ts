@@ -54,7 +54,6 @@ export class AdminAside {
     { value: 'Dashboard', icon: 'fa-solid fa-chart-line', path: 'dashboard' },
     { value: 'Productos', icon: 'fa-solid fa-cheese', path: 'products' },
     { value: 'Categorias', icon: 'fa-solid fa-layer-group', path: 'categories' },
-    { value: 'Calificaciones', icon: 'fa-solid fa-ranking-star', path: 'rates' },
     { value: 'Usuarios', icon: 'fa-solid fa-user-group', path: 'users' },
     { value: 'Volver', icon: 'fa-solid fa-arrow-left', path: '/' },
   ];

@@ -9,7 +9,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div
       (click)="goToProductDetails()"
-      class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:cursor-pointer transition-shadow w-24"
+      class="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden hover:shadow-md hover:cursor-pointer transition-shadow w-20"
     >
       <!-- Image -->
       <div class="h-16 bg-gray-100 overflow-hidden">

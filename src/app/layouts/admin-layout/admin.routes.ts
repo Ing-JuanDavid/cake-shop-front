@@ -8,6 +8,11 @@ export const ADMIN_ROUTES: Routes = [
     component: AdminLayoutComponent,
     children: [
       {
+        path: 'dashboard',
+        loadComponent: ()=> import('./dashboard/dashboard.component').then(m=>m.Dashboard),
+        canActivate: [AdminGuard]
+      },
+      {
         path: 'products',
         loadComponent: ()=> import('./products/product.component').then(m=> m.ProductComponent),
         canActivate: [AdminGuard]
@@ -15,11 +20,6 @@ export const ADMIN_ROUTES: Routes = [
       {
         path: 'categories',
         loadComponent: ()=> import('./categories/categories.component').then(m=> m.Categories),
-        canActivate: [AdminGuard]
-      },
-      {
-        path: 'rates',
-        loadComponent: ()=> import('./rates/rates.component').then(m=> m.Rates),
         canActivate: [AdminGuard]
       },
       {

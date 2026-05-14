@@ -44,7 +44,7 @@ import { SessionService } from '../../../../core/session/session.service';
             class="relative hover:text-yellow-600 transition-colors"
             (click)="toogleMenu()"
           >
-            <button class="flex items-center gap-2">
+            <button class="flex items-center gap-2 cursor-pointer" title="perfil">
               <i class="fa-solid fa-circle-user fa-xl"></i>
               <span class="text-sm max-w-24 truncate">{{ u.name }}</span>
               <i class="fa-solid fa-chevron-down text-xs opacity-60"
@@ -74,7 +74,7 @@ import { SessionService } from '../../../../core/session/session.service';
           @if (!isSearchOpen()) {
             <button
               (click)="openSearch()"
-              class="hover:text-yellow-600 transition-colors">
+              class="hover:text-yellow-600 transition-colors cursor-pointer" title="buscar">
               <i class="fa-solid fa-magnifying-glass fa-lg"></i>
             </button>
           } @else {
@@ -104,17 +104,19 @@ export class NavbarComponent {
   links = [
     {
       rol: 'ROLE_ADMIN',
-      value: 'admin',
-      icon: null,
+      value: '',
+      icon: 'fa-solid fa-screwdriver-wrench',
       class: null,
-      path: 'admin/products'
+      path: 'admin/dashboard',
+      title: 'panel de administracion'
     },
     {
       rol: 'ROLE_USER',
       value: null,
       icon: 'fa-solid fa-cart-shopping fa-lg',
       class: null,
-      path: 'user/cart'
+      path: 'user/cart',
+      title: ''
     }
   ];
 
